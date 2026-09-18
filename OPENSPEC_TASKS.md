@@ -253,8 +253,8 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] Lint, typecheck e testes verdes
 
 **Fechamento**
-- [ ] Commit feito: `feat(api): serve the compiled SPA and add npm start`
-- [ ] Anotações para o `AI.md` registradas
+- [x] Commit feito: `feat(api): serve the compiled SPA and add npm start`
+- [x] Anotações para o `AI.md` registradas
 
 ---
 
