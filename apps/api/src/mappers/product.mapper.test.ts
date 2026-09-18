@@ -1,6 +1,12 @@
 import type { Product } from '@vynyl/shared';
 import { describe, expect, it } from 'vitest';
-import { toProduct, toProductInsert, type ProductRow } from './product.mapper';
+import {
+  toProduct,
+  toProductCreate,
+  toProductInsert,
+  toProductPatch,
+  type ProductRow,
+} from './product.mapper';
 
 const row: ProductRow = {
   id: 7,
@@ -100,5 +106,68 @@ describe('toProductInsert', () => {
 
       expect(toProduct({ ...toProductInsert(original) } as ProductRow)).toEqual(original);
     }
+  });
+});
+
+const now = '2026-01-02T03:04:05.678Z';
+
+describe('toProductCreate', () => {
+  const input = {
+    title: 'Small Flux Capacitor',
+    description: 'An entry-level capacitor.',
+    category: 'automotive',
+    price: 3.49,
+    stock: 120,
+    brand: 'ACME',
+    sku: 'ACM-FC-003',
+    weight: 1.5,
+  };
+
+  it('maps the input to an insertable row with the same instant for both timestamps', () => {
+    expect(toProductCreate(input, now)).toEqual({
+      title: 'Small Flux Capacitor',
+      description: 'An entry-level capacitor.',
+      category: 'automotive',
+      priceCents: 349,
+      stock: 120,
+      brand: 'ACME',
+      sku: 'ACM-FC-003',
+      weight: 1.5,
+      createdAt: now,
+      updatedAt: now,
+    });
+  });
+
+  it('does not set an id, so the database generates it', () => {
+    expect(toProductCreate(input, now)).not.toHaveProperty('id');
+  });
+
+  it.each([
+    [19.99, 1999],
+    [0.29, 29],
+    [4.35, 435],
+    [1299, 129900],
+  ])('turns price %d into %i cents without floating point error', (price, priceCents) => {
+    expect(toProductCreate({ ...input, price }, now).priceCents).toBe(priceCents);
+  });
+});
+
+describe('toProductPatch', () => {
+  it('includes only the fields present, plus updatedAt', () => {
+    expect(toProductPatch({ stock: 7 }, now)).toEqual({ stock: 7, updatedAt: now });
+  });
+
+  it('converts a patched price to cents and drops the decimal field', () => {
+    const patch = toProductPatch({ price: 19.99, title: 'Renamed' }, now);
+
+    expect(patch).toEqual({ priceCents: 1999, title: 'Renamed', updatedAt: now });
+    expect(patch).not.toHaveProperty('price');
+  });
+
+  it('never carries createdAt or id', () => {
+    const patch = toProductPatch({ sku: 'NEW-001', brand: 'Other' }, now);
+
+    expect(patch).not.toHaveProperty('createdAt');
+    expect(patch).not.toHaveProperty('id');
   });
 });

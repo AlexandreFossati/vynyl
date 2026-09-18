@@ -25,6 +25,8 @@ export function createApp({ db, logger }: AppDependencies): Express {
   app.disable('x-powered-by');
 
   app.use(createRequestLogger(logger));
+  // JSON bodies up to the default limit (100 kb); parser errors are answered by errorHandler.
+  app.use(express.json());
   app.use('/api/products', createProductsRouter({ productsHandler }));
   app.use(notFoundHandler);
   app.use(errorHandler);

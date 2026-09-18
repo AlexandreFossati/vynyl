@@ -25,7 +25,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Tarefas** (ordem de execução; detalhes nas seções abaixo)
 - [x] **T1** `scaffold-monorepo` — estrutura vazia + tooling + schema/migration + data set · P0 · checkpoint: 1º commit da estrutura
 - [x] **T2** `api-list-products` — **primeiro endpoint completo** (`GET /api/products`) com toda a fundação e testes · P0 · **checkpoint: define o padrão da API**
-- [ ] **T3** `api-products-remaining` — demais endpoints obrigatórios seguindo o padrão · P0
+- [x] **T3** `api-products-remaining` — demais endpoints obrigatórios seguindo o padrão · P0
 - [ ] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
 - [ ] **T5** `web-foundation-dashboard` — design system mínimo + REST client (retry/backoff) + **primeira página** · P0/P1 · **checkpoint: define o padrão do frontend**
 - [ ] **T6** `web-product-pages` — detalhe, criar, editar, excluir · P0
@@ -124,25 +124,25 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Implementar os demais endpoints obrigatórios (`GET /api/products/:id`, `POST`, `PATCH`, `DELETE`) **seguindo estritamente os padrões aprovados em T2**, com testes.
 
 **Escopo (inclui)**
-- [ ] `GET /api/products/:id` → 200 / 404 `PRODUCT_NOT_FOUND`; `id` inválido → 400
-- [ ] `POST /api/products` → 201 + header `Location`; body validado (schema estrito, `meta` e `id` não aceitos); SKU duplicado → 409 `SKU_CONFLICT`
-- [ ] `PATCH /api/products/:id` → atualização **parcial** (ao menos um campo), atualiza `meta.updatedAt`; 404; 409 se alterar para SKU existente
-- [ ] `DELETE /api/products/:id` → 204 / 404 (hard delete)
-- [ ] Schemas de criação/atualização em `shared`; conversão de preço para centavos **sem erro de ponto flutuante** (ex.: `19.99`)
-- [ ] **Conflito de SKU** tratado pela constraint `unique` do banco (traduzindo o erro em erro de domínio), **não** por "verificar e depois inserir" (evita condição de corrida)
-- [ ] Testes por camada e por rota (felizes, validação, 404, 409, campos extras rejeitados, `updatedAt` mudando, `createdAt` intacto)
+- [x] `GET /api/products/:id` → 200 / 404 `PRODUCT_NOT_FOUND`; `id` inválido → 400
+- [x] `POST /api/products` → 201 + header `Location`; body validado (schema estrito, `meta` e `id` não aceitos); SKU duplicado → 409 `SKU_CONFLICT`
+- [x] `PATCH /api/products/:id` → atualização **parcial** (ao menos um campo), atualiza `meta.updatedAt`; 404; 409 se alterar para SKU existente
+- [x] `DELETE /api/products/:id` → 204 / 404 (hard delete)
+- [x] Schemas de criação/atualização em `shared`; conversão de preço para centavos **sem erro de ponto flutuante** (ex.: `19.99`)
+- [x] **Conflito de SKU** tratado pela constraint `unique` do banco (traduzindo o erro em erro de domínio), **não** por "verificar e depois inserir" (evita condição de corrida)
+- [x] Testes por camada e por rota (felizes, validação, 404, 409, campos extras rejeitados, `updatedAt` mudando, `createdAt` intacto)
 
 **Fora de escopo**: qualquer novo padrão; rate limit, singleflight, health (T4); frontend.
 
 **Critérios de aceite**
-- [ ] Todos os endpoints respondem conforme a seção 7 do guia; regras da seção 6 aplicadas
-- [ ] Nenhum desvio do padrão de T2 sem aprovação
-- [ ] Lint, typecheck e testes passam
-- [ ] O agente exercitou os endpoints com o servidor rodando
+- [x] Todos os endpoints respondem conforme a seção 7 do guia; regras da seção 6 aplicadas
+- [x] Nenhum desvio do padrão de T2 sem aprovação
+- [x] Lint, typecheck e testes passam
+- [x] O agente exercitou os endpoints com o servidor rodando
 
 **Fechamento**
 - [ ] Revisão do usuário: consistência com T2, cobertura de erros
-- [ ] Commit feito: `feat(api): add product get, create, update and delete endpoints`
+- [x] Commit feito: `feat(api): add product get, create, update and delete endpoints`
 - [ ] Anotações para o `AI.md` registradas
 
 ---

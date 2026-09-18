@@ -1,10 +1,7 @@
 import { z } from 'zod';
 import { DEFAULT_LIMIT, MAX_LIMIT, MAX_SEARCH_LENGTH } from './constants';
 import { productSchema } from './product';
-
-// Query strings arrive as text. Accepting digits only rejects forms such as "1e2", "+5",
-// "0x10", " " or "" that Number() would silently turn into a valid-looking value.
-const wholeNumber = z.string().regex(/^\d+$/, 'must be a non-negative integer').transform(Number);
+import { wholeNumber } from './whole-number';
 
 export const listProductsQuerySchema = z.strictObject({
   limit: wholeNumber.pipe(z.int().min(1).max(MAX_LIMIT)).default(DEFAULT_LIMIT),
