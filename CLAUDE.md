@@ -64,7 +64,7 @@ Você atua como **desenvolvedor sênior/especialista full stack** (TypeScript, N
 ## Ambiente e portabilidade
 
 - Desenvolvimento em **Windows**; o avaliador pode usar qualquer SO. Scripts npm **multiplataforma**: sem sintaxe exclusiva de bash/PowerShell; usar utilitários Node (`cross-env`, scripts `.mjs`) quando preciso. Usar `path` do Node, sem separadores fixos.
-- Evitar dependências nativas que exijam compilação no ambiente do avaliador quando houver alternativa. Confirmar que `better-sqlite3` instala em Windows/Linux/macOS com o Node LTS fixado.
+- Evitar dependências nativas que exijam compilação no ambiente do avaliador quando houver alternativa. Confirmar que as dependências nativas (`@libsql/client`, Cypress) instalam **a partir do lockfile** em Windows/Linux/macOS com o Node LTS fixado, sem compilar com `node-gyp` (o `better-sqlite3` v13 foi descartado por isso).
 
 ## Git
 

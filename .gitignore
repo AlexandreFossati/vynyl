@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+.vite/
+
+# Test and coverage output
+coverage/
+apps/web/cypress/screenshots/
+apps/web/cypress/videos/
+
+# Environment (real values are never committed; see .env.example)
+.env
+
+# Local databases (data/products.json stays versioned)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,45 @@
+# Tasks
+
+> Referências: requisitos em `specs/` (`monorepo-workspace`, `product-database-schema`, `product-dataset`); decisões em `design.md` (D1–D16). Idioma: código, comentários e arquivos de configuração em **inglês**; estas tasks em português. Não fazer commit (o usuário revisa e commita). Arquivos e pastas temporárias de verificação ficam no scratchpad, nunca no repositório.
+
+## 1. Fundação do workspace (raiz)
+
+- [x] 1.1 Criar `package.json` da raiz (`private`, `name`, `type: module`, `workspaces` na ordem `packages/shared`, `apps/api`, `apps/web`, `engines.node` = `^22.22.2 || ^24.15.0` (interseção real dos engines das dependências, ver design D1), scripts `lint`, `typecheck`, `test`, `format`, `build`, `dev` conforme D8), `.nvmrc` (`24`), `.gitignore` (D13) e `.env.example` (`NODE_ENV`, `PORT`, `DATABASE_PATH`, `LOG_LEVEL`). Verificar com `git check-ignore -v` que `.env`, `data/app.db`, `data/app.db-wal`, `node_modules` e `dist` são ignorados e que `.env.example` e `data/products.json` **não** são; e que o valor do `.nvmrc` satisfaz o `engines`.
+- [x] 1.2 Criar `tsconfig.base.json` (D5), `eslint.config.js` (D6), `.prettierrc` e `.prettierignore` (D7). Verificar que cada arquivo é sintaticamente válido (`node --check` para JS, parse JSON para os demais) e que o `eslint.config.js` cobre os globs de api, web, shared e arquivos de configuração.
+
+## 2. Pacotes do workspace
+
+- [x] 2.1 Criar `packages/shared` (`package.json` com `name: @vynyl/shared`, `type: module`, `exports` apontando para `./src/index.ts`, scripts `typecheck` e `test`; `tsconfig.json`; `vitest.config.ts` com ambiente `node`; `src/index.ts` placeholder sem lógica). Verificar que os arquivos existem e que o `package.json` é JSON válido com o `exports` esperado.
+- [x] 2.2 Criar `apps/api` (`package.json` `@vynyl/api` com dependência `@vynyl/shared: "*"` e scripts `dev`, `build`, `typecheck`, `test`, `db:generate`; `tsconfig.json`; `vitest.config.ts` ambiente `node`; `tsup.config.ts` com `entry: src/server.ts`, formato ESM, target Node 22 e **`noExternal: ['@vynyl/shared']`**; `drizzle.config.ts`; `src/server.ts` placeholder; pastas `config`, `routes`, `handlers`, `services`, `repositories`, `mappers`, `db`, `middleware`, `lib` com `.gitkeep`). Verificar que a árvore de `apps/api/src` é idêntica à seção 3 do guia.
+- [x] 2.3 Criar `apps/web` (`package.json` `@vynyl/web` com `@vynyl/shared: "*"` e scripts `dev`, `build`, `typecheck`, `test`; `tsconfig.json`; `vite.config.ts` com plugin Svelte e bloco `test` — jsdom, `svelteTesting()`, `setupFiles` (D9); `index.html`; `src/main.ts`; `src/App.svelte` renderizando só um `<h1>` com o título; `src/vite-env.d.ts`; `src/test/setup.ts` importando `@testing-library/jest-dom/vitest`; `cypress.config.ts`, `cypress/tsconfig.json` e `cypress/e2e/.gitkeep`; pastas `components/{atoms,molecules,organisms,templates,pages}`, `lib/api` e `styles` com `.gitkeep`). Verificar que a árvore de `apps/web/src` é idêntica à seção 3 do guia.
+
+## 3. Dependências
+
+- [x] 3.1 Antes de instalar, consultar `npm view <pacote> version peerDependencies engines` de cada dependência de D14 e confirmar compatibilidade (em especial TypeScript `~6.0.3`, Vite 8 com `@sveltejs/vite-plugin-svelte@7`, Vitest 5, ESLint 10, `@types/node@^24`). Instalar por workspace **sem** `--force` nem `--legacy-peer-deps`. Verificar: `npm install` termina com código 0, existe um único `package-lock.json`, `npm ls` não reporta `invalid`/`ERESOLVE`, e as versões instaladas de TypeScript, @libsql/client e Cypress correspondem ao esperado.
+- [x] 3.2 Prova temporária de fiação do `shared`: adicionar um export e um import descartáveis para verificar que `@vynyl/shared` resolve a partir da API (`tsx`, `tsup` com o código do `shared` **embutido** em `dist/server.js`, Vitest) e do web (Vite build, Vitest, `svelte-check`). Verificar cada caminho com o comando real e **reverter todas as alterações temporárias**, confirmando por `git diff`/`git status` que nada dessa prova permanece.
+
+## 4. Verificação do tooling
+
+- [x] 4.1 Executar na raiz `npm run lint`, `npm run typecheck`, `npm test`, `npm run build` e `npm run format`. Verificar código de saída 0 em todos (incluindo `npm test` sem testes) e que rodar `format` uma segunda vez não altera nenhum arquivo; verificar que `dist` foi gerado e continua ignorado.
+- [x] 4.2 Teste descartável do web: criar um teste temporário que renderiza `App.svelte` com Testing Library e assere o título; executar `npm test -w @vynyl/web`, verificar que passa (provando Vitest + jsdom + Svelte 5 + jest-dom) e **remover o arquivo de teste**, confirmando que não permanece no repositório.
+- [x] 4.3 Executar `npm run dev` na raiz (em segundo plano), requisitar o endereço da SPA por HTTP, verificar que a resposta contém o título e que não há erros no output, verificar que o processo da API permanece ocioso sem falhar e encerrar todos os processos, confirmando que nenhuma porta fica ocupada.
+- [x] 4.4 Verificar a detecção de erro de tipo: introduzir temporariamente um erro de tipo em cada pacote e confirmar que `npm run typecheck` falha com código diferente de 0 apontando arquivo/linha; reverter e confirmar que volta a passar.
+
+## 5. Banco de dados
+
+- [x] 5.1 Implementar `apps/api/src/db/schema.ts` conforme D11 (tabela `products`, PK com autoincremento, `sku` único, CHECKs de `price_cents`, `stock` e `weight`, índice `products_category_idx`, defaults ISO 8601 UTC para `created_at`/`updated_at`). Verificar com `npm run typecheck` e `npm run lint`.
+- [x] 5.2 Gerar a migration inicial com `npm run db:generate -w @vynyl/api -- --name init_products`. Verificar que existem `apps/api/drizzle/0000_init_products.sql` e a pasta `meta/` (journal e snapshot), que o SQL contém a tabela, a unicidade, as três CHECKs e o índice, e que nada foi gerado fora de `apps/api/drizzle/`.
+- [x] 5.3 Executar `npm run db:generate -w @vynyl/api` novamente e verificar que informa que não há mudanças e não cria arquivos (requisito "schema e migrations em sincronia").
+- [x] 5.4 Sondar a migration em um SQLite temporário (scratchpad, script descartável com `@libsql/client`): aplicar o SQL a um banco vazio e verificar, cada um com resultado real: colunas e tipos; inserção válida gera `id` crescente; coluna obrigatória ausente é rejeitada; `sku` duplicado é rejeitado; `price_cents` < 0, `stock` < 0 e `weight` <= 0 são rejeitados; valores limite (0, 0, > 0) são aceitos; `pragma index_list` mostra o índice de `category`; timestamps default casam com `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$`; timestamps explícitos são preservados.
+
+## 6. Data set
+
+- [x] 6.1 Criar `data/products.json` com 44 produtos conforme D12 (formato do template, ids 1..44, SKUs únicos, 6 categorias, 4 marcas fictícias, itens 1 e 2 idênticos ao PDF, ao menos um `stock` 0, textos em inglês sem `%` nem `_`) e formatá-lo com o Prettier. Verificar que `JSON.parse` estrito o lê como array.
+- [x] 6.2 Validar o arquivo com um script descartável (scratchpad) que cobre **todos** os requisitos da spec `product-dataset`: chaves exatas, total >= 40, ids sequenciais, SKUs únicos e casando `^[A-Z0-9-]{3,40}$`, limites de cada campo, preço com no máximo 2 casas, textos sem espaços nas extremidades, carimbos no formato ISO com `updatedAt >= createdAt`, itens 1 e 2 iguais ao PDF, >= 5 categorias, >= 3 marcas. Verificar que o script termina com sucesso e imprimir o resumo (contagens).
+
+## 7. Fechamento
+
+- [x] 7.1 Simular clone limpo: copiar a árvore de trabalho **sem** `node_modules`, `dist` e bancos para uma pasta temporária (scratchpad), rodar `npm ci` nela (lockfile como única fonte e cache do npm vazio via `npm_config_cache`, simulando uma máquina limpa) com o Node do `.nvmrc`, verificar que nenhum módulo nativo é compilado (sem `node-gyp` no output) e depois `lint`, `typecheck`, `test` e `build`. Verificar que tudo passa e registrar o tempo do `npm ci` e o tamanho do download do Cypress (insumo para o README, T8).
+- [x] 7.2 Conferir a estrutura final contra a seção 3 do guia e o escopo da T1: listar a árvore (sem `node_modules`/`dist`), executar `git status` e verificar que só existem arquivos previstos, que não há arquivos temporários de verificação, código de aplicação, schemas Zod, seed, config/logger, componentes ou tokens (fora de escopo), e que `README.md`, `PROJECT_GUIDE.md`, `CLAUDE.md` e `DELIVERABLES.md` não foram alterados.
+- [x] 7.3 Executar `openspec validate scaffold-monorepo --strict` e verificar que passa. Refletir o progresso no `OPENSPEC_TASKS.md`: marcar `[x]` somente os itens de escopo e de critérios de aceite da T1 que foram **de fato verificados**, **sem** marcar a T1 no Status geral nem os itens de "Fechamento" (revisão, commit e anotações do AI.md pertencem ao usuário).
+- [x] 7.4 Entregar o relatório final no formato do `CLAUDE.md`: o que foi feito, comandos executados e resultados reais, o que **não** foi verificado (Linux/macOS, Node 22), decisões e premissas, riscos observados (ex.: peso do Cypress) e pontos para revisão do usuário; sugerir a mensagem de commit `chore: scaffold monorepo, database schema and dataset`. **Não fazer commit nem push.**

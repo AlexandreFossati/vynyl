@@ -35,7 +35,7 @@
 | API | **Express** (usar a versão 5) | Em vez de Hono, por preferência do usuário. Express 5 trata erros de handlers async |
 | Frontend | **Svelte + Vite** (Svelte 5, runes) | SPA pura, sem SvelteKit |
 | Banco | **SQLite** | Arquivo local, sem Docker |
-| Acesso a dados | **Drizzle ORM + better-sqlite3** | Schema em TS, migrations versionadas com drizzle-kit |
+| Acesso a dados | **Drizzle ORM + @libsql/client** (SQLite em arquivo local) | Schema em TS, migrations versionadas com drizzle-kit. Driver assíncrono e sem `node-gyp`: o `better-sqlite3` v13 falha no `npm install` a partir do lockfile (ver seção 11.3) |
 | Validação/contrato | **Zod**, schemas compartilhados API ↔ SPA | Pacote `packages/shared` |
 | Estilo | **CSS puro** com estilos escopados do Svelte + design tokens (variáveis CSS) | Sem Tailwind nem lib de componentes |
 | UI | **Clean, simples e mobile-first responsiva** (pré-requisito do frontend) | Ver seção 10.2 |
@@ -120,8 +120,8 @@ Regras: a dependência só desce (handler → service → repository); cada cama
 
 ## 5. Banco de dados
 
-- Arquivo em `./data/app.db` (ignorado no git), caminho configurável por `DATABASE_PATH`.
-- Pragmas: `journal_mode=WAL`, `foreign_keys=ON`, `busy_timeout`.
+- Arquivo em `./data/app.db` (ignorado no git), caminho configurável por `DATABASE_PATH` (convertido para a URL `file:` que o `@libsql/client` recebe; `:memory:` nos testes).
+- Pragmas executados na conexão: `journal_mode=WAL`, `foreign_keys=ON`, `busy_timeout`.
 - **Migrations**: geradas com drizzle-kit, versionadas no repo e aplicadas programaticamente no start.
 - **Seed idempotente**: lê `data/products.json`, valida com Zod, converte preço para centavos e só insere se a tabela estiver vazia.
 - **Tabela `products`**:
@@ -303,9 +303,9 @@ Local: `apps/api/src/lib/singleflight.ts`, usado no `service` nas **leituras** (
 - Resultado compartilhado é o mesmo objeto: tratar como imutável (ou clonar na borda).
 - Testes: N callers concorrentes → loader executa 1 vez; chaves diferentes não colapsam; erro compartilhado; chave liberada após conclusão; nova chamada após conclusão executa de novo.
 
-### 11.3 Limitação conhecida (decisão do usuário: manter better-sqlite3)
+### 11.3 Limitação conhecida: o singleflight não coalesce com SQLite local
 
-O `better-sqlite3` é **síncrono**: cada query termina antes de o event loop atender a próxima request, então em runtime **nunca haverá duas consultas idênticas em voo** e o singleflight não colapsa nada com este driver. Decisão: implementar o componente como padrão, testá-lo com loader assíncrono simulado e **documentar essa limitação no README**. Próximo passo documentado: usar driver assíncrono (ex.: `@libsql/client` com Drizzle) ou executar as leituras em worker threads, e o singleflight passa a ter efeito real. O README deve ser honesto sobre isso.
+Com SQLite em arquivo local a query roda na thread principal, então em runtime **não há duas consultas idênticas em voo ao mesmo tempo** e o singleflight não coalesce nada. Isso vale para o `better-sqlite3` (síncrono) **e também para o `@libsql/client`**, apesar de sua API assíncrona: medido no scratchpad, 5 requests chegando em tarefas distintas do event loop executaram a query 5 vezes (0 coalescidas); só chamadas no mesmo tick (ex.: `Promise.all` dentro de um handler) coalescem. Decisão: implementar o componente como padrão, testá-lo com loader assíncrono simulado e **documentar essa limitação no README**. Próximo passo documentado: um banco acessado pela rede (ex.: PostgreSQL) ou executar as leituras em worker threads; só então o singleflight passa a ter efeito real. O README deve ser honesto sobre isso.
 
 ## 12. Estratégia de testes
 
@@ -328,9 +328,9 @@ A divisão em tarefas/changes do OpenSpec, com escopo, critérios de aceite e or
 
 ## 14. Guia de conteúdo dos documentos finais
 
-**README.md** deve conter: visão geral; pré-requisitos (Node LTS); como rodar (`npm install`, `npm start`, URL) e como testar; scripts; estrutura; **decisões de produto**; **premissas**; **questões em aberto**; **feature extra** (problema, quem usa, por quê, e a limitação do singleflight com better-sqlite3); **o que ficou de fora e próximos passos** (auth, helmet, CI, opcionais, driver assíncrono...).
+**README.md** deve conter: visão geral; pré-requisitos (Node LTS); como rodar (`npm install`, `npm start`, URL) e como testar; scripts; estrutura; **decisões de produto**; **premissas**; **questões em aberto**; **feature extra** (problema, quem usa, por quê, e a limitação do singleflight com SQLite local); **o que ficou de fora e próximos passos** (auth, helmet, CI, opcionais, driver assíncrono...).
 
-**AI.md** deve conter: narrativa do fluxo com IA (planejamento em Q&A → OpenSpec → implementação); ferramentas usadas; o que funcionou bem; o que funcionou mal ou exigiu correção (ex.: a checagem que levou a discutir o singleflight com driver síncrono); lições. Guardar o trace desta sessão de planejamento como evidência.
+**AI.md** deve conter: narrativa do fluxo com IA (planejamento em Q&A → OpenSpec → implementação); ferramentas usadas; o que funcionou bem; o que funcionou mal ou exigiu correção (ex.: a checagem que mostrou que o singleflight não coalesce com SQLite local, nem com driver assíncrono; e a falha do `npm install` do `better-sqlite3` v13 a partir do lockfile, que só apareceu ao instalar de verdade); lições. Guardar o trace desta sessão de planejamento como evidência.
 
 **Entregável de processo**: gravar a tela das sessões de código **ou** exportar o trace completo dos prompts/agentes.
 
@@ -343,5 +343,5 @@ A divisão em tarefas/changes do OpenSpec, com escopo, critérios de aceite e or
 3. **Testes de rota com Supertest**: assunção do arquiteto, não confirmada explicitamente.
 4. **Biblioteca de router do Svelte 5**: validar compatibilidade no design do OpenSpec.
 5. **Build de `shared`/`api` para `npm start`**: definir no design (tsc com project references vs tsup) o mais simples que funcione em Windows e Linux.
-6. **Efeito real do singleflight**: só com driver assíncrono (ver 11.3).
+6. **Efeito real do singleflight**: exigiria banco em rede ou worker threads; o driver assíncrono local não basta (ver 11.3).
 7. **Tamanho do data set**: definido como 40+ (o PDF não especifica).

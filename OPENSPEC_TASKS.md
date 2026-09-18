@@ -23,7 +23,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] Regra de idioma definida: entregáveis em inglês; OpenSpec e planejamento em português (tradução no commit final, feita pelo usuário)
 
 **Tarefas** (ordem de execução; detalhes nas seções abaixo)
-- [ ] **T1** `scaffold-monorepo` — estrutura vazia + tooling + schema/migration + data set · P0 · checkpoint: 1º commit da estrutura
+- [x] **T1** `scaffold-monorepo` — estrutura vazia + tooling + schema/migration + data set · P0 · checkpoint: 1º commit da estrutura
 - [ ] **T2** `api-list-products` — **primeiro endpoint completo** (`GET /api/products`) com toda a fundação e testes · P0 · **checkpoint: define o padrão da API**
 - [ ] **T3** `api-products-remaining` — demais endpoints obrigatórios seguindo o padrão · P0
 - [ ] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
@@ -57,27 +57,27 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Criar o esqueleto do monorepo (npm workspaces `apps/api`, `apps/web`, `packages/shared`) com todo o tooling configurado, as pastas das camadas e do Atomic Design, o schema Drizzle e a migration inicial da tabela `products`, e o data set `data/products.json`. Sem lógica de aplicação.
 
 **Escopo (inclui)**
-- [ ] Raiz: `package.json` (workspaces + scripts multiplataforma `lint`, `typecheck`, `test`, `format`, `build`, `dev`), `.nvmrc` + `engines`, `.gitignore` (inclui `data/*.db`, `.env`, `dist`), `.env.example`, `tsconfig.base.json` (strict), config de ESLint e Prettier
-- [ ] `packages/shared`: `package.json`, `tsconfig`, entrada placeholder
-- [ ] `apps/api`: `package.json`, `tsconfig`, config do Vitest, `drizzle.config.ts`, **pastas vazias das camadas** (`routes`, `handlers`, `services`, `repositories`, `mappers`, `db`, `middleware`, `lib`, `config`) com `.gitkeep`, entrada placeholder
-- [ ] `apps/web`: Vite + Svelte 5 + TS, `svelte-check`, config do Vitest + Testing Library, `index.html`, `main.ts` e um `App.svelte` mínimo que só renderiza o título (prova que a toolchain funciona), **pastas do Atomic Design** (`atoms`, `molecules`, `organisms`, `templates`, `pages`), `lib/api`, `styles`, config do Cypress (`cypress.config.ts` sem specs)
-- [ ] Dependências já decididas no guia (seção 2) instaladas, `package-lock.json` fechado e **instalação validada em Windows** (em especial `better-sqlite3` e Cypress)
-- [ ] **Banco**: `db/schema.ts` com a tabela `products` conforme seção 5 do guia; migration inicial gerada por drizzle-kit e versionada em `apps/api/drizzle/`; script `db:generate`
-- [ ] **Data set**: `data/products.json` no formato do template, **40+ produtos**, JSON válido, `id` sequenciais, SKUs únicos (`^[A-Z0-9-]+$`), valores dentro das regras da seção 6, múltiplas categorias e marcas. Os dois primeiros itens são os do PDF (Large e Medium Flux Capacitor)
+- [x] Raiz: `package.json` (workspaces + scripts multiplataforma `lint`, `typecheck`, `test`, `format`, `build`, `dev`), `.nvmrc` + `engines`, `.gitignore` (inclui `data/*.db`, `.env`, `dist`), `.env.example`, `tsconfig.base.json` (strict), config de ESLint e Prettier
+- [x] `packages/shared`: `package.json`, `tsconfig`, entrada placeholder
+- [x] `apps/api`: `package.json`, `tsconfig`, config do Vitest, `drizzle.config.ts`, **pastas vazias das camadas** (`routes`, `handlers`, `services`, `repositories`, `mappers`, `db`, `middleware`, `lib`, `config`) com `.gitkeep`, entrada placeholder
+- [x] `apps/web`: Vite + Svelte 5 + TS, `svelte-check`, config do Vitest + Testing Library, `index.html`, `main.ts` e um `App.svelte` mínimo que só renderiza o título (prova que a toolchain funciona), **pastas do Atomic Design** (`atoms`, `molecules`, `organisms`, `templates`, `pages`), `lib/api`, `styles`, config do Cypress (`cypress.config.ts` sem specs)
+- [x] Dependências já decididas no guia (seção 2) instaladas, `package-lock.json` fechado e **instalação validada em Windows** (em especial `@libsql/client` e Cypress)
+- [x] **Banco**: `db/schema.ts` com a tabela `products` conforme seção 5 do guia; migration inicial gerada por drizzle-kit e versionada em `apps/api/drizzle/`; script `db:generate`
+- [x] **Data set**: `data/products.json` no formato do template, **40+ produtos**, JSON válido, `id` sequenciais, SKUs únicos (`^[A-Z0-9-]+$`), valores dentro das regras da seção 6, múltiplas categorias e marcas. Os dois primeiros itens são os do PDF (Large e Medium Flux Capacitor)
 
 **Fora de escopo**: app Express, handlers, schemas Zod, seed, config/logger, componentes, tokens de design, CI, README final.
 
 **Critérios de aceite / verificação**
-- [ ] Clone limpo → `npm install` conclui sem erro no Windows, com Node do `.nvmrc`
-- [ ] `npm run lint`, `npm run typecheck` e `npm test` passam (sem testes ainda: o runner não deve falhar por ausência deles)
-- [ ] `npm run dev` no `apps/web` serve a página placeholder
-- [ ] A migration aplicada num SQLite temporário cria a tabela com PK, `sku` unique e índice em `category` (verificar com um comando pontual, sem criar código)
-- [ ] `data/products.json` validado com um comando pontual: JSON válido, 40+ itens, `id` e `sku` únicos, todas as regras da seção 6
-- [ ] Estrutura de pastas idêntica à seção 3 do guia
+- [x] Clone limpo → `npm install` conclui sem erro no Windows, com Node do `.nvmrc` (verificado com `npm ci` a partir do lockfile e caches vazios; ressalva: caminho-base muito longo no Windows quebra a instalação do Cypress)
+- [x] `npm run lint`, `npm run typecheck` e `npm test` passam (sem testes ainda: o runner não deve falhar por ausência deles)
+- [x] `npm run dev` no `apps/web` serve a página placeholder
+- [x] A migration aplicada num SQLite temporário cria a tabela com PK, `sku` unique e índice em `category` (verificar com um comando pontual, sem criar código)
+- [x] `data/products.json` validado com um comando pontual: JSON válido, 40+ itens, `id` e `sku` únicos, todas as regras da seção 6
+- [x] Estrutura de pastas idêntica à seção 3 do guia
 
 **Fechamento**
 - [ ] Revisão do usuário: estrutura de pastas, scripts, dependências instaladas, schema/migration, qualidade do data set
-- [ ] Commit feito: `chore: scaffold monorepo, database schema and dataset`
+- [x] Commit feito: `chore: scaffold monorepo, database schema and dataset`
 - [ ] Anotações para o `AI.md` registradas
 
 ---
@@ -90,7 +90,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [ ] **`packages/shared`**: schema do produto (resposta), schema de entrada usado para validar o data set no seed, schema da query de listagem (`limit` padrão 30, máx. 100, `offset` padrão 0, `q` opcional com trim), tipo da resposta paginada `{ data, total, limit, offset }`, enum de códigos de erro e schema do envelope de erro, constantes (limites)
 - [ ] **Config**: env validada com Zod (porta, caminho do DB, nível de log); falha rápida no boot
 - [ ] **Logger**: pino + request id (`pino-http`), sem dados sensíveis
-- [ ] **DB**: conexão better-sqlite3 com pragmas (WAL, foreign keys, busy timeout); migrations aplicadas programaticamente no start; **seed idempotente** a partir de `data/products.json` (valida com Zod, converte preço para centavos, só insere se a tabela estiver vazia)
+- [ ] **DB**: conexão `@libsql/client` via `drizzle-orm/libsql` (URL `file:`) com pragmas (WAL, foreign keys, busy timeout); migrations aplicadas programaticamente no start; **seed idempotente** a partir de `data/products.json` (valida com Zod, converte preço para centavos, só insere se a tabela estiver vazia)
 - [ ] **Camadas** (uma por arquivo, seguindo a seção 4): `routes`, `handlers`, `services`, `repositories` (consulta com `LIKE` escapado em `title`/`description`, contagem total, ordenação `id ASC`), `mappers` (linha ↔ DTO, centavos ↔ decimal, `meta`)
 - [ ] **Middleware**: `validate` (Zod para query/params/body), **error handler central** + `AppError` (códigos da seção 7), 404 para rota inexistente
 - [ ] `createApp(deps)` e `server.ts` (listen). Sem graceful shutdown ainda (T4)
@@ -157,7 +157,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [ ] **Graceful shutdown**: SIGINT/SIGTERM param de aceitar conexões, aguardam as em andamento (com timeout), fecham servidor e DB
 - [ ] **Singleflight** (`lib/singleflight.ts`) conforme seção 11.2 do guia, aplicado no **service** às leituras (`get by id` e `list`), nunca às escritas; sem cache
 - [ ] Testes: rate limit (janela pequena via config), health (ok e falha do DB), shutdown (lógica testável), singleflight (N callers concorrentes → loader executa 1 vez; chaves diferentes não colapsam; erro compartilhado; chave liberada após concluir; nova chamada após concluir executa de novo; loader assíncrono simulado)
-- [ ] **Limitação documentada** no código e no relatório (guia, seção 11.3): better-sqlite3 é síncrono, então em runtime não haverá coalescência real. O agente **não deve** alegar que o singleflight reduz consultas com este driver
+- [ ] **Limitação documentada** no código e no relatório (guia, seção 11.3): com SQLite local (inclusive via `@libsql/client`) não há coalescência real em runtime. O agente **não deve** alegar que o singleflight reduz consultas com este banco
 
 **Fora de escopo**: trocar de driver, cache, métricas, helmet.
 
@@ -262,7 +262,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Escrever `README.md` e `AI.md` finais e validar tudo em clone limpo.
 
 **Escopo (inclui)**
-- [ ] **README.md** conforme seção 14 do guia: visão geral, requisitos (Node LTS), como rodar/testar, scripts, estrutura, decisões de produto, premissas, questões em aberto, **feature extra** (problema, quem usa, por quê, e a limitação do singleflight com better-sqlite3), o que ficou de fora e próximos passos (auth, helmet/CORS, GitHub Actions, opcionais, driver assíncrono)
+- [ ] **README.md** conforme seção 14 do guia: visão geral, requisitos (Node LTS), como rodar/testar, scripts, estrutura, decisões de produto, premissas, questões em aberto, **feature extra** (problema, quem usa, por quê, e a limitação do singleflight com SQLite local), o que ficou de fora e próximos passos (auth, helmet/CORS, GitHub Actions, opcionais, banco em rede para o singleflight ter efeito real)
 - [ ] **AI.md**: narrativa do fluxo (planejamento em Q&A → guia → OpenSpec → tarefas com checkpoints), ferramentas, o que funcionou bem/mal, lições; alimentado pelas anotações feitas ao fim de cada tarefa
 - [ ] **Verificação final em clone limpo**: seguir o próprio README passo a passo; conferir o `DELIVERABLES.md` item a item
 

@@ -1,0 +1,662 @@
+[
+  {
+    "id": 1,
+    "title": "Large Flux Capacitor",
+    "description": "The Large Flux Capacitor provides the maximum motive force for your inter-dimensional aluminum automobile.",
+    "category": "automotive",
+    "price": 9.99,
+    "stock": 42,
+    "brand": "ACME",
+    "sku": "ACM-FC-001",
+    "weight": 4,
+    "meta": {
+      "createdAt": "2025-04-30T09:41:02.053Z",
+      "updatedAt": "2025-04-30T09:41:02.053Z"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Medium Flux Capacitor",
+    "description": "The Medium Flux Capacitor is a great budget option if you don't need to travel far in your inter-dimensional aluminum automobile.",
+    "category": "automotive",
+    "price": 5.99,
+    "stock": 42,
+    "brand": "ACME",
+    "sku": "ACM-FC-002",
+    "weight": 3.25,
+    "meta": {
+      "createdAt": "2025-04-29T19:36:02.053Z",
+      "updatedAt": "2025-04-30T09:41:02.053Z"
+    }
+  },
+  {
+    "id": 3,
+    "title": "Small Flux Capacitor",
+    "description": "The Small Flux Capacitor is an entry-level capacitor for short hops in your inter-dimensional aluminum automobile.",
+    "category": "automotive",
+    "price": 3.49,
+    "stock": 120,
+    "brand": "ACME",
+    "sku": "ACM-FC-003",
+    "weight": 1.5,
+    "meta": {
+      "createdAt": "2025-01-10T08:15:30.120Z",
+      "updatedAt": "2025-01-10T08:15:30.120Z"
+    }
+  },
+  {
+    "id": 4,
+    "title": "Aluminum Chassis Frame",
+    "description": "A lightweight aluminum chassis frame engineered to hold a flux capacitor steady during inter-dimensional travel.",
+    "category": "automotive",
+    "price": 249.99,
+    "stock": 12,
+    "brand": "ACME",
+    "sku": "ACM-CH-001",
+    "weight": 38.5,
+    "meta": {
+      "createdAt": "2025-01-12T15:27:38.039Z",
+      "updatedAt": "2025-01-13T16:04:38.039Z"
+    }
+  },
+  {
+    "id": 5,
+    "title": "Inter-Dimensional Steering Wheel",
+    "description": "A leather-wrapped steering wheel with a built-in dimensional heading indicator.",
+    "category": "automotive",
+    "price": 74.5,
+    "stock": 30,
+    "brand": "ACME",
+    "sku": "ACM-SW-001",
+    "weight": 2.2,
+    "meta": {
+      "createdAt": "2025-01-14T22:39:45.958Z",
+      "updatedAt": "2025-01-16T23:53:45.958Z"
+    }
+  },
+  {
+    "id": 6,
+    "title": "Turbo Warp Injector",
+    "description": "Injects a precise burst of warp energy into the flux drive for faster jumps.",
+    "category": "automotive",
+    "price": 129,
+    "stock": 18,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-TW-001",
+    "weight": 3.75,
+    "meta": {
+      "createdAt": "2025-01-17T05:51:53.877Z",
+      "updatedAt": "2025-01-20T07:42:53.877Z"
+    }
+  },
+  {
+    "id": 7,
+    "title": "Quantum Fuel Filter",
+    "description": "Filters stray particles from the quantum fuel line so your flux capacitor runs clean.",
+    "category": "automotive",
+    "price": 19.99,
+    "stock": 200,
+    "brand": "Helix Works",
+    "sku": "HLX-FF-001",
+    "weight": 0.4,
+    "meta": {
+      "createdAt": "2025-01-19T13:04:01.796Z",
+      "updatedAt": "2025-01-23T15:32:01.796Z"
+    }
+  },
+  {
+    "id": 8,
+    "title": "Anti-Gravity Wheel Set",
+    "description": "A set of four wheels that hover a few centimeters above any dimensional surface.",
+    "category": "automotive",
+    "price": 399.99,
+    "stock": 8,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-AG-001",
+    "weight": 22,
+    "meta": {
+      "createdAt": "2025-01-21T20:16:09.715Z",
+      "updatedAt": "2025-01-21T23:21:09.715Z"
+    }
+  },
+  {
+    "id": 9,
+    "title": "Dimensional Rear-View Mirror",
+    "description": "Shows what is behind you in this dimension and in the one you just left.",
+    "category": "automotive",
+    "price": 34.95,
+    "stock": 45,
+    "brand": "ACME",
+    "sku": "ACM-RM-001",
+    "weight": 0.9,
+    "meta": {
+      "createdAt": "2025-01-24T03:28:17.634Z",
+      "updatedAt": "2025-01-25T07:10:17.634Z"
+    }
+  },
+  {
+    "id": 10,
+    "title": "Chrono Dashboard Display",
+    "description": "A dashboard display that tracks your position across time and dimensions.",
+    "category": "automotive",
+    "price": 189,
+    "stock": 15,
+    "brand": "Helix Works",
+    "sku": "HLX-DD-001",
+    "weight": 1.8,
+    "meta": {
+      "createdAt": "2025-01-26T10:40:25.553Z",
+      "updatedAt": "2025-01-28T14:59:25.553Z"
+    }
+  },
+  {
+    "id": 11,
+    "title": "Portable Portal Generator",
+    "description": "Opens a stable, human-sized portal anywhere with a level surface and a power source.",
+    "category": "dimensional-travel",
+    "price": 899.99,
+    "stock": 5,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-PG-001",
+    "weight": 12.4,
+    "meta": {
+      "createdAt": "2025-01-28T17:52:33.472Z",
+      "updatedAt": "2025-01-31T22:48:33.472Z"
+    }
+  },
+  {
+    "id": 12,
+    "title": "Rift Stabilizer Module",
+    "description": "Keeps a dimensional rift open long enough for a safe crossing, powered by a compact flux capacitor.",
+    "category": "dimensional-travel",
+    "price": 349.5,
+    "stock": 9,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-RS-001",
+    "weight": 6.1,
+    "meta": {
+      "createdAt": "2025-01-31T01:04:41.391Z",
+      "updatedAt": "2025-02-04T06:37:41.391Z"
+    }
+  },
+  {
+    "id": 13,
+    "title": "Dimensional Compass",
+    "description": "Always points toward the nearest stable dimension.",
+    "category": "dimensional-travel",
+    "price": 24.99,
+    "stock": 75,
+    "brand": "ACME",
+    "sku": "ACM-DC-001",
+    "weight": 0.3,
+    "meta": {
+      "createdAt": "2025-02-02T08:16:49.310Z",
+      "updatedAt": "2025-02-02T14:26:49.310Z"
+    }
+  },
+  {
+    "id": 14,
+    "title": "Wormhole Anchor Kit",
+    "description": "Anchors both ends of a wormhole so it does not drift during transit.",
+    "category": "dimensional-travel",
+    "price": 159,
+    "stock": 14,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-WA-001",
+    "weight": 8.8,
+    "meta": {
+      "createdAt": "2025-02-04T15:28:57.229Z",
+      "updatedAt": "2025-02-05T22:15:57.229Z"
+    }
+  },
+  {
+    "id": 15,
+    "title": "Reality Anchor Tether",
+    "description": "A braided tether that keeps travelers tied to their home dimension.",
+    "category": "dimensional-travel",
+    "price": 44.25,
+    "stock": 60,
+    "brand": "Helix Works",
+    "sku": "HLX-RT-001",
+    "weight": 1.1,
+    "meta": {
+      "createdAt": "2025-02-06T22:41:05.148Z",
+      "updatedAt": "2025-02-09T06:05:05.148Z"
+    }
+  },
+  {
+    "id": 16,
+    "title": "Hyperspace Route Planner",
+    "description": "Plans the shortest hyperspace route between two dimensions and avoids known rifts.",
+    "category": "dimensional-travel",
+    "price": 119.99,
+    "stock": 22,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-HR-001",
+    "weight": 0.7,
+    "meta": {
+      "createdAt": "2025-02-09T05:53:13.067Z",
+      "updatedAt": "2025-02-12T13:54:13.067Z"
+    }
+  },
+  {
+    "id": 17,
+    "title": "Portal Frame Extension",
+    "description": "Widens the frame of a portable portal to fit an inter-dimensional aluminum automobile.",
+    "category": "dimensional-travel",
+    "price": 64,
+    "stock": 35,
+    "brand": "ACME",
+    "sku": "ACM-PF-001",
+    "weight": 5.5,
+    "meta": {
+      "createdAt": "2025-02-11T13:05:20.986Z",
+      "updatedAt": "2025-02-15T21:43:20.986Z"
+    }
+  },
+  {
+    "id": 18,
+    "title": "Temporal Waypoint Beacon",
+    "description": "Marks a point in time so you can find your way back to it.",
+    "category": "dimensional-travel",
+    "price": 79.9,
+    "stock": 27,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-TB-001",
+    "weight": 1.6,
+    "meta": {
+      "createdAt": "2025-02-13T20:17:28.905Z",
+      "updatedAt": "2025-02-14T05:32:28.905Z"
+    }
+  },
+  {
+    "id": 19,
+    "title": "Flux Capacitor Power Cell",
+    "description": "A replacement power cell for any Large or Medium Flux Capacitor.",
+    "category": "energy",
+    "price": 59.99,
+    "stock": 90,
+    "brand": "ACME",
+    "sku": "ACM-PC-001",
+    "weight": 2.4,
+    "meta": {
+      "createdAt": "2025-02-16T03:29:36.824Z",
+      "updatedAt": "2025-02-17T13:21:36.824Z"
+    }
+  },
+  {
+    "id": 20,
+    "title": "Zero-Point Energy Core",
+    "description": "Draws unlimited energy from the vacuum, enough to run a dimensional portal for a week.",
+    "category": "energy",
+    "price": 1299,
+    "stock": 3,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-ZC-001",
+    "weight": 15.2,
+    "meta": {
+      "createdAt": "2025-02-18T10:41:44.743Z",
+      "updatedAt": "2025-02-20T11:10:44.743Z"
+    }
+  },
+  {
+    "id": 21,
+    "title": "Solar Sail Charger",
+    "description": "Unfolds a thin solar sail to recharge a flux capacitor in daylight.",
+    "category": "energy",
+    "price": 89.95,
+    "stock": 40,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-SC-001",
+    "weight": 3.3,
+    "meta": {
+      "createdAt": "2025-02-20T17:53:52.662Z",
+      "updatedAt": "2025-02-23T18:59:52.662Z"
+    }
+  },
+  {
+    "id": 22,
+    "title": "Plasma Battery Pack",
+    "description": "A dense plasma battery pack with a stable output for long trips.",
+    "category": "energy",
+    "price": 149.5,
+    "stock": 25,
+    "brand": "Helix Works",
+    "sku": "HLX-BP-001",
+    "weight": 4.6,
+    "meta": {
+      "createdAt": "2025-02-23T01:06:00.581Z",
+      "updatedAt": "2025-02-27T02:49:00.581Z"
+    }
+  },
+  {
+    "id": 23,
+    "title": "Fusion Coil Regulator",
+    "description": "Regulates the current between the fusion coil and the flux capacitor.",
+    "category": "energy",
+    "price": 219,
+    "stock": 11,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-FR-001",
+    "weight": 5.9,
+    "meta": {
+      "createdAt": "2025-02-25T08:18:08.500Z",
+      "updatedAt": "2025-02-25T10:38:08.500Z"
+    }
+  },
+  {
+    "id": 24,
+    "title": "Capacitor Bank Array",
+    "description": "Links several capacitors into one large bank for heavy dimensional loads.",
+    "category": "energy",
+    "price": 279.99,
+    "stock": 7,
+    "brand": "ACME",
+    "sku": "ACM-CB-001",
+    "weight": 11.3,
+    "meta": {
+      "createdAt": "2025-02-27T15:30:16.419Z",
+      "updatedAt": "2025-02-28T18:27:16.419Z"
+    }
+  },
+  {
+    "id": 25,
+    "title": "Kinetic Energy Harvester",
+    "description": "Turns the vibration of the road into a trickle of clean energy.",
+    "category": "energy",
+    "price": 64.5,
+    "stock": 50,
+    "brand": "Helix Works",
+    "sku": "HLX-KH-001",
+    "weight": 2.9,
+    "meta": {
+      "createdAt": "2025-03-01T22:42:24.338Z",
+      "updatedAt": "2025-03-04T02:16:24.338Z"
+    }
+  },
+  {
+    "id": 26,
+    "title": "Micro Reactor Fuse",
+    "description": "A replacement fuse for the micro reactor. Currently out of stock.",
+    "category": "energy",
+    "price": 12.75,
+    "stock": 0,
+    "brand": "ACME",
+    "sku": "ACM-RF-001",
+    "weight": 0.1,
+    "meta": {
+      "createdAt": "2025-03-04T05:54:32.257Z",
+      "updatedAt": "2025-03-07T10:05:32.257Z"
+    }
+  },
+  {
+    "id": 27,
+    "title": "Sonic Wrench",
+    "description": "Loosens stubborn bolts using focused sound waves instead of force.",
+    "category": "tools",
+    "price": 39.99,
+    "stock": 85,
+    "brand": "ACME",
+    "sku": "ACM-WR-001",
+    "weight": 0.8,
+    "meta": {
+      "createdAt": "2025-03-06T13:06:40.176Z",
+      "updatedAt": "2025-03-10T17:54:40.176Z"
+    }
+  },
+  {
+    "id": 28,
+    "title": "Dimensional Screwdriver Set",
+    "description": "Twelve screwdriver bits that fit fasteners from any dimension.",
+    "category": "tools",
+    "price": 27.5,
+    "stock": 110,
+    "brand": "Helix Works",
+    "sku": "HLX-SD-001",
+    "weight": 0.6,
+    "meta": {
+      "createdAt": "2025-03-08T20:18:48.095Z",
+      "updatedAt": "2025-03-09T01:43:48.095Z"
+    }
+  },
+  {
+    "id": 29,
+    "title": "Precision Flux Calibrator",
+    "description": "Calibrates a flux capacitor to within a thousandth of a jigawatt.",
+    "category": "tools",
+    "price": 199.99,
+    "stock": 16,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-FC-001",
+    "weight": 1.4,
+    "meta": {
+      "createdAt": "2025-03-11T03:30:56.014Z",
+      "updatedAt": "2025-03-12T09:32:56.014Z"
+    }
+  },
+  {
+    "id": 30,
+    "title": "Aluminum Rivet Gun",
+    "description": "Fastens aluminum body panels quickly and leaves a clean finish.",
+    "category": "tools",
+    "price": 54.95,
+    "stock": 33,
+    "brand": "ACME",
+    "sku": "ACM-RG-001",
+    "weight": 2.1,
+    "meta": {
+      "createdAt": "2025-03-13T10:43:03.933Z",
+      "updatedAt": "2025-03-15T17:22:03.933Z"
+    }
+  },
+  {
+    "id": 31,
+    "title": "Magnetic Parts Tray",
+    "description": "Keeps small parts in place, even in zero gravity.",
+    "category": "tools",
+    "price": 9.99,
+    "stock": 250,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-MT-001",
+    "weight": 0.35,
+    "meta": {
+      "createdAt": "2025-03-15T17:55:11.852Z",
+      "updatedAt": "2025-03-19T01:11:11.852Z"
+    }
+  },
+  {
+    "id": 32,
+    "title": "Diagnostic Scanner Pro",
+    "description": "Reads fault codes from flux drives and dimensional engines.",
+    "category": "tools",
+    "price": 169,
+    "stock": 19,
+    "brand": "Helix Works",
+    "sku": "HLX-DS-001",
+    "weight": 0.95,
+    "meta": {
+      "createdAt": "2025-03-18T01:07:19.771Z",
+      "updatedAt": "2025-03-22T09:00:19.771Z"
+    }
+  },
+  {
+    "id": 33,
+    "title": "Torque Multiplier",
+    "description": "Multiplies the torque of any hand wrench for heavy dimensional hardware.",
+    "category": "tools",
+    "price": 89,
+    "stock": 21,
+    "brand": "ACME",
+    "sku": "ACM-TM-001",
+    "weight": 4.2,
+    "meta": {
+      "createdAt": "2025-03-20T08:19:27.690Z",
+      "updatedAt": "2025-03-20T16:49:27.690Z"
+    }
+  },
+  {
+    "id": 34,
+    "title": "Subspace Radio",
+    "description": "Sends and receives voice across dimensions on a subspace channel.",
+    "category": "communication",
+    "price": 129.99,
+    "stock": 24,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-SR-001",
+    "weight": 1.9,
+    "meta": {
+      "createdAt": "2025-03-22T15:31:35.609Z",
+      "updatedAt": "2025-03-24T00:38:35.609Z"
+    }
+  },
+  {
+    "id": 35,
+    "title": "Chrono Messenger Pager",
+    "description": "Delivers short messages to a recipient at a chosen point in time.",
+    "category": "communication",
+    "price": 49,
+    "stock": 55,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-CM-001",
+    "weight": 0.2,
+    "meta": {
+      "createdAt": "2025-03-24T22:43:43.528Z",
+      "updatedAt": "2025-03-27T08:27:43.528Z"
+    }
+  },
+  {
+    "id": 36,
+    "title": "Interdimensional Antenna",
+    "description": "A folding antenna that improves reception between dimensions.",
+    "category": "communication",
+    "price": 74.99,
+    "stock": 31,
+    "brand": "ACME",
+    "sku": "ACM-IA-001",
+    "weight": 1.2,
+    "meta": {
+      "createdAt": "2025-03-27T05:55:51.447Z",
+      "updatedAt": "2025-03-30T06:16:51.447Z"
+    }
+  },
+  {
+    "id": 37,
+    "title": "Signal Booster Module",
+    "description": "Boosts weak signals so calls survive a dimensional crossing.",
+    "category": "communication",
+    "price": 38.9,
+    "stock": 65,
+    "brand": "Helix Works",
+    "sku": "HLX-SB-001",
+    "weight": 0.5,
+    "meta": {
+      "createdAt": "2025-03-29T13:07:59.366Z",
+      "updatedAt": "2025-04-02T14:05:59.366Z"
+    }
+  },
+  {
+    "id": 38,
+    "title": "Quantum Intercom Set",
+    "description": "A pair of intercoms linked by quantum entanglement, with no delay.",
+    "category": "communication",
+    "price": 99.5,
+    "stock": 18,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-QI-001",
+    "weight": 1.3,
+    "meta": {
+      "createdAt": "2025-03-31T20:20:07.285Z",
+      "updatedAt": "2025-03-31T21:55:07.285Z"
+    }
+  },
+  {
+    "id": 39,
+    "title": "Holographic Comms Panel",
+    "description": "Projects the caller as a life-size hologram inside the cabin.",
+    "category": "communication",
+    "price": 259,
+    "stock": 6,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-HC-001",
+    "weight": 3.4,
+    "meta": {
+      "createdAt": "2025-04-03T03:32:15.204Z",
+      "updatedAt": "2025-04-04T05:44:15.204Z"
+    }
+  },
+  {
+    "id": 40,
+    "title": "Temporal Seatbelt",
+    "description": "Holds passengers in place during time jumps and sudden stops.",
+    "category": "safety",
+    "price": 29.99,
+    "stock": 140,
+    "brand": "ACME",
+    "sku": "ACM-TS-001",
+    "weight": 0.9,
+    "meta": {
+      "createdAt": "2025-04-05T10:44:23.123Z",
+      "updatedAt": "2025-04-07T13:33:23.123Z"
+    }
+  },
+  {
+    "id": 41,
+    "title": "Reality Airbag System",
+    "description": "Deploys in a fraction of a second, even when the dimension shifts mid crash.",
+    "category": "safety",
+    "price": 349,
+    "stock": 10,
+    "brand": "Helix Works",
+    "sku": "HLX-AB-001",
+    "weight": 7.2,
+    "meta": {
+      "createdAt": "2025-04-07T17:56:31.042Z",
+      "updatedAt": "2025-04-10T21:22:31.042Z"
+    }
+  },
+  {
+    "id": 42,
+    "title": "Shielded Cabin Visor",
+    "description": "Protects your eyes from flux capacitor glare and portal flashes.",
+    "category": "safety",
+    "price": 84.99,
+    "stock": 3,
+    "brand": "Orbital Foundry",
+    "sku": "ORB-CV-001",
+    "weight": 1.7,
+    "meta": {
+      "createdAt": "2025-04-10T01:08:38.961Z",
+      "updatedAt": "2025-04-14T05:11:38.961Z"
+    }
+  },
+  {
+    "id": 43,
+    "title": "Emergency Rift Beacon",
+    "description": "Broadcasts your location if a dimensional rift collapses around you.",
+    "category": "safety",
+    "price": 59.5,
+    "stock": 42,
+    "brand": "Vortex Dynamics",
+    "sku": "VOR-ER-001",
+    "weight": 1.05,
+    "meta": {
+      "createdAt": "2025-04-12T08:20:46.880Z",
+      "updatedAt": "2025-04-12T13:00:46.880Z"
+    }
+  },
+  {
+    "id": 44,
+    "title": "Impact Dampener Helmet",
+    "description": "Absorbs impact and dampens the shock of a rough dimensional landing.",
+    "category": "safety",
+    "price": 139.99,
+    "stock": 13,
+    "brand": "ACME",
+    "sku": "ACM-IH-001",
+    "weight": 1.6,
+    "meta": {
+      "createdAt": "2025-04-14T15:32:54.799Z",
+      "updatedAt": "2025-04-15T20:49:54.799Z"
+    }
+  }
+]

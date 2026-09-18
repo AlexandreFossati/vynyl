@@ -17,7 +17,7 @@ context: |
   - CLAUDE.md -> agent profile (senior engineer), rules and Definition of Done.
 
   Stack summary: TypeScript, npm workspaces monorepo (apps/api, apps/web, packages/shared),
-  Express 5, Drizzle ORM + better-sqlite3 (SQLite), Zod (schemas shared by API and SPA),
+  Express 5, Drizzle ORM + @libsql/client (SQLite), Zod (schemas shared by API and SPA),
   Svelte 5 + Vite (Atomic Design), plain CSS with design tokens, Vitest, Cypress, pino.
   API layers: routes -> handlers -> services -> repositories (+ mappers).
   Run model: `npm start` only (no Docker), Node LTS pinned, cross-platform scripts (dev on Windows).
