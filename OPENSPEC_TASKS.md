@@ -31,7 +31,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] **T6** `web-product-pages` — detalhe, criar, editar, excluir · P0
 - [ ] **T7** `e2e-and-serving` — Express serve a SPA, `npm start`, Cypress · P0
 - [ ] **T8** `docs-readme-ai` — README.md e AI.md finais, verificação em clone limpo · P0
-- [ ] **T9** `optional-endpoints` — ordenação e categorias · P2 · só se sobrar tempo
+- [ ] ~~**T9** `optional-endpoints` — ordenação e categorias · P2 · só se sobrar tempo~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
 
 **Padrões aprovados** (seção no fim deste arquivo)
 - [x] Padrões da API registrados (após a revisão de T2)
@@ -227,8 +227,8 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 
 **Fechamento**
 - [x] Revisão do usuário
-- [ ] Commit feito: `feat(web): add product detail, create, edit and delete flows`
-- [ ] Anotações para o `AI.md` registradas
+- [x] Commit feito: `feat(web): add product detail, create, edit and delete flows`
+- [x] Anotações para o `AI.md` registradas
 
 ---
 
@@ -239,15 +239,15 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Escopo (inclui)**
 - [ ] Express serve `apps/web/dist` com fallback para `index.html` (exceto `/api` e `/health`)
 - [ ] **`npm start`**: build de `shared`, `api` e `web`, migrations, seed idempotente e servidor em **http://localhost:3000**. `npm run dev` (API com reload + Vite com proxy). Forma de build mais simples e multiplataforma escolhida e documentada no design (guia, seção 15, item 5)
-- [ ] **Cypress e2e** contra o servidor real com DB temporário (`DATABASE_PATH`): listar, buscar, paginar, criar, editar, excluir, erro de validação/SKU duplicado
-- [ ] **1 smoke em viewport mobile**
-- [ ] Script `test:e2e` que sobe e derruba o servidor de forma multiplataforma
+- [ ] ~~**Cypress e2e** contra o servidor real com DB temporário (`DATABASE_PATH`): listar, buscar, paginar, criar, editar, excluir, erro de validação/SKU duplicado~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
+- [ ] ~~**1 smoke em viewport mobile**~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
+- [ ] ~~Script `test:e2e` que sobe e derruba o servidor de forma multiplataforma~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
 
 **Fora de escopo**: CI (ver guia, seção 15), Docker.
 
 **Critérios de aceite**
 - [ ] Em clone limpo, `npm install` + `npm start` abre a aplicação funcional em `localhost:3000` no Windows
-- [ ] `npm run test:e2e` passa
+- [ ] ~~`npm run test:e2e` passa~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
 - [ ] Lint, typecheck e testes verdes
 
 **Fechamento**
@@ -279,6 +279,8 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 ---
 
 ## T9 — `optional-endpoints` (P2, só se sobrar tempo)
+
+> **Descartada pelo usuário (sem tempo):** não implementar; o README deve listar ordenação e categorias como não feitas.
 
 **Descrição do change**: Implementar os endpoints opcionais do PDF, seguindo os padrões aprovados. Pode ser dividido em dois changes.
 
