@@ -12,6 +12,7 @@
 4. **Comunicação é critério de avaliação**: README, AI.md e decisões de produto precisam ser claros. Registrar decisões e limitações ao longo do caminho, não só no final.
 5. **Onboarding**: tratar o repo como se outros devs fossem usá-lo. `git clone` → `npm install` → `npm start` deve funcionar sem passos ocultos.
 6. **O agente segue o perfil definido no `CLAUDE.md`**: desenvolvedor sênior/especialista, com boas práticas, segurança e disciplina de escopo em toda implementação.
+7. **Idioma**: entregáveis do projeto (código, comentários, mensagens, commits, README.md, AI.md) **sempre em inglês**; artefatos do OpenSpec e documentos de planejamento em português durante o desenvolvimento, traduzidos pelo usuário em um commit final exclusivo. Detalhes no `CLAUDE.md`.
 
 ## 1. Resumo do que o PDF exige
 

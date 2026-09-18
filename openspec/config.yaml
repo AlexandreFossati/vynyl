@@ -2,12 +2,39 @@ schema: spec-driven
 
 # Project context (optional)
 # This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Project: Vynyl fullstack technical assessment (product catalog: SPA + REST API).
+  Scope is closed: implement only what the assignment asks. The extra feature
+  (resilience: REST client retry/backoff + backend singleflight) is required by the assignment.
+  Quality target: production ready within that scope.
+
+  REQUIRED READING before creating any artifact:
+  - PROJECT_GUIDE.md  -> source of truth for all technical decisions (stack, architecture,
+    API contract, UI, extra feature, testing). It wins over any assumption.
+  - OPENSPEC_TASKS.md -> roadmap. The current task is the FIRST UNCHECKED task in "Status geral".
+    Each OpenSpec change maps to exactly one task (T1..T9); scope, out-of-scope and acceptance
+    criteria of that task must be reflected in the artifacts. Read "Padroes aprovados" too.
+  - CLAUDE.md -> agent profile (senior engineer), rules and Definition of Done.
+
+  Stack summary: TypeScript, npm workspaces monorepo (apps/api, apps/web, packages/shared),
+  Express 5, Drizzle ORM + better-sqlite3 (SQLite), Zod (schemas shared by API and SPA),
+  Svelte 5 + Vite (Atomic Design), plain CSS with design tokens, Vitest, Cypress, pino.
+  API layers: routes -> handlers -> services -> repositories (+ mappers).
+  Run model: `npm start` only (no Docker), Node LTS pinned, cross-platform scripts (dev on Windows).
+
+  Working rules: do not add features or dependencies beyond the current task; do not commit or push
+  (the user reviews the diff and commits); do not change decisions in PROJECT_GUIDE.md without approval;
+  ask when something is ambiguous instead of choosing silently. Commits follow Conventional Commits.
+
+  LANGUAGE RULES (important):
+  - OpenSpec artifacts (proposal, design, specs, tasks) and all conversation with the user: write in
+    Brazilian Portuguese (pt-BR). Keep technical terms, identifiers, file paths, HTTP codes and
+    error codes in their original form (English).
+  - Project deliverables: ALWAYS write in English. This covers source code, identifiers, comments,
+    test names, log and error messages, commit messages, README.md and AI.md.
+  - The planning docs (PROJECT_GUIDE.md, OPENSPEC_TASKS.md, CLAUDE.md, DELIVERABLES.md, openspec/)
+    stay in Portuguese for now; the user will translate them to English in a dedicated final commit.
+    Do NOT translate them yourself and do not touch them unless the current task requires it.
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
