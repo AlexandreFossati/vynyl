@@ -200,7 +200,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] Revisão do usuário (**checkpoint importante**): **estética**, granularidade dos componentes, organização Atomic Design, estilo dos testes
 - [x] Padrões do frontend registrados na seção "Padrões aprovados"
 - [x] Commit feito: `feat(web): add design foundation, http client and product dashboard`
-- [ ] Anotações para o `AI.md` registradas
+- [x] Anotações para o `AI.md` registradas
 
 ---
 
