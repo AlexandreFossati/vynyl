@@ -1,5 +1,8 @@
 <script lang="ts">
   import type { Product } from '@vynyl/shared';
+  import { formatCategory } from '../../lib/format';
+  import { paths } from '../../lib/routes';
+  import Link from '../atoms/Link.svelte';
   import PriceTag from '../molecules/PriceTag.svelte';
   import StockBadge from '../molecules/StockBadge.svelte';
 
@@ -10,12 +13,6 @@
   }
 
   let { products, busy = false }: Props = $props();
-
-  // "dimensional-travel" reads better as "Dimensional travel".
-  const formatCategory = (category: string) => {
-    const words = category.replaceAll('-', ' ');
-    return words.charAt(0).toUpperCase() + words.slice(1);
-  };
 </script>
 
 <!--
@@ -27,7 +24,9 @@
     {#each products as product (product.id)}
       <li class="card">
         <div class="card-head">
-          <h2 class="name">{product.title}</h2>
+          <h2 class="name">
+            <Link href={paths.product(product.id)}>{product.title}</Link>
+          </h2>
           <StockBadge stock={product.stock} />
         </div>
         <p class="meta">
@@ -53,7 +52,9 @@
     <tbody>
       {#each products as product (product.id)}
         <tr>
-          <th scope="row" class="name">{product.title}</th>
+          <th scope="row" class="name">
+            <Link href={paths.product(product.id)}>{product.title}</Link>
+          </th>
           <td>{formatCategory(product.category)}</td>
           <td class="wide">{product.brand}</td>
           <td class="wide sku">{product.sku}</td>

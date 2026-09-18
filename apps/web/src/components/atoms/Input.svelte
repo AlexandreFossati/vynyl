@@ -24,4 +24,8 @@
   .input::placeholder {
     color: var(--color-text-muted);
   }
+
+  .input[aria-invalid='true'] {
+    border-color: var(--color-danger-text);
+  }
 </style>

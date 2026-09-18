@@ -28,7 +28,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] **T3** `api-products-remaining` — demais endpoints obrigatórios seguindo o padrão · P0
 - [x] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
 - [x] **T5** `web-foundation-dashboard` — design system mínimo + REST client (retry/backoff) + **primeira página** · P0/P1 · **checkpoint: define o padrão do frontend**
-- [ ] **T6** `web-product-pages` — detalhe, criar, editar, excluir · P0
+- [x] **T6** `web-product-pages` — detalhe, criar, editar, excluir · P0
 - [ ] **T7** `e2e-and-serving` — Express serve a SPA, `npm start`, Cypress · P0
 - [ ] **T8** `docs-readme-ai` — README.md e AI.md finais, verificação em clone limpo · P0
 - [ ] **T9** `optional-endpoints` — ordenação e categorias · P2 · só se sobrar tempo
@@ -209,24 +209,24 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Implementar detalhe, criação, edição e exclusão de produtos na SPA, seguindo os padrões aprovados em T5.
 
 **Escopo (inclui)**
-- [ ] Rotas e páginas: detalhe, criar, editar
-- [ ] `ProductForm` compartilhado (criar/editar) com validação pelo **mesmo schema Zod de `shared`**, erros por campo, SKU duplicado (409) exibido no campo, botão desabilitado durante envio, duas colunas no desktop e uma no mobile
-- [ ] Exclusão com `ConfirmDialog` (tela cheia no mobile, foco gerenciado, tecla Esc)
-- [ ] Toasts de sucesso/erro; navegação coerente após cada ação; tratamento de 404 (produto inexistente)
-- [ ] `products-api` estendido (get, create, update, delete), respeitando a regra de não repetir POST
-- [ ] Testes de componentes e páginas principais
+- [x] Rotas e páginas: detalhe, criar, editar
+- [x] `ProductForm` compartilhado (criar/editar) com validação pelo **mesmo schema Zod de `shared`**, erros por campo, SKU duplicado (409) exibido no campo, botão desabilitado durante envio, duas colunas no desktop e uma no mobile
+- [x] Exclusão com `ConfirmDialog` (tela cheia no mobile, foco gerenciado, tecla Esc)
+- [x] Toasts de sucesso/erro; navegação coerente após cada ação; tratamento de 404 (produto inexistente)
+- [x] `products-api` estendido (get, create, update, delete), respeitando a regra de não repetir POST
+- [x] Testes de componentes e páginas principais
 
 **Fora de escopo**: qualquer feature nova de UI; e2e (T7).
 
 **Critérios de aceite**
-- [ ] CRUD completo pela UI contra a API real
-- [ ] Validações client e server refletidas
-- [ ] Responsivo em 360/768/1280
-- [ ] Acessibilidade básica (labels, foco, `aria-live`)
-- [ ] Lint, typecheck e testes verdes
+- [x] CRUD completo pela UI contra a API real
+- [x] Validações client e server refletidas
+- [x] Responsivo em 360/768/1280
+- [x] Acessibilidade básica (labels, foco, `aria-live`)
+- [x] Lint, typecheck e testes verdes
 
 **Fechamento**
-- [ ] Revisão do usuário
+- [x] Revisão do usuário
 - [ ] Commit feito: `feat(web): add product detail, create, edit and delete flows`
 - [ ] Anotações para o `AI.md` registradas
 

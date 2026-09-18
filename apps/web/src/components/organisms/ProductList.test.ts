@@ -68,6 +68,19 @@ describe('ProductList', () => {
     expect(cards[0]).toHaveTextContent('In stock (42)');
   });
 
+  it('links the title of each product to its detail page, in the table and in the cards', () => {
+    render(ProductList, { products });
+
+    const links = screen.getAllByRole('link', { name: 'Portable Wormhole' });
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link).toHaveAttribute('href', '/products/2');
+    }
+    expect(
+      within(screen.getByRole('table')).getByRole('link', { name: 'Large Flux Capacitor' }),
+    ).toHaveAttribute('href', '/products/1');
+  });
+
   it('marks the list as busy while a newer page loads', async () => {
     const { container, rerender } = render(ProductList, { products });
     const list = container.querySelector('.product-list');

@@ -11,6 +11,8 @@
   --color-border: #d9dee5;
   --color-text: #1a1f2b;
   --color-text-muted: #556070;
+  /* Dims the page behind a modal dialog. */
+  --color-overlay: rgb(16 24 40 / 50%);
 
   /* Accent */
   --color-accent: #2c55d9;

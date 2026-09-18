@@ -1,0 +1,37 @@
+# Tasks
+
+> Referências: specs em `specs/` (`product-detail`, `product-editing`, `product-deletion`, `web-notifications`, `web-app-structure`, `web-http-client`, `product-dashboard`); decisões em `design.md` (D1–D10); regras de UI no guia (seção 10). Idioma: código, comentários, textos de interface e testes em **inglês**; estas tasks em português. **Seguir os "Padrões aprovados" do frontend** (T5). **Nenhuma dependência nova**, nenhuma alteração em `apps/api` nem em `packages/shared`. Temporários de verificação no scratchpad. Testes seguem a Definition of Done do `CLAUDE.md`.
+
+## 1. Rotas, formatação e API
+
+- [x] 1.1 Criar `lib/routes.ts` (D1) e `lib/format.ts` (D8: `formatCategory` movido do `ProductList`, mais `formatDateTime`), com testes (`routes.test.ts`, `format.test.ts`): todas as rotas, `/products/new` antes de `:id`, ids inválidos (`abc`, `0`, `-1`, `1.5`, `007`), barra final, construtores de caminho. Verificar com os testes do `web`.
+- [x] 1.2 Estender `lib/api/products-api.ts` (D3) com `get`, `create`, `update` e `remove` e o ajudante `parse`, e tipar a `DashboardPage` com `Pick<ProductsApi, 'list'>`; testes em `products-api.test.ts`: caminho, método e corpo de cada operação, sinal repassado, resposta fora do contrato → `INVALID_RESPONSE`, `remove` sem valor, `ApiError` `409` e `400` repassados. Verificar com os testes do `web` e o `typecheck`.
+
+## 2. Átomos e moléculas
+
+- [x] 2.1 Criar `Link` e `Textarea` em `components/atoms` (D2, D5) e usar o `Link` na `NotFoundPage`; testes do `Link`: clique simples navega sem recarregar e sem seguir o `href`, clique com Ctrl/Cmd/Shift/Alt e botão do meio não são interceptados, variantes. Verificar com os testes do `web`, incluindo o `App.test.ts` existente.
+- [x] 2.2 Criar `FormField` e `Toast` em `components/molecules` (D5, D7); testes: rótulo associado ao controle (`getByLabelText`), variante `multiline`, erro ligado por `aria-describedby` e `aria-invalid`, sem erro sem esses atributos; `Toast` com `role="alert"` só no erro e botão "Dismiss notification" chamando o callback. Verificar com os testes do `web`.
+
+## 3. Bibliotecas de estado e formulário
+
+- [x] 3.1 Criar `lib/toasts.svelte.ts` (D7) com testes (`toasts.test.ts`, fake timers): `success`/`error` adicionam, fechamento automático em 5 s e 8 s, `dismiss` remove só o toast pedido e cancela o temporizador, vários toasts simultâneos. Verificar com os testes do `web`.
+- [x] 3.2 Criar `lib/product-form.ts` (D5) com testes (`product-form.test.ts`): valores vazios e a partir de um produto (`9.99`, `1299`), "Required" em branco (inclusive só espaços), "Enter a number" para `abc`/`1e2`/`9,99`, cada regra do schema (preço com 3 casas, estoque negativo ou fracionário, categoria com maiúsculas, SKU inválido, título longo), erros simultâneos, valores aparados e convertidos no `input`, primeira letra da mensagem em maiúscula, `describeSaveFailure` (`SKU_CONFLICT`, `VALIDATION_ERROR` com paths conhecidos e desconhecidos, outros códigos). Conferir as mensagens reais do Zod e anotar as que soarem técnicas. Verificar com os testes do `web`.
+- [x] 3.3 Criar `lib/product-loader.svelte.ts` (D4). Os testes vêm pelas páginas (tasks 5.1 e 5.3), com resposta fora de ordem e troca de `id`. Verificar com o `typecheck`.
+
+## 4. Organismos
+
+- [x] 4.1 Criar `ProductForm` (D5) com testes: envio válido chama `onsubmit` com valores convertidos e aparados; envio vazio mostra "Required" em todos os campos, não chama `onsubmit` e foca o primeiro; campo numérico inválido; `initialValues` preenchem os campos; `busy` desabilita o envio e troca o rótulo por "Saving…"; `showErrors` mostra a mensagem e foca o campo; editar um campo limpa o erro dele; "Cancel" chama `oncancel`. Verificar com os testes do `web`.
+- [x] 4.2 Criar `ConfirmDialog` (D6) e o polyfill mínimo de `<dialog>` em `src/test/setup.ts`; testes: `open` abre e fecha o diálogo, título como nome acessível, foco inicial em "Cancel", evento `cancel` (Esc) chama `oncancel` e não fecha por conta própria, `busy` ignora o Esc e desabilita as ações, confirmar chama `onconfirm`. Verificar com os testes do `web`.
+- [x] 4.3 Criar `ProductDetail`, `Toaster` e ajustar `Header` e `ProductList` (D8, D9); testes: `ProductDetail` (todos os campos, preço, selo de estoque, `<time datetime>` das datas), `Toaster` (região `aria-live="polite"` sempre presente, um `Toast` por item, dispensar chama o callback), `ProductList` (título é link para `/products/:id` nos cartões e na tabela; ajustar os testes existentes afetados), `Header` (marca é link para `/`). Verificar com os testes do `web`.
+
+## 5. Páginas e aplicação
+
+- [x] 5.1 Criar `ProductDetailPage` (D8) com testes (API falsa e `notify` falso): produto exibido com links "Back to products" e "Edit"; carregando; erro com "Try again" (sem detalhes técnicos); `404` → "Product not found"; exclusão: "Delete" abre o diálogo sem chamar a API, "Cancel" fecha, confirmar chama `remove` uma vez, sucesso → toast e `/`, `404` → toast de erro e `/`, falha → diálogo fecha, toast de erro e continua no detalhe; troca de `id` com resposta atrasada. Verificar com os testes do `web`.
+- [x] 5.2 Criar `ProductCreatePage` com testes: formulário vazio; envio inválido não chama a API; envio válido chama `create` com os valores; sucesso → toast "Product created" e navega para `/products/<id>`; envio duplo gera uma só chamada (promessa pendente); `409` → erro no SKU, valores mantidos, botão reabilitado; `400` com `details` → campos e toast para path desconhecido; falha genérica → toast e valores mantidos; "Cancel" volta a `/` sem chamar a API. Verificar com os testes do `web`.
+- [x] 5.3 Criar `ProductEditPage` com testes: formulário preenchido a partir do produto; carregando, erro com "Try again" e `404`; sucesso → `update` com todos os campos, toast "Product updated" e navega para o detalhe; SKU próprio inalterado é enviado; `409`, `400` e falha genérica como na criação; `404` ao salvar → toast e `/`; "Cancel" volta ao detalhe. Verificar com os testes do `web`.
+- [x] 5.4 Ligar `App.svelte` (rotas, `createToasts`, `Toaster`, `notify`) e adicionar "Add product" ao `DashboardPage`; testes: `App` (cada rota mostra a página certa, `/products/abc` mostra não encontrado sem chamar a API, navegação por link e por `popstate`, toast criado por uma página aparece e sobrevive à navegação), `DashboardPage` ("Add product" leva a `/products/new` e continua visível com catálogo vazio, busca sem resultado e erro). Verificar com os testes do `web`.
+
+## 6. Verificação e fechamento
+
+- [x] 6.1 Verificação em navegador real (D10): API real com banco temporário + Vite com proxy + spec Cypress temporário no scratchpad. Fluxo completo pela UI (listar → detalhe → criar → editar → SKU duplicado → excluir), Esc e foco do diálogo, toasts, e layout em 360, 768 e 1280 px (sem rolagem horizontal, formulário em 1 × 2 colunas, diálogo em tela cheia no mobile, foco visível), com screenshots lidos. Declarar o que não foi verificável.
+- [x] 6.2 Executar na raiz `npm run lint`, `npm run typecheck`, `npm test`, `npm run build` e `npm run format` (duas vezes, idempotente); conferir o escopo (`package.json`/lockfile e `apps/api`/`packages/shared` sem alteração, sem `console.*`/TODO, sem cores literais nos componentes, nenhum componente abaixo de `pages` importa `lib/api`, sem temporários); `openspec validate web-product-pages --strict`; refletir no `OPENSPEC_TASKS.md` só os itens de escopo e de aceite da T6 realmente verificados; entregar o relatório com o que **não** foi verificado.

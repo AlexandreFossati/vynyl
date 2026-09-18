@@ -90,6 +90,36 @@ describe('DashboardPage', () => {
     });
   });
 
+  describe('add product', () => {
+    it('links to the creation page, whether or not there are products', async () => {
+      setup();
+      await flush();
+      expect(screen.getByRole('link', { name: 'Add product' })).toHaveAttribute(
+        'href',
+        '/products/new',
+      );
+    });
+
+    it.each([
+      ['an empty catalog', () => Promise.resolve(page([], 0))],
+      [
+        'a search without results',
+        (params: { q?: string | undefined }) =>
+          Promise.resolve(params.q ? page([], 0) : page([product(1)], 1)),
+      ],
+      [
+        'a failed request',
+        () => Promise.reject(new ApiError({ status: 500, code: 'INTERNAL_ERROR', message: 'x' })),
+      ],
+    ])('is still there for %s', async (_name, respond) => {
+      setup(respond as ProductsApi['list']);
+      await flush();
+      await search('zzz');
+
+      expect(screen.getByRole('link', { name: 'Add product' })).toBeVisible();
+    });
+  });
+
   describe('search', () => {
     it('makes one request, with the whole text, after the user stops typing', async () => {
       const { list } = setup();
@@ -228,7 +258,9 @@ describe('DashboardPage', () => {
         callArgs(list as ReturnType<typeof setup>['list'], 0),
       );
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-      expect(screen.getByText('Recovered', { selector: 'th' })).toBeInTheDocument();
+      expect(
+        within(screen.getByRole('table')).getByRole('link', { name: 'Recovered' }),
+      ).toBeInTheDocument();
     });
   });
 

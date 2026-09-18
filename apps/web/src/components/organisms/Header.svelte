@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { paths } from '../../lib/routes';
+  import Link from '../atoms/Link.svelte';
+
   interface Props {
     title: string;
   }
@@ -8,7 +11,7 @@
 
 <header class="header">
   <div class="inner">
-    <span class="brand">{title}</span>
+    <span class="brand"><Link href={paths.dashboard}>{title}</Link></span>
   </div>
 </header>
 
@@ -30,6 +33,12 @@
   .brand {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
+  }
+
+  /* The brand is a link, but reads as the app's name rather than as a call to action. */
+  .brand :global(a) {
+    color: inherit;
+    text-decoration: none;
   }
 
   @media (min-width: 640px) {

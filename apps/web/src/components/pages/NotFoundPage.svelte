@@ -1,21 +1,12 @@
 <script lang="ts">
-  import { router } from '../../lib/router.svelte';
-
-  // A plain link (so it works with the keyboard and "open in new tab"), handled in-app when
-  // it is a normal click.
-  function goHome(event: MouseEvent) {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-      return;
-    }
-    event.preventDefault();
-    router.navigate('/');
-  }
+  import { paths } from '../../lib/routes';
+  import Link from '../atoms/Link.svelte';
 </script>
 
 <section class="not-found">
   <h1 class="title">Page not found</h1>
   <p class="message">The page you are looking for does not exist.</p>
-  <a class="link" href="/" onclick={goHome}>Back to products</a>
+  <Link href={paths.dashboard}>Back to products</Link>
 </section>
 
 <style>
@@ -34,12 +25,5 @@
 
   .message {
     color: var(--color-text-muted);
-  }
-
-  .link {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--tap-size);
-    font-weight: var(--font-weight-medium);
   }
 </style>

@@ -72,3 +72,121 @@ describe('products api: list', () => {
     await expect(createProductsApi(http).list({ limit: 30, offset: 0 })).rejects.toBe(failure);
   });
 });
+
+const { id: _id, meta: _meta, ...input } = product;
+
+describe('products api: get', () => {
+  it('asks for /api/products/:id and resolves with the product', async () => {
+    const { http, request } = clientReturning(product);
+    const controller = new AbortController();
+
+    const result = await createProductsApi(http).get(7, controller.signal);
+
+    expect(request).toHaveBeenCalledWith('/api/products/7', { signal: controller.signal });
+    expect(result).toEqual(product);
+  });
+
+  it.each([
+    ['a missing field', { ...product, sku: undefined }],
+    ['a field with the wrong type', { ...product, price: '9.99' }],
+    ['something that is not an object', 'oops'],
+  ])('rejects with INVALID_RESPONSE for %s', async (_name, body) => {
+    const { http } = clientReturning(body);
+
+    const failure = await createProductsApi(http)
+      .get(1)
+      .catch((error: unknown) => error);
+
+    expect(failure).toBeInstanceOf(ApiError);
+    expect(failure).toMatchObject({ code: 'INVALID_RESPONSE' });
+  });
+});
+
+describe('products api: create', () => {
+  it('posts the product data as JSON and resolves with the created product', async () => {
+    const { http, request } = clientReturning(product);
+    const controller = new AbortController();
+
+    const result = await createProductsApi(http).create(input, controller.signal);
+
+    expect(request).toHaveBeenCalledWith('/api/products', {
+      method: 'POST',
+      body: input,
+      signal: controller.signal,
+    });
+    expect(result).toEqual(product);
+  });
+
+  it('rejects with INVALID_RESPONSE when the created product breaks the contract', async () => {
+    const { http } = clientReturning({ id: 1 });
+
+    await expect(createProductsApi(http).create(input)).rejects.toMatchObject({
+      code: 'INVALID_RESPONSE',
+    });
+  });
+
+  it('lets an error envelope through unchanged, so the caller can read its code', async () => {
+    const conflict = new ApiError({ status: 409, code: 'SKU_CONFLICT', message: 'Duplicate SKU' });
+    const http: HttpClient = { request: vi.fn().mockRejectedValue(conflict) };
+
+    await expect(createProductsApi(http).create(input)).rejects.toBe(conflict);
+  });
+});
+
+describe('products api: update', () => {
+  it('patches /api/products/:id with the data and resolves with the updated product', async () => {
+    const { http, request } = clientReturning(product);
+    const controller = new AbortController();
+
+    const result = await createProductsApi(http).update(7, { stock: 3 }, controller.signal);
+
+    expect(request).toHaveBeenCalledWith('/api/products/7', {
+      method: 'PATCH',
+      body: { stock: 3 },
+      signal: controller.signal,
+    });
+    expect(result).toEqual(product);
+  });
+
+  it('rejects with INVALID_RESPONSE when the updated product breaks the contract', async () => {
+    const { http } = clientReturning(null);
+
+    await expect(createProductsApi(http).update(7, { stock: 3 })).rejects.toMatchObject({
+      code: 'INVALID_RESPONSE',
+    });
+  });
+
+  it('lets a validation error through unchanged, with its details', async () => {
+    const invalid = new ApiError({
+      status: 400,
+      code: 'VALIDATION_ERROR',
+      message: 'Invalid request',
+      details: [{ path: 'price', message: 'too small' }],
+    });
+    const http: HttpClient = { request: vi.fn().mockRejectedValue(invalid) };
+
+    await expect(createProductsApi(http).update(7, { price: -1 })).rejects.toBe(invalid);
+  });
+});
+
+describe('products api: remove', () => {
+  it('deletes /api/products/:id and resolves without a value', async () => {
+    const { http, request } = clientReturning(undefined);
+    const controller = new AbortController();
+
+    const result = await createProductsApi(http).remove(7, controller.signal);
+
+    expect(request).toHaveBeenCalledWith('/api/products/7', {
+      method: 'DELETE',
+      signal: controller.signal,
+    });
+    expect(result).toBeUndefined();
+  });
+
+  it('lets a not found error through unchanged', async () => {
+    const missing = new ApiError({ status: 404, code: 'PRODUCT_NOT_FOUND', message: 'Gone' });
+    const http: HttpClient = { request: vi.fn().mockRejectedValue(missing) };
+
+    await expect(createProductsApi(http).remove(7)).rejects.toBe(missing);
+  });
+});

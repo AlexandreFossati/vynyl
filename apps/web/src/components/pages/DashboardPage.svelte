@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { ProductListResponse } from '@vynyl/shared';
   import { productsApi, type ProductsApi } from '../../lib/api/products-api';
+  import { paths } from '../../lib/routes';
+  import Link from '../atoms/Link.svelte';
   import Pagination from '../molecules/Pagination.svelte';
   import SearchBox from '../molecules/SearchBox.svelte';
   import StatusMessage from '../molecules/StatusMessage.svelte';
@@ -8,7 +10,7 @@
 
   interface Props {
     // Injected so tests can hand the page a fake; the real one is the default.
-    api?: ProductsApi;
+    api?: Pick<ProductsApi, 'list'>;
   }
 
   let { api = productsApi }: Props = $props();
@@ -82,7 +84,10 @@
 
 <div class="dashboard">
   <div class="toolbar">
-    <h1 class="title">Products</h1>
+    <div class="heading">
+      <h1 class="title">Products</h1>
+      <Link variant="primary" href={paths.productCreate}>Add product</Link>
+    </div>
     <SearchBox bind:value={searchText} onsearch={applySearch} />
   </div>
 
@@ -125,6 +130,13 @@
     gap: var(--space-3);
   }
 
+  .heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
   .title {
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
@@ -138,6 +150,11 @@
     .toolbar {
       grid-template-columns: 1fr auto;
       align-items: center;
+    }
+
+    .heading {
+      justify-content: flex-start;
+      gap: var(--space-4);
     }
   }
 </style>
