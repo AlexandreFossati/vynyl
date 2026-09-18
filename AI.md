@@ -44,3 +44,7 @@ No code was written in this phase. The agent acted as a senior engineer and the 
 - Keep approvals explicit and per phase, and let the human own the closing checkboxes.
 - Time-box: cut ideas early when the budget is short.
 - Ask for brevity from the start.
+
+## Delegation after the model task (T3 onward)
+
+- **T3 (remaining endpoints):** once the API patterns were approved on the model task, the developer delegated the whole flow for the next tasks (propose, apply, verify, commit, archive) and kept one deliberate stop: before committing the frontend model task. The agent replicated the approved patterns without inventing new ones, and asked no questions because every open point could be settled by the guide, the roadmap or a measurement.

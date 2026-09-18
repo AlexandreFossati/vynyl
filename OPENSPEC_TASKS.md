@@ -143,7 +143,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Fechamento**
 - [ ] Revisão do usuário: consistência com T2, cobertura de erros
 - [x] Commit feito: `feat(api): add product get, create, update and delete endpoints`
-- [ ] Anotações para o `AI.md` registradas
+- [x] Anotações para o `AI.md` registradas
 
 ---
 
