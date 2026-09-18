@@ -78,7 +78,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Fechamento**
 - [ ] Revisão do usuário: estrutura de pastas, scripts, dependências instaladas, schema/migration, qualidade do data set
 - [x] Commit feito: `chore: scaffold monorepo, database schema and dataset`
-- [ ] Anotações para o `AI.md` registradas
+- [x] Anotações para o `AI.md` registradas
 
 ---
 
