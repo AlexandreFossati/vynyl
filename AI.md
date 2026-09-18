@@ -1,6 +1,6 @@
 # AI.md
 
-Running log of how AI tooling was used on this project. It is appended to after each task and turned into the final narrative in T8.
+Running log of how AI tooling is used on this project, focused on the collaboration between the developer and the AI. It is appended to as the work goes on and turned into the final narrative in T8. Technical problems and their fixes live in the code, the specs and the commit history, not here.
 
 ## Workflow
 
@@ -22,18 +22,25 @@ No code was written in this phase. The agent acted as a senior engineer and the 
 - **One OpenSpec change per task:** proposal, specs, design and tasks are written first, then implemented. Each task ends with a human review and a commit; the agent commits only when asked.
 - **Model tasks:** T2 (API) and T5 (frontend) are reviewed before their patterns are replicated.
 
-## T1 - scaffold-monorepo
+## Learnings from the collaboration (T1 and T2)
 
-**What went well**
-- Checking peer dependencies before installing caught that TypeScript 7 (`latest`) is not accepted by `typescript-eslint` or `svelte-check`, and that `jsdom` needs a stricter Node range than first assumed.
-- Verification ran real commands instead of assuming: a clean-copy `npm ci` with empty caches, the SPA in a real browser through Cypress, 28 checks against the migration and 27 against the dataset.
+**What worked well**
+- **Decisions stayed human, options came from the AI.** Structured questions with a recommended option and its trade-offs let the developer decide quickly. The recommendation was often followed and overridden whenever the developer had a reason: Express instead of Hono, no Docker, keeping a component the AI had advised against.
+- **Files, not chat, as shared memory.** The decision guide, the roadmap with checkboxes and `CLAUDE.md` (agent profile, rules and Definition of Done) give every session the same starting point. The checkboxes tell the agent what is done and what comes next.
+- **Hard gates between phases.** Planning artifacts before code, `propose` separate from `apply`, no commits by the agent unless asked, and every diff reviewed by the developer.
+- **Scope discipline was written down, so it held.** "Only what the assignment asks, production ready" plus the agent profile prevented feature creep. The agent even removed a requirement that had survived from a feature the developer had already dropped.
+- **Review checkpoints on the model tasks.** The developer read the first API slice, ran the production bundle personally and approved the patterns before they were replicated.
+- **Small, separate commits** (implementation apart from archive) kept each diff easy to review.
 
-**What went poorly**
-- `better-sqlite3` v13 installed fine from scratch but failed with `node-gyp` when installing from the lockfile. The early research only tested installs without a lockfile. Switched to `@libsql/client`.
-- The agent claimed an async driver would make the singleflight effective. A measurement showed it does not with local SQLite (5 requests, 5 executions). Corrected in the guide.
-- Smaller misses, all caught by verification: wrong `engines` range, missing `allowJs` for `svelte-check`, and a Windows long-path failure that only appeared in the clean-clone simulation.
+**What worked less well**
+- **Verbosity.** Long reports and option lists; the developer asked for concise output.
+- **Silent stretches.** Long autonomous runs sometimes went without a progress update.
+- **Confident claims that needed checking.** In one case the AI presented an assumption as fact. It changed only after being measured, and the developer had to confirm the decision again with the corrected information.
+- **Suggestions ahead of priorities.** The AI offered extra hardening and process ideas before the developer had set the priorities. Several were declined (CI, more security headers, Docker) to protect the time budget.
 
-**Lessons**
-- Test installs from the lockfile, not just fresh installs.
-- Measure a claim before letting it drive a decision.
-- Keep verification scripts throwaway and outside the repository.
+**Practices worth keeping**
+- Ask the AI for evidence (run it, measure it) before accepting a claim, and to say what it did not verify.
+- Put every decision in a file the agent reloads, and update the file when the decision changes.
+- Keep approvals explicit and per phase, and let the human own the closing checkboxes.
+- Time-box: cut ideas early when the budget is short.
+- Ask for brevity from the start.

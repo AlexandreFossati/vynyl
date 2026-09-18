@@ -115,7 +115,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] Revisão do usuário (**checkpoint importante**): separação das camadas, nomes, injeção de dependências, estilo dos testes, formato de erro, organização dos schemas em `shared`, uso de logs. **Tudo que for ajustado aqui vira padrão**
 - [x] Padrões da API registrados na seção "Padrões aprovados"
 - [x] Commit feito: `feat(api): add paginated product listing with search`
-- [ ] Anotações para o `AI.md` registradas
+- [x] Anotações para o `AI.md` registradas
 
 ---
 
