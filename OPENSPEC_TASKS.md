@@ -171,7 +171,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Fechamento**
 - [ ] Revisão do usuário
 - [x] Commit feito: `feat(api): add rate limiting, health check, graceful shutdown and singleflight`
-- [ ] Anotações para o `AI.md` registradas
+- [x] Anotações para o `AI.md` registradas
 
 ---
 
