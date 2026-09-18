@@ -20,6 +20,9 @@ describe('loadConfig', () => {
       PORT: 3000,
       DATABASE_PATH: './data/app.db',
       LOG_LEVEL: 'info',
+      RATE_LIMIT_MAX: 100,
+      RATE_LIMIT_WINDOW_MS: 60000,
+      TRUST_PROXY: 0,
     });
   });
 
@@ -29,6 +32,9 @@ describe('loadConfig', () => {
       PORT: '4000',
       DATABASE_PATH: '/var/data/app.db',
       LOG_LEVEL: 'debug',
+      RATE_LIMIT_MAX: '20',
+      RATE_LIMIT_WINDOW_MS: '30000',
+      TRUST_PROXY: '1',
     });
 
     expect(config).toEqual({
@@ -36,6 +42,9 @@ describe('loadConfig', () => {
       PORT: 4000,
       DATABASE_PATH: '/var/data/app.db',
       LOG_LEVEL: 'debug',
+      RATE_LIMIT_MAX: 20,
+      RATE_LIMIT_WINDOW_MS: 30000,
+      TRUST_PROXY: 1,
     });
   });
 
@@ -79,5 +88,46 @@ describe('loadConfig', () => {
 
     expect(message.startsWith('Invalid configuration:')).toBe(true);
     expect(message).not.toMatch(/\n\s+at /);
+  });
+});
+
+describe('loadConfig: rate limit and proxy settings', () => {
+  it.each([
+    ['RATE_LIMIT_MAX', '0'],
+    ['RATE_LIMIT_MAX', 'abc'],
+    ['RATE_LIMIT_MAX', ''],
+    ['RATE_LIMIT_MAX', '1.5'],
+    ['RATE_LIMIT_WINDOW_MS', '0'],
+    ['RATE_LIMIT_WINDOW_MS', 'abc'],
+    ['RATE_LIMIT_WINDOW_MS', '-5'],
+    ['TRUST_PROXY', '-1'],
+    ['TRUST_PROXY', '99'],
+    ['TRUST_PROXY', 'abc'],
+    ['TRUST_PROXY', 'true'],
+  ])('rejects %s=%j', (name, value) => {
+    expect(messageOf({ [name]: value })).toContain(`${name}:`);
+  });
+
+  it('accepts the boundaries', () => {
+    const config = loadConfig({
+      RATE_LIMIT_MAX: '1',
+      RATE_LIMIT_WINDOW_MS: '1',
+      TRUST_PROXY: '32',
+    });
+
+    expect(config).toMatchObject({ RATE_LIMIT_MAX: 1, RATE_LIMIT_WINDOW_MS: 1, TRUST_PROXY: 32 });
+    expect(loadConfig({ TRUST_PROXY: '0' }).TRUST_PROXY).toBe(0);
+  });
+
+  it('lists every invalid variable together with the reason', () => {
+    const message = messageOf({
+      RATE_LIMIT_MAX: '0',
+      RATE_LIMIT_WINDOW_MS: 'abc',
+      TRUST_PROXY: '99',
+    });
+
+    expect(message).toContain('RATE_LIMIT_MAX: must be an integer greater than or equal to 1');
+    expect(message).toContain('RATE_LIMIT_WINDOW_MS:');
+    expect(message).toContain('TRUST_PROXY: must be an integer between 0 and 32');
   });
 });

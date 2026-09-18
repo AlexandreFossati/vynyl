@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import type { Product } from '@vynyl/shared';
 import type { Express } from 'express';
-import { createApp } from '../app';
+import { createApp, type AppSettings } from '../app';
 import { getPaths } from '../config/paths';
 import { seedProducts } from '../db/seed';
 import { createLogCapture } from './log-capture';
@@ -17,9 +17,17 @@ export interface TestApp extends TestDatabase {
   capture: ReturnType<typeof createLogCapture>;
 }
 
+// Generous enough that tests never hit the limiter by accident; rate limit tests override it.
+export const TEST_SETTINGS: AppSettings = {
+  rateLimit: { limit: 10_000, windowMs: 60_000 },
+  trustProxy: 0,
+};
+
 // Test helper: the real app on an in-memory database, optionally seeded with the real dataset,
 // with its logs captured in memory.
-export async function createTestApp(options: { seed?: boolean } = {}): Promise<TestApp> {
+export async function createTestApp(
+  options: { seed?: boolean; settings?: AppSettings } = {},
+): Promise<TestApp> {
   const database = await createTestDatabase();
   if (options.seed) {
     await seedProducts(database.db, {
@@ -29,6 +37,10 @@ export async function createTestApp(options: { seed?: boolean } = {}): Promise<T
   }
 
   const capture = createLogCapture();
-  const app = createApp({ db: database.db, logger: capture.logger });
+  const app = createApp({
+    db: database.db,
+    logger: capture.logger,
+    settings: options.settings ?? TEST_SETTINGS,
+  });
   return { ...database, app, capture };
 }

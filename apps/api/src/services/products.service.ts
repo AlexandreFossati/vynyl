@@ -6,6 +6,7 @@ import type {
   UpdateProductInput,
 } from '@vynyl/shared';
 import { AppError } from '../lib/errors';
+import { createSingleflight, type Singleflight } from '../lib/singleflight';
 import { toProduct, toProductCreate, toProductPatch } from '../mappers/product.mapper';
 import { DuplicateSkuError, type ProductsRepository } from '../repositories/products.repository';
 
@@ -38,24 +39,30 @@ export function createProductsService(deps: {
   productsRepository: ProductsRepository;
   // The clock is injected so timestamps are deterministic in tests.
   now?: () => Date;
+  // One instance per service: simultaneous identical reads share a single repository call.
+  singleflight?: Singleflight;
 }): ProductsService {
-  const { productsRepository, now = () => new Date() } = deps;
+  const { productsRepository, now = () => new Date(), singleflight = createSingleflight() } = deps;
 
   return {
-    // Reads depend only on their input, so they can later be wrapped (e.g. by a singleflight)
-    // without changing the signature.
-    async list({ limit, offset, q }) {
-      const { rows, total } = await productsRepository.list({ limit, offset, search: q });
+    // Only reads are coalesced; writes always reach the repository. The search term goes last in
+    // the key so it cannot be confused with the numeric parts.
+    list({ limit, offset, q }) {
+      return singleflight.do(`list:${limit}:${offset}:${q ?? ''}`, async () => {
+        const { rows, total } = await productsRepository.list({ limit, offset, search: q });
 
-      return { data: rows.map(toProduct), total, limit, offset };
+        return { data: rows.map(toProduct), total, limit, offset };
+      });
     },
 
-    async get(id) {
-      const row = await productsRepository.findById(id);
-      if (!row) {
-        throw productNotFound(id);
-      }
-      return toProduct(row);
+    get(id) {
+      return singleflight.do(`get:${id}`, async () => {
+        const row = await productsRepository.findById(id);
+        if (!row) {
+          throw productNotFound(id);
+        }
+        return toProduct(row);
+      });
     },
 
     async create(input) {

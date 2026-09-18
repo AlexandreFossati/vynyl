@@ -227,3 +227,110 @@ describe('products service: remove', () => {
     await expectAppError(serviceWith({ remove }).remove(9999), 'PRODUCT_NOT_FOUND', 404);
   });
 });
+
+describe('products service: coalescing of simultaneous reads', () => {
+  // A repository call that stays pending until the test releases it, so calls overlap.
+  const slow = <T>(value: T) => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const fn = vi.fn(async () => {
+      await gate;
+      return value;
+    });
+    return { fn, release };
+  };
+
+  const page = { rows: [row()], total: 1 };
+  const baseQuery = { limit: 30, offset: 0 };
+
+  it('runs one repository list for identical simultaneous requests', async () => {
+    const { fn, release } = slow(page);
+    const service = serviceWith({ list: fn });
+
+    const calls = Array.from({ length: 5 }, () => service.list(baseQuery));
+    release();
+    const results = await Promise.all(calls);
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(results.every((result) => result.total === 1)).toBe(true);
+  });
+
+  it.each([
+    ['q', { ...baseQuery, q: 'flux' }],
+    ['limit', { ...baseQuery, limit: 10 }],
+    ['offset', { ...baseQuery, offset: 30 }],
+  ])('does not coalesce lists that differ in %s', async (_name, other) => {
+    const { fn, release } = slow(page);
+    const service = serviceWith({ list: fn });
+
+    const calls = [service.list(baseQuery), service.list(other)];
+    release();
+    await Promise.all(calls);
+
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('coalesces simultaneous gets of the same id but not of different ids', async () => {
+    const { fn, release } = slow(row());
+    const service = serviceWith({ findById: fn });
+
+    const calls = [service.get(7), service.get(7), service.get(8)];
+    release();
+    await Promise.all(calls);
+
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn.mock.calls).toEqual([[7], [8]]);
+  });
+
+  it('never coalesces writes', async () => {
+    const { fn: create, release: releaseCreate } = slow(row());
+    const { fn: update, release: releaseUpdate } = slow(row());
+    const { fn: remove, release: releaseRemove } = slow(true);
+    const service = serviceWith({ create, update, remove });
+
+    const calls = [
+      service.create(input),
+      service.create(input),
+      service.update(7, { stock: 1 }),
+      service.update(7, { stock: 1 }),
+      service.remove(7),
+      service.remove(7),
+    ];
+    releaseCreate();
+    releaseUpdate();
+    releaseRemove();
+    await Promise.all(calls);
+
+    expect(create).toHaveBeenCalledTimes(2);
+    expect(update).toHaveBeenCalledTimes(2);
+    expect(remove).toHaveBeenCalledTimes(2);
+  });
+
+  it('shares a repository failure with every waiter and retries on the next call', async () => {
+    const failure = new Error('database is down');
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const list = vi
+      .fn<ProductsRepository['list']>()
+      .mockImplementationOnce(async () => {
+        await gate;
+        throw failure;
+      })
+      .mockResolvedValueOnce(page);
+    const service = serviceWith({ list });
+
+    const calls = Promise.allSettled([service.list(baseQuery), service.list(baseQuery)]);
+    release();
+    const results = await calls;
+
+    expect(results.map((result) => result.status)).toEqual(['rejected', 'rejected']);
+    expect(list).toHaveBeenCalledTimes(1);
+
+    await expect(service.list(baseQuery)).resolves.toMatchObject({ total: 1 });
+    expect(list).toHaveBeenCalledTimes(2);
+  });
+});

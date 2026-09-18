@@ -5,9 +5,13 @@ import { createDatabase } from './db/client';
 import { runMigrations } from './db/migrate';
 import { seedProducts } from './db/seed';
 import { createLogger } from './lib/logger';
+import { createShutdown, registerShutdownSignals } from './lib/shutdown';
 
 // Composition root: the only place that reads the environment and creates real resources.
 const paths = getPaths(import.meta.url);
+
+// How long in-flight requests get to finish after SIGINT/SIGTERM before they are cut.
+const SHUTDOWN_TIMEOUT_MS = 10_000;
 
 // The .env file is optional and never overrides variables already set in the environment.
 function loadOptionalEnvFile(file: string): void {
@@ -40,14 +44,21 @@ async function main(): Promise<void> {
   const logger = createLogger({ level: config.LOG_LEVEL });
 
   try {
-    const { db } = await createDatabase({
+    const { client, db } = await createDatabase({
       databasePath: config.DATABASE_PATH,
       repoRoot: paths.repoRoot,
     });
     await runMigrations(db, paths.migrationsDir);
     await seedProducts(db, { file: paths.datasetFile, logger });
 
-    const app = createApp({ db, logger });
+    const app = createApp({
+      db,
+      logger,
+      settings: {
+        rateLimit: { limit: config.RATE_LIMIT_MAX, windowMs: config.RATE_LIMIT_WINDOW_MS },
+        trustProxy: config.TRUST_PROXY,
+      },
+    });
     const server = app.listen(config.PORT, () => {
       logger.info({ port: config.PORT, env: config.NODE_ENV }, 'API listening');
     });
@@ -55,6 +66,17 @@ async function main(): Promise<void> {
       logger.fatal({ err: error }, 'HTTP server error');
       process.exit(1);
     });
+
+    registerShutdownSignals(
+      process,
+      createShutdown({
+        server,
+        closeDatabase: () => client.close(),
+        logger,
+        timeoutMs: SHUTDOWN_TIMEOUT_MS,
+        exit: (code) => process.exit(code),
+      }),
+    );
   } catch (error) {
     logger.fatal({ err: error }, 'Startup failed');
     process.exit(1);

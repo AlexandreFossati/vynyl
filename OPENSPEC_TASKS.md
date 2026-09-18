@@ -26,7 +26,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] **T1** `scaffold-monorepo` — estrutura vazia + tooling + schema/migration + data set · P0 · checkpoint: 1º commit da estrutura
 - [x] **T2** `api-list-products` — **primeiro endpoint completo** (`GET /api/products`) com toda a fundação e testes · P0 · **checkpoint: define o padrão da API**
 - [x] **T3** `api-products-remaining` — demais endpoints obrigatórios seguindo o padrão · P0
-- [ ] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
+- [x] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
 - [ ] **T5** `web-foundation-dashboard` — design system mínimo + REST client (retry/backoff) + **primeira página** · P0/P1 · **checkpoint: define o padrão do frontend**
 - [ ] **T6** `web-product-pages` — detalhe, criar, editar, excluir · P0
 - [ ] **T7** `e2e-and-serving` — Express serve a SPA, `npm start`, Cypress · P0
@@ -152,25 +152,25 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Adicionar rate limiting, endpoint de saúde, graceful shutdown e o singleflight nas leituras.
 
 **Escopo (inclui)**
-- [ ] **Rate limit** (`express-rate-limit`) em `/api`, configurável por env (padrão sugerido: 100 req/min/IP), cabeçalhos padrão, 429 `RATE_LIMITED` no formato de erro + `Retry-After`; `trust proxy` via config
-- [ ] **`GET /health`** fora de `/api` e do rate limit; 200 se o DB responde, 503 caso contrário
-- [ ] **Graceful shutdown**: SIGINT/SIGTERM param de aceitar conexões, aguardam as em andamento (com timeout), fecham servidor e DB
-- [ ] **Singleflight** (`lib/singleflight.ts`) conforme seção 11.2 do guia, aplicado no **service** às leituras (`get by id` e `list`), nunca às escritas; sem cache
-- [ ] Testes: rate limit (janela pequena via config), health (ok e falha do DB), shutdown (lógica testável), singleflight (N callers concorrentes → loader executa 1 vez; chaves diferentes não colapsam; erro compartilhado; chave liberada após concluir; nova chamada após concluir executa de novo; loader assíncrono simulado)
-- [ ] **Limitação documentada** no código e no relatório (guia, seção 11.3): com SQLite local (inclusive via `@libsql/client`) não há coalescência real em runtime. O agente **não deve** alegar que o singleflight reduz consultas com este banco
+- [x] **Rate limit** (`express-rate-limit`) em `/api`, configurável por env (padrão sugerido: 100 req/min/IP), cabeçalhos padrão, 429 `RATE_LIMITED` no formato de erro + `Retry-After`; `trust proxy` via config
+- [x] **`GET /health`** fora de `/api` e do rate limit; 200 se o DB responde, 503 caso contrário
+- [x] **Graceful shutdown**: SIGINT/SIGTERM param de aceitar conexões, aguardam as em andamento (com timeout), fecham servidor e DB
+- [x] **Singleflight** (`lib/singleflight.ts`) conforme seção 11.2 do guia, aplicado no **service** às leituras (`get by id` e `list`), nunca às escritas; sem cache
+- [x] Testes: rate limit (janela pequena via config), health (ok e falha do DB), shutdown (lógica testável), singleflight (N callers concorrentes → loader executa 1 vez; chaves diferentes não colapsam; erro compartilhado; chave liberada após concluir; nova chamada após concluir executa de novo; loader assíncrono simulado)
+- [x] **Limitação documentada** no código e no relatório (guia, seção 11.3): com SQLite local (inclusive via `@libsql/client`) não há coalescência real em runtime. O agente **não deve** alegar que o singleflight reduz consultas com este banco
 
 **Fora de escopo**: trocar de driver, cache, métricas, helmet.
 
 **Critérios de aceite**
-- [ ] 429 ocorre ao exceder o limite e volta ao normal depois
-- [ ] `/health` correto (200 e 503)
-- [ ] Encerramento limpo sem conexões penduradas
-- [ ] Testes do singleflight passam
-- [ ] Lint, typecheck e testes verdes
+- [x] 429 ocorre ao exceder o limite e volta ao normal depois
+- [x] `/health` correto (200 e 503)
+- [x] Encerramento limpo sem conexões penduradas
+- [x] Testes do singleflight passam
+- [x] Lint, typecheck e testes verdes
 
 **Fechamento**
 - [ ] Revisão do usuário
-- [ ] Commit feito: `feat(api): add rate limiting, health check, graceful shutdown and singleflight`
+- [x] Commit feito: `feat(api): add rate limiting, health check, graceful shutdown and singleflight`
 - [ ] Anotações para o `AI.md` registradas
 
 ---
