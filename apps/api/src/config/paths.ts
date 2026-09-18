@@ -6,6 +6,7 @@ export interface Paths {
   envFile: string;
   migrationsDir: string;
   datasetFile: string;
+  webDistDir: string;
 }
 
 // Paths come from where the code lives, never from the working directory. The entry point is
@@ -19,5 +20,6 @@ export function getPaths(entryUrl: string): Paths {
     envFile: join(repoRoot, '.env'),
     migrationsDir: join(repoRoot, 'apps', 'api', 'drizzle'),
     datasetFile: join(repoRoot, 'data', 'products.json'),
+    webDistDir: join(repoRoot, 'apps', 'web', 'dist'),
   };
 }

@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { createApp } from './app';
 import { ConfigError, loadConfig, type Config } from './config/env';
 import { getPaths } from './config/paths';
@@ -51,9 +53,17 @@ async function main(): Promise<void> {
     await runMigrations(db, paths.migrationsDir);
     await seedProducts(db, { file: paths.datasetFile, logger });
 
+    // The SPA is served only when it has been built (npm start builds it; npm run dev serves it
+    // with Vite instead).
+    const spaBuilt = existsSync(join(paths.webDistDir, 'index.html'));
+    if (!spaBuilt) {
+      logger.warn({ dir: paths.webDistDir }, 'SPA build not found; serving the API only');
+    }
+
     const app = createApp({
       db,
       logger,
+      spaDir: spaBuilt ? paths.webDistDir : undefined,
       settings: {
         rateLimit: { limit: config.RATE_LIMIT_MAX, windowMs: config.RATE_LIMIT_WINDOW_MS },
         trustProxy: config.TRUST_PROXY,

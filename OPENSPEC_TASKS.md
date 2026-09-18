@@ -234,11 +234,13 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 
 ## T7 — `e2e-and-serving`
 
+> **Escopo reduzido pelo usuário:** sem testes e2e nem Cypress. O change do OpenSpec desta tarefa chama-se `spa-serving-and-start`.
+
 **Descrição do change**: Fazer o Express servir a SPA compilada, implementar o `npm start` de um comando e adicionar os testes e2e com Cypress.
 
 **Escopo (inclui)**
-- [ ] Express serve `apps/web/dist` com fallback para `index.html` (exceto `/api` e `/health`)
-- [ ] **`npm start`**: build de `shared`, `api` e `web`, migrations, seed idempotente e servidor em **http://localhost:3000**. `npm run dev` (API com reload + Vite com proxy). Forma de build mais simples e multiplataforma escolhida e documentada no design (guia, seção 15, item 5)
+- [x] Express serve `apps/web/dist` com fallback para `index.html` (exceto `/api` e `/health`)
+- [x] **`npm start`**: build de `shared`, `api` e `web`, migrations, seed idempotente e servidor em **http://localhost:3000**. `npm run dev` (API com reload + Vite com proxy). Forma de build mais simples e multiplataforma escolhida e documentada no design (guia, seção 15, item 5)
 - [ ] ~~**Cypress e2e** contra o servidor real com DB temporário (`DATABASE_PATH`): listar, buscar, paginar, criar, editar, excluir, erro de validação/SKU duplicado~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
 - [ ] ~~**1 smoke em viewport mobile**~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
 - [ ] ~~Script `test:e2e` que sobe e derruba o servidor de forma multiplataforma~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
@@ -246,13 +248,12 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Fora de escopo**: CI (ver guia, seção 15), Docker.
 
 **Critérios de aceite**
-- [ ] Em clone limpo, `npm install` + `npm start` abre a aplicação funcional em `localhost:3000` no Windows
+- [ ] Em clone limpo, `npm install` + `npm start` abre a aplicação funcional em `localhost:3000` no Windows — servidor, HTML, assets e API verificados em clone limpo (`npm ci` + `npm start`, com `curl`); falta o usuário abrir no navegador
 - [ ] ~~`npm run test:e2e` passa~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
-- [ ] Lint, typecheck e testes verdes
+- [x] Lint, typecheck e testes verdes
 
 **Fechamento**
-- [ ] Revisão do usuário
-- [ ] Commit feito: `feat: serve SPA from API, add npm start and Cypress e2e`
+- [ ] Commit feito: `feat(api): serve the compiled SPA and add npm start`
 - [ ] Anotações para o `AI.md` registradas
 
 ---

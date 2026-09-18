@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/error-handler';
 import { notFoundHandler } from './middleware/not-found';
 import { createRateLimiter, type RateLimitSettings } from './middleware/rate-limit';
 import { createRequestLogger } from './middleware/request-logger';
+import { createSpaMiddleware } from './middleware/spa';
 import { createHealthRepository } from './repositories/health.repository';
 import { createProductsRepository } from './repositories/products.repository';
 import { createHealthRouter } from './routes/health.routes';
@@ -24,11 +25,13 @@ export interface AppDependencies {
   db: Db;
   logger: Logger;
   settings: AppSettings;
+  // Folder of the compiled SPA. When absent, only the API is served.
+  spaDir?: string | undefined;
 }
 
 // Wires the layers together: repository -> service -> handler -> router. Each layer receives
 // its dependencies as parameters, so tests can build the same app on an in-memory database.
-export function createApp({ db, logger, settings }: AppDependencies): Express {
+export function createApp({ db, logger, settings, spaDir }: AppDependencies): Express {
   const productsRepository = createProductsRepository(db);
   const productsService = createProductsService({ productsRepository });
   const productsHandler = createProductsHandler({ productsService });
@@ -49,6 +52,10 @@ export function createApp({ db, logger, settings }: AppDependencies): Express {
   // JSON bodies up to the default limit (100 kb); parser errors are answered by errorHandler.
   app.use(express.json());
   app.use('/api/products', createProductsRouter({ productsHandler }));
+  // After the API, so it never shadows an API route; before the 404 so it can answer instead.
+  if (spaDir) {
+    app.use(createSpaMiddleware({ dir: spaDir }));
+  }
   app.use(notFoundHandler);
   app.use(errorHandler);
 

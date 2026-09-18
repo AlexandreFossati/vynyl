@@ -27,6 +27,12 @@ describe('getPaths', () => {
     expect(existsSync(datasetFile)).toBe(true);
   });
 
+  it('places the compiled SPA under apps/web/dist', () => {
+    const { repoRoot, webDistDir } = getPaths(sourceEntry);
+
+    expect(webDistDir).toBe(join(repoRoot, 'apps', 'web', 'dist'));
+  });
+
   it('places the optional .env file at the repository root', () => {
     const { repoRoot, envFile } = getPaths(sourceEntry);
 

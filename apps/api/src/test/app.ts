@@ -26,7 +26,7 @@ export const TEST_SETTINGS: AppSettings = {
 // Test helper: the real app on an in-memory database, optionally seeded with the real dataset,
 // with its logs captured in memory.
 export async function createTestApp(
-  options: { seed?: boolean; settings?: AppSettings } = {},
+  options: { seed?: boolean; settings?: AppSettings; spaDir?: string } = {},
 ): Promise<TestApp> {
   const database = await createTestDatabase();
   if (options.seed) {
@@ -41,6 +41,7 @@ export async function createTestApp(
     db: database.db,
     logger: capture.logger,
     settings: options.settings ?? TEST_SETTINGS,
+    spaDir: options.spaDir,
   });
   return { ...database, app, capture };
 }
