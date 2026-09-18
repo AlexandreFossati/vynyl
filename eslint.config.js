@@ -50,6 +50,24 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
   },
 
+  // Only pages talk to the API: the lower component levels receive data and callbacks as props.
+  {
+    files: ['apps/web/src/components/{atoms,molecules,organisms,templates}/**/*.{ts,svelte}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/lib/api', '**/lib/api/**'],
+              message: 'Only components in pages may import from lib/api; pass data down as props.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
   // Application code logs through the structured logger, never the console.
   {
     files: ['apps/*/src/**/*.{ts,svelte}', 'packages/*/src/**/*.ts'],

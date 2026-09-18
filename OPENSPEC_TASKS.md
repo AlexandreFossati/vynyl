@@ -27,7 +27,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] **T2** `api-list-products` — **primeiro endpoint completo** (`GET /api/products`) com toda a fundação e testes · P0 · **checkpoint: define o padrão da API**
 - [x] **T3** `api-products-remaining` — demais endpoints obrigatórios seguindo o padrão · P0
 - [x] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
-- [ ] **T5** `web-foundation-dashboard` — design system mínimo + REST client (retry/backoff) + **primeira página** · P0/P1 · **checkpoint: define o padrão do frontend**
+- [x] **T5** `web-foundation-dashboard` — design system mínimo + REST client (retry/backoff) + **primeira página** · P0/P1 · **checkpoint: define o padrão do frontend**
 - [ ] **T6** `web-product-pages` — detalhe, criar, editar, excluir · P0
 - [ ] **T7** `e2e-and-serving` — Express serve a SPA, `npm start`, Cypress · P0
 - [ ] **T8** `docs-readme-ai` — README.md e AI.md finais, verificação em clone limpo · P0
@@ -35,7 +35,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 
 **Padrões aprovados** (seção no fim deste arquivo)
 - [x] Padrões da API registrados (após a revisão de T2)
-- [ ] Padrões do frontend registrados (após a revisão de T5)
+- [x] Padrões do frontend registrados (após a revisão de T5)
 
 ## Como trabalhar cada tarefa
 
@@ -180,26 +180,26 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Criar a base visual (tokens e estilos), os componentes Atomic Design necessários, o REST client com retry/backoff e a primeira página (dashboard com lista de produtos, busca e paginação), responsiva. Define o padrão do frontend.
 
 **Escopo (inclui)**
-- [ ] `styles/tokens.css` e `base.css` conforme **seção 10.2** (clean, simples, mobile-first, breakpoints 640/1024, alvos de toque ≥ 44 px, fonte do sistema)
-- [ ] Componentes **somente os que o dashboard usa**, nos níveis corretos: átomos (Button, Input, Badge, Spinner...), moléculas (SearchBox, Pagination, PriceTag, StockBadge...), organismos (Header, ProductList com tabela no desktop e cards no mobile), template (AppShell/PageLayout), página (DashboardPage). Estados de carregando, vazio e erro (com tentar novamente)
-- [ ] **REST client** (`lib/api/http-client.ts`) conforme **seção 11.1**: timeout, cancelamento, retry só em métodos idempotentes e nas condições definidas (rede, 408, 429, 502, 503, 504), backoff exponencial com jitter, `Retry-After`, `ApiError` tipado; `products-api` com a listagem
-- [ ] Roteamento mínimo (rota `/`); biblioteca validada (compatível com Svelte 5) ou fallback próprio
-- [ ] Proxy do Vite para `/api` (dev)
-- [ ] Testes: `http-client` completo (fake timers, RNG injetado); componentes principais (SearchBox, Pagination, ProductList) com Testing Library
+- [x] `styles/tokens.css` e `base.css` conforme **seção 10.2** (clean, simples, mobile-first, breakpoints 640/1024, alvos de toque ≥ 44 px, fonte do sistema)
+- [x] Componentes **somente os que o dashboard usa**, nos níveis corretos: átomos (Button, Input, Badge, Spinner...), moléculas (SearchBox, Pagination, PriceTag, StockBadge...), organismos (Header, ProductList com tabela no desktop e cards no mobile), template (AppShell/PageLayout), página (DashboardPage). Estados de carregando, vazio e erro (com tentar novamente)
+- [x] **REST client** (`lib/api/http-client.ts`) conforme **seção 11.1**: timeout, cancelamento, retry só em métodos idempotentes e nas condições definidas (rede, 408, 429, 502, 503, 504), backoff exponencial com jitter, `Retry-After`, `ApiError` tipado; `products-api` com a listagem
+- [x] Roteamento mínimo (rota `/`); biblioteca validada (compatível com Svelte 5) ou fallback próprio
+- [x] Proxy do Vite para `/api` (dev)
+- [x] Testes: `http-client` completo (fake timers, RNG injetado); componentes principais (SearchBox, Pagination, ProductList) com Testing Library
 
 **Fora de escopo**: detalhe/criar/editar/excluir (T6), toasts, diálogos, modo escuro, animações elaboradas.
 
 **Critérios de aceite / verificação**
-- [ ] Dashboard lista produtos reais da API, busca com debounce, paginação de 30 por página
-- [ ] Layout sem quebra e sem scroll horizontal em **360, 768 e 1280 px** (o agente verifica de fato, por exemplo com screenshots via navegador; se não puder, diz explicitamente que não verificou)
-- [ ] Tabela vira cards no mobile; foco visível; contraste adequado
-- [ ] Nenhum componente abaixo de `pages` importa de `lib/api`
-- [ ] Lint, typecheck e testes verdes
+- [x] Dashboard lista produtos reais da API, busca com debounce, paginação de 30 por página
+- [x] Layout sem quebra e sem scroll horizontal em **360, 768 e 1280 px** (o agente verifica de fato, por exemplo com screenshots via navegador; se não puder, diz explicitamente que não verificou)
+- [x] Tabela vira cards no mobile; foco visível; contraste adequado
+- [x] Nenhum componente abaixo de `pages` importa de `lib/api`
+- [x] Lint, typecheck e testes verdes
 
 **Fechamento**
-- [ ] Revisão do usuário (**checkpoint importante**): **estética**, granularidade dos componentes, organização Atomic Design, estilo dos testes
-- [ ] Padrões do frontend registrados na seção "Padrões aprovados"
-- [ ] Commit feito: `feat(web): add design foundation, http client and product dashboard`
+- [x] Revisão do usuário (**checkpoint importante**): **estética**, granularidade dos componentes, organização Atomic Design, estilo dos testes
+- [x] Padrões do frontend registrados na seção "Padrões aprovados"
+- [x] Commit feito: `feat(web): add design foundation, http client and product dashboard`
 - [ ] Anotações para o `AI.md` registradas
 
 ---
@@ -309,10 +309,10 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - Estilo dos testes (unit, repository, rota): comportamento observável, sem mockar o que está sob teste. Repository, seed e rotas usam banco real em `:memory:` (`createTestDatabase`); rotas via Supertest sobre `createApp` (`createTestApp`); fakes só para a camada de baixo (service com repository fake, handler com service fake); logs capturados com `createLogCapture`; contagens derivadas do data set; `vi.waitFor` em vez de esperas fixas; limpeza de arquivos temporários tolerante a falha (Windows).
 - Ajustes pedidos na revisão: nenhum; padrões aprovados como implementados. Decisões acrescentadas na implementação: parâmetros com prefixo `_` podem ficar sem uso (regra do ESLint, exigida pelo `_next` do Express); `.env` opcional na raiz (o ambiente tem precedência); caminhos derivados do local do código (`getPaths`) e `DATABASE_PATH` relativo resolvido pela raiz do repositório; data set vazio é rejeitado no seed; no Windows o libsql mantém o arquivo do banco aberto após `close()` (o e2e da T7 só apaga o arquivo depois de encerrar o processo).
 
-### Frontend (definir após T5)
-- Convenção de componentes por nível (Atomic Design):
-- Padrão de acesso a dados nas páginas:
-- Padrão de estados (carregando/vazio/erro):
-- Tokens e diretrizes visuais aprovados:
-- Estilo dos testes:
-- Ajustes pedidos na revisão:
+### Frontend (aprovado na revisão da T5)
+- Convenção de componentes por nível (Atomic Design): um componente por arquivo `PascalCase.svelte` em `components/{atoms,molecules,organisms,templates,pages}`, com o teste `PascalCase.test.ts` ao lado. Props tipadas com `$props()`; eventos como *callback props* (`onclick`, `onsearch`, `onpagechange`), sem `createEventDispatcher`; conteúdo por *snippets* (`children`). Átomos repassam o resto das props ao elemento nativo (`...rest`). Só entra o que uma tela usa. Dependência só para baixo; nenhum componente abaixo de `pages` importa `lib/api` (imposto por `no-restricted-imports` no `eslint.config.js`).
+- Padrão de acesso a dados nas páginas: a página recebe a API por prop, com a real como padrão (`{ api = productsApi }: Props`), o que permite testá-la com uma API falsa sem mockar módulos. `lib/api` tem `http-client.ts` (`request` com timeout, cancelamento, retry só em idempotentes, backoff com full jitter, `Retry-After`, `ApiError` tipado) e um módulo por recurso que valida a resposta com o schema de `@vynyl/shared`. Cada nova consulta cancela a anterior com `AbortController` (função `load()` chamada por um `$effect` cujo *cleanup* aborta) e a resposta de uma requisição cancelada é ignorada. Roteamento: `lib/router.svelte.ts` (History API, `router.path` e `router.navigate`); a página é escolhida em `App.svelte`. Sem biblioteca de estado nem de fetching.
+- Padrão de estados (carregando/vazio/erro): a molécula `StatusMessage` (título, mensagem, `busy`, ação) serve aos três. Carregando (primeira carga) = `busy`, papel `status`; vazio = papel `status` com ação "Clear search" quando há busca; erro = tom `danger`, papel `alert`, sem detalhes técnicos, com "Try again" que repete a mesma consulta e recomeça do estado de carregando. Recargas depois da primeira mantêm a lista anterior com `aria-busy`.
+- Tokens e diretrizes visuais aprovados: `styles/tokens.css` é a única fonte de cores, espaçamento (4/8/12/16/24/32/48), tipografia, raios, sombras, `--tap-size` (44px) e o anel de foco; componentes usam só `var(--...)` (sem cores literais). Estilos escopados no `<style>` de cada componente, mobile-first com `min-width` em 640px e 1024px (literais, pois variáveis não valem em `@media`). Fonte do sistema, foco visível global em `base.css`, `.visually-hidden` para texto só de leitor de tela. Um teste verifica o contraste WCAG dos pares de token (4,5:1 texto, 3:1 foco). Lista: cartões abaixo de 640px, tabela a partir de 640px, marca e SKU a partir de 1024px.
+- Estilo dos testes: Vitest + Testing Library (`fireEvent`, sem `user-event`), consultas por papel e nome acessível. `http-client` e páginas com fake timers e `fetch`/API falsos, RNG injetado e promessas controladas à mão (`deferred`) para ordem de respostas; sem esperas reais. Ajudante `src/test/snippet.ts` para passar `children`. CSS responsivo não é verificável em jsdom, então layout é conferido em navegador real. Foi verificado em Electron (Cypress) em 360, 768 e 1280px com um spec descartável; o e2e permanente é da T7.
+- Ajustes pedidos na revisão: nenhum; padrões aprovados como implementados. Decisões acrescentadas na implementação: roteador próprio (uma rota, sem dependência nova; a T6 o estende com rotas parametrizadas); tabela e cartões renderizados em dobro com `display: none` alternando (mantém a semântica de tabela); faixas de estoque do `StockBadge` (0 esgotado, 1–10 baixo, acima de 10 em estoque) são escolha de apresentação, não do contrato; no Vitest o `tokens.css` só é legível com `css.include` configurado.
