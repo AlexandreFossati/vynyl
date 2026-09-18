@@ -24,7 +24,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 
 **Tarefas** (ordem de execução; detalhes nas seções abaixo)
 - [x] **T1** `scaffold-monorepo` — estrutura vazia + tooling + schema/migration + data set · P0 · checkpoint: 1º commit da estrutura
-- [ ] **T2** `api-list-products` — **primeiro endpoint completo** (`GET /api/products`) com toda a fundação e testes · P0 · **checkpoint: define o padrão da API**
+- [x] **T2** `api-list-products` — **primeiro endpoint completo** (`GET /api/products`) com toda a fundação e testes · P0 · **checkpoint: define o padrão da API**
 - [ ] **T3** `api-products-remaining` — demais endpoints obrigatórios seguindo o padrão · P0
 - [ ] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
 - [ ] **T5** `web-foundation-dashboard` — design system mínimo + REST client (retry/backoff) + **primeira página** · P0/P1 · **checkpoint: define o padrão do frontend**
@@ -34,7 +34,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [ ] **T9** `optional-endpoints` — ordenação e categorias · P2 · só se sobrar tempo
 
 **Padrões aprovados** (seção no fim deste arquivo)
-- [ ] Padrões da API registrados (após a revisão de T2)
+- [x] Padrões da API registrados (após a revisão de T2)
 - [ ] Padrões do frontend registrados (após a revisão de T5)
 
 ## Como trabalhar cada tarefa
@@ -87,14 +87,14 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Implementar de ponta a ponta o endpoint `GET /api/products` (lista com paginação e busca), incluindo toda a fundação do backend e testes. O resultado define o padrão que os demais endpoints seguirão.
 
 **Escopo (inclui)**
-- [ ] **`packages/shared`**: schema do produto (resposta), schema de entrada usado para validar o data set no seed, schema da query de listagem (`limit` padrão 30, máx. 100, `offset` padrão 0, `q` opcional com trim), tipo da resposta paginada `{ data, total, limit, offset }`, enum de códigos de erro e schema do envelope de erro, constantes (limites)
-- [ ] **Config**: env validada com Zod (porta, caminho do DB, nível de log); falha rápida no boot
-- [ ] **Logger**: pino + request id (`pino-http`), sem dados sensíveis
-- [ ] **DB**: conexão `@libsql/client` via `drizzle-orm/libsql` (URL `file:`) com pragmas (WAL, foreign keys, busy timeout); migrations aplicadas programaticamente no start; **seed idempotente** a partir de `data/products.json` (valida com Zod, converte preço para centavos, só insere se a tabela estiver vazia)
-- [ ] **Camadas** (uma por arquivo, seguindo a seção 4): `routes`, `handlers`, `services`, `repositories` (consulta com `LIKE` escapado em `title`/`description`, contagem total, ordenação `id ASC`), `mappers` (linha ↔ DTO, centavos ↔ decimal, `meta`)
-- [ ] **Middleware**: `validate` (Zod para query/params/body), **error handler central** + `AppError` (códigos da seção 7), 404 para rota inexistente
-- [ ] `createApp(deps)` e `server.ts` (listen). Sem graceful shutdown ainda (T4)
-- [ ] **Testes** (Vitest): mapper; service com repository falso; repository contra SQLite em memória com migrations; rotas via Supertest; config inválida; seed idempotente
+- [x] **`packages/shared`**: schema do produto (resposta), schema de entrada usado para validar o data set no seed, schema da query de listagem (`limit` padrão 30, máx. 100, `offset` padrão 0, `q` opcional com trim), tipo da resposta paginada `{ data, total, limit, offset }`, enum de códigos de erro e schema do envelope de erro, constantes (limites)
+- [x] **Config**: env validada com Zod (porta, caminho do DB, nível de log); falha rápida no boot
+- [x] **Logger**: pino + request id (`pino-http`), sem dados sensíveis
+- [x] **DB**: conexão `@libsql/client` via `drizzle-orm/libsql` (URL `file:`) com pragmas (WAL, foreign keys, busy timeout); migrations aplicadas programaticamente no start; **seed idempotente** a partir de `data/products.json` (valida com Zod, converte preço para centavos, só insere se a tabela estiver vazia)
+- [x] **Camadas** (uma por arquivo, seguindo a seção 4): `routes`, `handlers`, `services`, `repositories` (consulta com `LIKE` escapado em `title`/`description`, contagem total, ordenação `id ASC`), `mappers` (linha ↔ DTO, centavos ↔ decimal, `meta`)
+- [x] **Middleware**: `validate` (Zod para query/params/body), **error handler central** + `AppError` (códigos da seção 7), 404 para rota inexistente
+- [x] `createApp(deps)` e `server.ts` (listen). Sem graceful shutdown ainda (T4)
+- [x] **Testes** (Vitest): mapper; service com repository falso; repository contra SQLite em memória com migrations; rotas via Supertest; config inválida; seed idempotente
 
 **Fora de escopo**: demais endpoints, rate limit, `/health`, graceful shutdown, singleflight, frontend, serving da SPA.
 
@@ -104,17 +104,17 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - Resposta da listagem no formato `{ data, total, limit, offset }`.
 
 **Critérios de aceite / verificação**
-- [ ] `GET /api/products` retorna 30 itens por padrão com o seed de 40+; `limit`/`offset` funcionam; `total` correto
-- [ ] `q` é case-insensitive e busca em título **e** descrição; `%`/`_` não viram curinga
-- [ ] Entradas inválidas (`limit=0`, `limit=101`, `offset=-1`, `limit=abc`) → 400 no formato de erro padronizado; rota inexistente → 404 `NOT_FOUND`; erro inesperado → 500 sem vazar detalhes
-- [ ] Reiniciar o servidor não duplica o seed
-- [ ] Lint, typecheck e testes passam
-- [ ] O agente **executou o servidor e chamou o endpoint** (não só testes) e mostrou o resultado
+- [x] `GET /api/products` retorna 30 itens por padrão com o seed de 40+; `limit`/`offset` funcionam; `total` correto
+- [x] `q` é case-insensitive e busca em título **e** descrição; `%`/`_` não viram curinga
+- [x] Entradas inválidas (`limit=0`, `limit=101`, `offset=-1`, `limit=abc`) → 400 no formato de erro padronizado; rota inexistente → 404 `NOT_FOUND`; erro inesperado → 500 sem vazar detalhes
+- [x] Reiniciar o servidor não duplica o seed
+- [x] Lint, typecheck e testes passam
+- [x] O agente **executou o servidor e chamou o endpoint** (não só testes) e mostrou o resultado
 
 **Fechamento**
-- [ ] Revisão do usuário (**checkpoint importante**): separação das camadas, nomes, injeção de dependências, estilo dos testes, formato de erro, organização dos schemas em `shared`, uso de logs. **Tudo que for ajustado aqui vira padrão**
-- [ ] Padrões da API registrados na seção "Padrões aprovados"
-- [ ] Commit feito: `feat(api): add paginated product listing with search`
+- [x] Revisão do usuário (**checkpoint importante**): separação das camadas, nomes, injeção de dependências, estilo dos testes, formato de erro, organização dos schemas em `shared`, uso de logs. **Tudo que for ajustado aqui vira padrão**
+- [x] Padrões da API registrados na seção "Padrões aprovados"
+- [x] Commit feito: `feat(api): add paginated product listing with search`
 - [ ] Anotações para o `AI.md` registradas
 
 ---
@@ -300,14 +300,14 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 
 > Preencher **após a revisão de T2** (backend) e **após a de T5** (frontend). Agentes das tarefas seguintes devem tratar esta seção como obrigatória. Enquanto estiver vazia, valem as seções 4 e 10 do guia.
 
-### API (definir após T2)
-- Convenção de nomes de arquivos/funções por camada:
-- Como as dependências são injetadas:
-- Padrão de validação (onde e como):
-- Padrão de erros de domínio → resposta HTTP:
-- Padrão de logs:
-- Estilo dos testes (unit, repository, rota):
-- Ajustes pedidos na revisão:
+### API (aprovado na revisão da T2)
+- Convenção de nomes de arquivos/funções por camada: arquivos em `kebab-case` com o sufixo da camada, em pastas de topo (`products.repository.ts`, `.service.ts`, `.handler.ts`, `.routes.ts`, `.mapper.ts`). Cada camada é uma função fábrica `createXxx(deps)` que devolve uma interface exportada (`ProductsRepository`, `ProductsService`, `ProductsHandler`). Testes `*.test.ts` ao lado do código; ajudantes de teste em `src/test/`. Novo recurso = um arquivo por camada, seguindo o mesmo padrão.
+- Como as dependências são injetadas: por parâmetro, em um objeto (`{ productsRepository }`), sem singletons de módulo. Só `server.ts` (raiz de composição) lê o ambiente e cria recursos reais; `createApp({ db, logger })` compõe repository → service → handler → router.
+- Padrão de validação (onde e como): middleware `validate({ query, params, body })` na rota, com schemas Zod de `@vynyl/shared` (`strictObject`: chave desconhecida ou parâmetro repetido → 400). O resultado fica em `res.locals.validated` e é lido com `getValidated<T>(res, source)`; nunca reescrever `req.query` (somente leitura no Express 5). Erros viram `details: [{ path, message }]`.
+- Padrão de erros de domínio → resposta HTTP: lançar `AppError(code, message, { details, cause })`; o status vem do mapa exaustivo `STATUS_BY_CODE`. O `error-handler` central é o único ponto que responde erros (envelope `{ error: { code, message, details? } }`); erros 5xx e não esperados respondem `INTERNAL_ERROR` genérico e são logados por completo com `req.log.error`. Handlers async não precisam de `try/catch` (Express 5). Rota sem correspondência → `NOT_FOUND`.
+- Padrão de logs: `pino` via `createLogger`; um log por requisição (`pino-http`) com `X-Request-Id` (reaproveita `[A-Za-z0-9_-]{1,64}`, senão UUID) e nível por status (info/warn/error). Serializers em **lista de permissão** (id, método, URL, status): nunca headers nem corpos. Sem `console.*`.
+- Estilo dos testes (unit, repository, rota): comportamento observável, sem mockar o que está sob teste. Repository, seed e rotas usam banco real em `:memory:` (`createTestDatabase`); rotas via Supertest sobre `createApp` (`createTestApp`); fakes só para a camada de baixo (service com repository fake, handler com service fake); logs capturados com `createLogCapture`; contagens derivadas do data set; `vi.waitFor` em vez de esperas fixas; limpeza de arquivos temporários tolerante a falha (Windows).
+- Ajustes pedidos na revisão: nenhum; padrões aprovados como implementados. Decisões acrescentadas na implementação: parâmetros com prefixo `_` podem ficar sem uso (regra do ESLint, exigida pelo `_next` do Express); `.env` opcional na raiz (o ambiente tem precedência); caminhos derivados do local do código (`getPaths`) e `DATABASE_PATH` relativo resolvido pela raiz do repositório; data set vazio é rejeitado no seed; no Windows o libsql mantém o arquivo do banco aberto após `close()` (o e2e da T7 só apaga o arquivo depois de encerrar o processo).
 
 ### Frontend (definir após T5)
 - Convenção de componentes por nível (Atomic Design):

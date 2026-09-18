@@ -21,6 +21,17 @@ export default defineConfig([
   tseslint.configs.recommended,
   svelte.configs.recommended,
 
+  // An underscore prefix marks a deliberately unused parameter. Express identifies error
+  // handlers by their four parameters, so `_next` has to be declared even when it is not used.
+  {
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+    },
+  },
+
   // Parse TypeScript inside <script lang="ts"> blocks.
   {
     files: ['**/*.svelte', '**/*.svelte.ts'],
