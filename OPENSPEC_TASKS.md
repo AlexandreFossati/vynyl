@@ -276,7 +276,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 
 **Fechamento**
 - [ ] Revisão do usuário
-- [ ] Commit feito: `docs: add README and AI notes`
+- [x] Commit feito: `docs: add README and AI notes`
 
 ---
 
