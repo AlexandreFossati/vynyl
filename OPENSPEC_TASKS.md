@@ -29,7 +29,7 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 - [x] **T4** `api-operability-and-scale` — rate limit, `/health`, graceful shutdown, singleflight · P1
 - [x] **T5** `web-foundation-dashboard` — design system mínimo + REST client (retry/backoff) + **primeira página** · P0/P1 · **checkpoint: define o padrão do frontend**
 - [x] **T6** `web-product-pages` — detalhe, criar, editar, excluir · P0
-- [ ] **T7** `e2e-and-serving` — Express serve a SPA, `npm start`, Cypress · P0
+- [x] **T7** `e2e-and-serving` — Express serve a SPA, `npm start`, Cypress · P0
 - [ ] **T8** `docs-readme-ai` — README.md e AI.md finais, verificação em clone limpo · P0
 - [ ] ~~**T9** `optional-endpoints` — ordenação e categorias · P2 · só se sobrar tempo~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
 
@@ -248,11 +248,12 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Fora de escopo**: CI (ver guia, seção 15), Docker.
 
 **Critérios de aceite**
-- [ ] Em clone limpo, `npm install` + `npm start` abre a aplicação funcional em `localhost:3000` no Windows — servidor, HTML, assets e API verificados em clone limpo (`npm ci` + `npm start`, com `curl`); falta o usuário abrir no navegador
+- [x] Em clone limpo, `npm install` + `npm start` abre a aplicação funcional em `localhost:3000` no Windows — verificado em clone limpo (`npm start`, com `curl`) e aberto no navegador pelo usuário
 - [ ] ~~`npm run test:e2e` passa~~ — descartado pelo usuário (sem tempo); o README deve listar como não feito
 - [x] Lint, typecheck e testes verdes
 
 **Fechamento**
+- [x] Revisão do usuário
 - [x] Commit feito: `feat(api): serve the compiled SPA and add npm start`
 - [x] Anotações para o `AI.md` registradas
 
@@ -263,15 +264,15 @@ Este arquivo é o **roadmap e o painel de progresso** do projeto. O agente deve 
 **Descrição do change**: Escrever `README.md` e `AI.md` finais e validar tudo em clone limpo.
 
 **Escopo (inclui)**
-- [ ] **README.md** conforme seção 14 do guia: visão geral, requisitos (Node LTS), como rodar/testar, scripts, estrutura, decisões de produto, premissas, questões em aberto, **feature extra** (problema, quem usa, por quê, e a limitação do singleflight com SQLite local), o que ficou de fora e próximos passos (auth, helmet/CORS, GitHub Actions, opcionais, banco em rede para o singleflight ter efeito real)
-- [ ] **AI.md**: narrativa do fluxo (planejamento em Q&A → guia → OpenSpec → tarefas com checkpoints), ferramentas, o que funcionou bem/mal, lições; alimentado pelas anotações feitas ao fim de cada tarefa
-- [ ] **Verificação final em clone limpo**: seguir o próprio README passo a passo; conferir o `DELIVERABLES.md` item a item
+- [x] **README.md** conforme seção 14 do guia: visão geral, requisitos (Node LTS), como rodar/testar, scripts, estrutura, decisões de produto, premissas, questões em aberto, **feature extra** (problema, quem usa, por quê, e a limitação do singleflight com SQLite local), o que ficou de fora e próximos passos (auth, helmet/CORS, GitHub Actions, opcionais, banco em rede para o singleflight ter efeito real)
+- [x] **AI.md**: narrativa do fluxo (planejamento em Q&A → guia → OpenSpec → tarefas com checkpoints), ferramentas, o que funcionou bem/mal, lições; alimentado pelas anotações feitas ao fim de cada tarefa
+- [x] **Verificação final em clone limpo**: seguir o próprio README passo a passo; conferir o `DELIVERABLES.md` item a item
 
 **Fora de escopo**: código novo, salvo correções necessárias descobertas na verificação.
 
 **Critérios de aceite**
-- [ ] Um dev que não conhece o projeto consegue rodar seguindo só o README
-- [ ] Todos os itens de `DELIVERABLES.md` estão atendidos ou explicitamente justificados
+- [x] Um dev que não conhece o projeto consegue rodar seguindo só o README
+- [x] Todos os itens de `DELIVERABLES.md` estão atendidos ou explicitamente justificados
 
 **Fechamento**
 - [ ] Revisão do usuário
