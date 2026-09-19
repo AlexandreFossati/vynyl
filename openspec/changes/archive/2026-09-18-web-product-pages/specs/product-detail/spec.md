@@ -2,39 +2,39 @@
 
 ## Purpose
 
-Mostrar todas as informações de um produto em uma tela própria, com os caminhos para editá-lo, excluí-lo e voltar ao catálogo, e tratar com clareza o produto inexistente e as falhas.
+Show all of a product's information on a screen of its own, with the paths to edit it, delete it and go back to the catalog, and clearly handle the nonexistent product and failures.
 
 ## ADDED Requirements
 
-### Requirement: Detalhe de um produto
-Ao abrir `/products/:id`, a SPA SHALL pedir o produto à API e exibir seu título (como título principal da página), descrição, categoria, marca, SKU, preço, estoque, peso e as datas de criação e de última atualização. A tela SHALL oferecer o link "Back to products" (para `/`), o link "Edit" (para `/products/:id/edit`) e o botão "Delete".
+### Requirement: Detail of a product
+On opening `/products/:id`, the SPA SHALL ask the API for the product and display its title (as the page's main heading), description, category, brand, SKU, price, stock, weight and the creation and last update dates. The screen SHALL offer the "Back to products" link (to `/`), the "Edit" link (to `/products/:id/edit`) and the "Delete" button.
 
-#### Scenario: Produto existente
-- **WHEN** o usuário abre `/products/1` e a API devolve o produto 1
-- **THEN** a tela mostra todos os campos do produto, o link "Back to products", o link "Edit" apontando para `/products/1/edit` e o botão "Delete"
+#### Scenario: Existing product
+- **WHEN** the user opens `/products/1` and the API returns product 1
+- **THEN** the screen shows all of the product's fields, the "Back to products" link, the "Edit" link pointing to `/products/1/edit` and the "Delete" button
 
-#### Scenario: Chegada pela lista
-- **WHEN** o usuário aciona o título de um produto na lista do dashboard
-- **THEN** a SPA abre o detalhe desse produto sem recarregar a página
+#### Scenario: Arrival from the list
+- **WHEN** the user activates a product's title in the dashboard list
+- **THEN** the SPA opens that product's detail without reloading the page
 
-### Requirement: Estados do detalhe
-Enquanto a resposta não chega, a tela SHALL mostrar um indicador de carregamento. Se a requisição falhar, SHALL mostrar uma mensagem de erro anunciada a tecnologias assistivas (`role="alert"`), sem detalhes técnicos, com a ação "Try again", que repete a mesma requisição. Se o produto não existir (`404` `PRODUCT_NOT_FOUND`), SHALL mostrar a mensagem "Product not found" com a ação "Back to products".
+### Requirement: Detail states
+While the response has not arrived, the screen SHALL show a loading indicator. If the request fails, it SHALL show an error message announced to assistive technologies (`role="alert"`), with no technical details, with the "Try again" action, which repeats the same request. If the product does not exist (`404` `PRODUCT_NOT_FOUND`), it SHALL show the message "Product not found" with the "Back to products" action.
 
-#### Scenario: Carregando
-- **WHEN** a resposta ainda não chegou
-- **THEN** a tela mostra o indicador de carregamento
+#### Scenario: Loading
+- **WHEN** the response has not arrived yet
+- **THEN** the screen shows the loading indicator
 
-#### Scenario: Falha e nova tentativa
-- **WHEN** a requisição falha e o usuário aciona "Try again"
-- **THEN** a mesma requisição é feita de novo e, ao ter sucesso, o produto aparece
+#### Scenario: Failure and retry
+- **WHEN** the request fails and the user activates "Try again"
+- **THEN** the same request is made again and, on success, the product appears
 
-#### Scenario: Produto inexistente
-- **WHEN** a API responde `404` com `PRODUCT_NOT_FOUND`
-- **THEN** a tela mostra "Product not found" e a ação "Back to products", que leva a `/`
+#### Scenario: Nonexistent product
+- **WHEN** the API responds `404` with `PRODUCT_NOT_FOUND`
+- **THEN** the screen shows "Product not found" and the "Back to products" action, which leads to `/`
 
-### Requirement: Somente o resultado mais recente é exibido
-Ao trocar o produto exibido ou sair da tela, a SPA SHALL cancelar a requisição em andamento e SHALL ignorar qualquer resposta que não seja a da requisição mais recente.
+### Requirement: Only the most recent result is displayed
+When switching the displayed product or leaving the screen, the SPA SHALL cancel the in-flight request and SHALL ignore any response that is not that of the most recent request.
 
-#### Scenario: Troca de produto com resposta atrasada
-- **WHEN** o usuário passa do produto 1 para o produto 2 e a resposta do produto 1 chega depois
-- **THEN** a tela mostra apenas o produto 2
+#### Scenario: Product switch with a late response
+- **WHEN** the user goes from product 1 to product 2 and product 1's response arrives later
+- **THEN** the screen shows only product 2

@@ -2,38 +2,38 @@
 
 ## Purpose
 
-Evitar trabalho duplicado quando várias requisições idênticas de leitura chegam ao mesmo tempo, executando a consulta uma única vez e compartilhando o resultado (singleflight), sem manter cache.
+Avoid duplicated work when several identical read requests arrive at the same time, running the query only once and sharing the result (singleflight), without keeping a cache.
 
 ## Requirements
 
-### Requirement: Leituras concorrentes idênticas compartilham uma execução
-Quando várias chamadas de leitura idênticas (mesma operação e mesmos parâmetros) estão em andamento ao mesmo tempo, a consulta SHALL executar uma única vez e todas as chamadas SHALL receber o mesmo resultado. Isso SHALL valer para obter um produto por `id` e para a listagem (com o mesmo `limit`, `offset` e `q`). Chamadas com parâmetros diferentes SHALL NOT ser coalescidas.
+### Requirement: Identical concurrent reads share one execution
+When several identical read calls (same operation and same parameters) are in flight at the same time, the query SHALL run only once and all the calls SHALL receive the same result. This SHALL apply to getting a product by `id` and to the listing (with the same `limit`, `offset` and `q`). Calls with different parameters SHALL NOT be coalesced.
 
-#### Scenario: Chamadas simultâneas idênticas
-- **WHEN** cinco leituras da listagem com os mesmos parâmetros começam enquanto a primeira ainda não terminou
-- **THEN** a consulta ao banco é executada uma vez e as cinco recebem o mesmo resultado
+#### Scenario: Identical simultaneous calls
+- **WHEN** five listing reads with the same parameters start while the first has not finished
+- **THEN** the database query runs once and all five receive the same result
 
-#### Scenario: Parâmetros diferentes
-- **WHEN** leituras simultâneas usam `id` diferentes, ou `limit`/`offset`/`q` diferentes
-- **THEN** cada combinação executa sua própria consulta
+#### Scenario: Different parameters
+- **WHEN** simultaneous reads use different `id`s, or different `limit`/`offset`/`q`
+- **THEN** each combination runs its own query
 
-### Requirement: Sem cache
-O resultado SHALL ser compartilhado apenas entre chamadas simultâneas. Depois que a execução termina, uma nova chamada idêntica SHALL executar a consulta novamente.
+### Requirement: No cache
+The result SHALL be shared only among simultaneous calls. After the execution finishes, a new identical call SHALL run the query again.
 
-#### Scenario: Chamadas em sequência
-- **WHEN** uma leitura termina e, depois, outra idêntica é feita
-- **THEN** a consulta é executada de novo
+#### Scenario: Calls in sequence
+- **WHEN** a read finishes and, afterwards, another identical one is made
+- **THEN** the query runs again
 
-### Requirement: Erros são compartilhados e não ficam presos
-Se a execução compartilhada falhar, todas as chamadas que a aguardavam SHALL receber o mesmo erro, e a chave SHALL ser liberada para que a próxima chamada tente de novo.
+### Requirement: Errors are shared and do not get stuck
+If the shared execution fails, all the calls that were waiting on it SHALL receive the same error, and the key SHALL be released so that the next call tries again.
 
-#### Scenario: Falha compartilhada
-- **WHEN** a consulta falha enquanto várias chamadas idênticas aguardam
-- **THEN** todas rejeitam com o mesmo erro e uma chamada posterior executa a consulta novamente
+#### Scenario: Shared failure
+- **WHEN** the query fails while several identical calls are waiting
+- **THEN** all reject with the same error and a later call runs the query again
 
-### Requirement: Escritas nunca são coalescidas
-Criar, atualizar e remover produtos SHALL executar sempre, uma vez por chamada, mesmo que idênticas e simultâneas.
+### Requirement: Writes are never coalesced
+Creating, updating and removing products SHALL always run, once per call, even if identical and simultaneous.
 
-#### Scenario: Duas criações simultâneas
-- **WHEN** duas criações idênticas chegam ao mesmo tempo
-- **THEN** o repositório é chamado duas vezes (a segunda pode falhar por SKU duplicado, como esperado)
+#### Scenario: Two simultaneous creations
+- **WHEN** two identical creations arrive at the same time
+- **THEN** the repository is called twice (the second may fail due to a duplicate SKU, as expected)

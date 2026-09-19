@@ -2,21 +2,21 @@
 
 ## Purpose
 
-Permitir que operadores e orquestradores verifiquem, sem autenticação, se a API está viva e consegue falar com o banco de dados.
+Allow operators and orchestrators to verify, without authentication, whether the API is alive and can talk to the database.
 
 ## ADDED Requirements
 
-### Requirement: Endpoint de saúde
-`GET /health` (fora do prefixo `/api`) SHALL responder `200` com o corpo `{ "status": "ok" }` quando o banco de dados responde a uma consulta, e `503` com `{ "status": "unavailable" }` quando não responde. A resposta SHALL incluir `Cache-Control: no-store`, SHALL NOT usar o envelope de erro da API e SHALL NOT expor detalhes internos (mensagens de erro, caminhos, SQL). A falha SHALL ser registrada no log com o identificador da requisição.
+### Requirement: Health endpoint
+`GET /health` (outside the `/api` prefix) SHALL respond `200` with the body `{ "status": "ok" }` when the database answers a query, and `503` with `{ "status": "unavailable" }` when it does not. The response SHALL include `Cache-Control: no-store`, SHALL NOT use the API's error envelope and SHALL NOT expose internal details (error messages, paths, SQL). The failure SHALL be recorded in the log with the request identifier.
 
-#### Scenario: Banco saudável
-- **WHEN** um cliente faz `GET /health` com o banco disponível
-- **THEN** a resposta é `200` com `{ "status": "ok" }` e `Cache-Control: no-store`
+#### Scenario: Healthy database
+- **WHEN** a client calls `GET /health` with the database available
+- **THEN** the response is `200` with `{ "status": "ok" }` and `Cache-Control: no-store`
 
-#### Scenario: Banco indisponível
-- **WHEN** o banco de dados está indisponível e um cliente faz `GET /health`
-- **THEN** a resposta é `503` com `{ "status": "unavailable" }`, sem o texto do erro original, e o log contém o erro com o `X-Request-Id` da resposta
+#### Scenario: Unavailable database
+- **WHEN** the database is unavailable and a client calls `GET /health`
+- **THEN** the response is `503` with `{ "status": "unavailable" }`, without the original error text, and the log contains the error with the response's `X-Request-Id`
 
-#### Scenario: Somente leitura
-- **WHEN** um cliente usa `POST /health`
-- **THEN** a resposta é `404` `NOT_FOUND`
+#### Scenario: Read-only
+- **WHEN** a client uses `POST /health`
+- **THEN** the response is `404` `NOT_FOUND`

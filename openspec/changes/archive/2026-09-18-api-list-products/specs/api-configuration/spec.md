@@ -2,58 +2,58 @@
 
 ## Purpose
 
-Garantir que a API só inicie com uma configuração válida e explícita, falhando cedo e de forma legível quando algo estiver errado, e que o caminho do banco não dependa de onde o processo é executado.
+Ensure the API only starts with a valid, explicit configuration, failing early and readably when something is wrong, and that the database path does not depend on where the process is run.
 
 ## ADDED Requirements
 
-### Requirement: Variáveis de ambiente suportadas
-A API SHALL ler as variáveis `NODE_ENV` (`development`, `test` ou `production`; padrão `development`), `PORT` (inteiro de 1 a 65535; padrão `3000`), `DATABASE_PATH` (texto não vazio; padrão `./data/app.db`) e `LOG_LEVEL` (`fatal`, `error`, `warn`, `info`, `debug`, `trace` ou `silent`; padrão `info`). Variáveis ausentes SHALL assumir o valor padrão.
+### Requirement: Supported environment variables
+The API SHALL read the variables `NODE_ENV` (`development`, `test` or `production`; default `development`), `PORT` (integer from 1 to 65535; default `3000`), `DATABASE_PATH` (non-empty text; default `./data/app.db`) and `LOG_LEVEL` (`fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`; default `info`). Missing variables SHALL take the default value.
 
-#### Scenario: Sem nenhuma variável definida
-- **WHEN** a configuração é carregada de um ambiente sem nenhuma dessas variáveis
-- **THEN** o resultado é `NODE_ENV=development`, `PORT=3000`, `DATABASE_PATH=./data/app.db` e `LOG_LEVEL=info`
+#### Scenario: No variable defined
+- **WHEN** the configuration is loaded from an environment with none of these variables
+- **THEN** the result is `NODE_ENV=development`, `PORT=3000`, `DATABASE_PATH=./data/app.db` and `LOG_LEVEL=info`
 
-#### Scenario: Valores informados
-- **WHEN** o ambiente define `PORT=4000`, `LOG_LEVEL=debug` e `NODE_ENV=production`
-- **THEN** a configuração reflete esses valores, com os padrões para as demais
+#### Scenario: Values provided
+- **WHEN** the environment defines `PORT=4000`, `LOG_LEVEL=debug` and `NODE_ENV=production`
+- **THEN** the configuration reflects those values, with the defaults for the rest
 
-### Requirement: Falha rápida com configuração inválida
-Com qualquer variável inválida, a API SHALL recusar-se a iniciar: encerrar com código de saída diferente de zero **antes** de abrir o banco ou aceitar conexões, exibindo uma mensagem que nomeia cada variável inválida e o motivo, sem stack trace.
+### Requirement: Fail fast on invalid configuration
+With any invalid variable, the API SHALL refuse to start: exit with a non-zero exit code **before** opening the database or accepting connections, showing a message that names each invalid variable and the reason, with no stack trace.
 
-#### Scenario: Porta inválida
-- **WHEN** a API é iniciada com `PORT=abc`
-- **THEN** o processo encerra com código diferente de zero, a mensagem menciona `PORT`, e nenhum arquivo de banco é criado
+#### Scenario: Invalid port
+- **WHEN** the API is started with `PORT=abc`
+- **THEN** the process exits with a non-zero code, the message mentions `PORT`, and no database file is created
 
-#### Scenario: Porta fora do intervalo
-- **WHEN** a API é iniciada com `PORT=70000`
-- **THEN** o processo encerra com código diferente de zero mencionando `PORT`
+#### Scenario: Port out of range
+- **WHEN** the API is started with `PORT=70000`
+- **THEN** the process exits with a non-zero code mentioning `PORT`
 
-#### Scenario: Várias variáveis inválidas
-- **WHEN** a API é iniciada com `PORT=abc` e `LOG_LEVEL=verbose`
-- **THEN** a mensagem de erro lista `PORT` e `LOG_LEVEL`, cada uma com seu motivo
+#### Scenario: Several invalid variables
+- **WHEN** the API is started with `PORT=abc` and `LOG_LEVEL=verbose`
+- **THEN** the error message lists `PORT` and `LOG_LEVEL`, each with its reason
 
-### Requirement: Arquivo .env opcional
-Se existir um arquivo `.env` na raiz do repositório, a API SHALL carregar seus valores como variáveis de ambiente, sem sobrescrever variáveis já definidas no ambiente do processo. A ausência do arquivo SHALL NOT ser um erro.
+### Requirement: Optional .env file
+If a `.env` file exists at the repository root, the API SHALL load its values as environment variables, without overwriting variables already defined in the process environment. The absence of the file SHALL NOT be an error.
 
-#### Scenario: Valor vindo do .env
-- **WHEN** o `.env` define `PORT=4100` e o ambiente não define `PORT`
-- **THEN** a API escuta na porta 4100
+#### Scenario: Value coming from .env
+- **WHEN** the `.env` defines `PORT=4100` and the environment does not define `PORT`
+- **THEN** the API listens on port 4100
 
-#### Scenario: Ambiente tem precedência
-- **WHEN** o `.env` define `PORT=4100` e o ambiente do processo define `PORT=4200`
-- **THEN** a API escuta na porta 4200
+#### Scenario: Environment takes precedence
+- **WHEN** the `.env` defines `PORT=4100` and the process environment defines `PORT=4200`
+- **THEN** the API listens on port 4200
 
-#### Scenario: Sem arquivo .env
-- **WHEN** não existe `.env` na raiz
-- **THEN** a API inicia normalmente com as variáveis do ambiente e os padrões
+#### Scenario: No .env file
+- **WHEN** there is no `.env` at the root
+- **THEN** the API starts normally with the environment variables and the defaults
 
-### Requirement: Caminho do banco independente do diretório de trabalho
-Um `DATABASE_PATH` relativo SHALL ser resolvido a partir da raiz do repositório, e não do diretório de trabalho do processo. Um caminho absoluto SHALL ser respeitado e o valor especial `:memory:` SHALL indicar um banco em memória. Se o diretório do arquivo de banco não existir, a API SHALL criá-lo.
+### Requirement: Database path independent of the working directory
+A relative `DATABASE_PATH` SHALL be resolved from the repository root, not from the process's working directory. An absolute path SHALL be respected and the special value `:memory:` SHALL indicate an in-memory database. If the database file's directory does not exist, the API SHALL create it.
 
-#### Scenario: Mesmo arquivo de qualquer diretório
-- **WHEN** a API é iniciada uma vez a partir da raiz do repositório e outra a partir de `apps/api`, ambas com o `DATABASE_PATH` padrão
-- **THEN** as duas usam o mesmo arquivo `data/app.db` na raiz do repositório
+#### Scenario: Same file from any directory
+- **WHEN** the API is started once from the repository root and once from `apps/api`, both with the default `DATABASE_PATH`
+- **THEN** both use the same `data/app.db` file at the repository root
 
-#### Scenario: Diretório do banco inexistente
-- **WHEN** `DATABASE_PATH` aponta para um arquivo dentro de um diretório que ainda não existe
-- **THEN** o diretório é criado e o banco é aberto normalmente
+#### Scenario: Nonexistent database directory
+- **WHEN** `DATABASE_PATH` points to a file inside a directory that does not exist yet
+- **THEN** the directory is created and the database is opened normally

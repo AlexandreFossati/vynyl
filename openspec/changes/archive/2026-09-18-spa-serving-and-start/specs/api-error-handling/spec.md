@@ -2,13 +2,13 @@
 
 ## MODIFIED Requirements
 
-### Requirement: Rota inexistente
-Qualquer requisição sob `/api` que não corresponda a uma rota existente, em qualquer método e caminho, SHALL receber `404` com o código `NOT_FOUND` no envelope padronizado, e não uma página de erro em HTML nem o `index.html` da SPA. Fora de `/api`, o mesmo vale quando a SPA não está compilada; com a SPA compilada, os caminhos que ela atende seguem a capability `spa-serving`, e os demais (outros métodos, arquivos inexistentes) continuam recebendo `404` com `NOT_FOUND`.
+### Requirement: Nonexistent route
+Any request under `/api` that does not match an existing route, in any method and path, SHALL receive `404` with the code `NOT_FOUND` in the standardized envelope, and not an HTML error page or the SPA's `index.html`. Outside `/api`, the same applies when the SPA is not built; with the SPA built, the paths it serves follow the `spa-serving` capability, and the others (other methods, nonexistent files) keep receiving `404` with `NOT_FOUND`.
 
-#### Scenario: Caminho desconhecido sob a API
-- **WHEN** um cliente faz `GET /api/does-not-exist`
-- **THEN** a resposta é `404` com `error.code` igual a `NOT_FOUND`
+#### Scenario: Unknown path under the API
+- **WHEN** a client calls `GET /api/does-not-exist`
+- **THEN** the response is `404` with `error.code` equal to `NOT_FOUND`
 
-#### Scenario: Caminho fora da API
-- **WHEN** um cliente faz `GET /qualquer-coisa` e a SPA não está compilada
-- **THEN** a resposta é `404` com `error.code` igual a `NOT_FOUND`
+#### Scenario: Path outside the API
+- **WHEN** a client calls `GET /qualquer-coisa` and the SPA is not built
+- **THEN** the response is `404` with `error.code` equal to `NOT_FOUND`

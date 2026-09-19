@@ -2,92 +2,92 @@
 
 ## Purpose
 
-Permitir criar e editar produtos pela interface com um formulário único, validado no cliente com as mesmas regras da API e capaz de mostrar, no campo certo, os erros que o servidor devolve.
+Allow creating and editing products through the interface with a single form, validated on the client with the same rules as the API and able to show, on the right field, the errors the server returns.
 
 ## ADDED Requirements
 
-### Requirement: Formulário compartilhado de criação e edição
-`/products/new` SHALL mostrar o formulário vazio e `/products/:id/edit` SHALL carregar o produto e mostrar o mesmo formulário preenchido com seus valores. O formulário SHALL ter um campo, com rótulo visível, para cada um de: título, descrição, categoria, preço, estoque, marca, SKU e peso. `id` e `meta` SHALL NOT aparecer. Na edição, os estados de carregamento, falha (com "Try again") e produto inexistente SHALL ser os mesmos do detalhe.
+### Requirement: Shared create and edit form
+`/products/new` SHALL show the empty form and `/products/:id/edit` SHALL load the product and show the same form filled with its values. The form SHALL have a field, with a visible label, for each of: title, description, category, price, stock, brand, SKU and weight. `id` and `meta` SHALL NOT appear. On edit, the loading, failure (with "Try again") and nonexistent product states SHALL be the same as on the detail page.
 
-#### Scenario: Criar
-- **WHEN** o usuário abre `/products/new`
-- **THEN** o formulário aparece com todos os campos vazios e a ação "Create product"
+#### Scenario: Create
+- **WHEN** the user opens `/products/new`
+- **THEN** the form appears with all fields empty and the "Create product" action
 
-#### Scenario: Editar
-- **WHEN** o usuário abre `/products/1/edit` e a API devolve o produto 1
-- **THEN** o formulário aparece preenchido com os valores do produto e a ação "Save changes"
+#### Scenario: Edit
+- **WHEN** the user opens `/products/1/edit` and the API returns product 1
+- **THEN** the form appears filled with the product's values and the "Save changes" action
 
-#### Scenario: Editar produto inexistente
-- **WHEN** a API responde `404` `PRODUCT_NOT_FOUND` ao carregar o produto
-- **THEN** a tela mostra "Product not found" e a ação "Back to products"
+#### Scenario: Edit nonexistent product
+- **WHEN** the API responds `404` `PRODUCT_NOT_FOUND` when loading the product
+- **THEN** the screen shows "Product not found" and the "Back to products" action
 
-### Requirement: Validação no cliente com o schema compartilhado
-Ao enviar, o formulário SHALL validar os valores com o schema de criação de produto de `@vynyl/shared` (as mesmas regras da API) antes de qualquer requisição. Cada campo inválido SHALL mostrar sua mensagem junto ao campo, o campo SHALL ser marcado como inválido (`aria-invalid`) e associado à mensagem (`aria-describedby`), e o foco SHALL ir para o primeiro campo inválido. Campo em branco SHALL mostrar "Required"; preço, estoque e peso que não são números SHALL mostrar uma mensagem própria. Nenhuma requisição SHALL ser feita enquanto houver erro. Espaços nas pontas dos textos SHALL ser ignorados.
+### Requirement: Client-side validation with the shared schema
+On submit, the form SHALL validate the values with the product creation schema from `@vynyl/shared` (the same rules as the API) before any request. Each invalid field SHALL show its message next to the field, the field SHALL be marked invalid (`aria-invalid`) and associated with the message (`aria-describedby`), and focus SHALL go to the first invalid field. A blank field SHALL show "Required"; price, stock and weight that are not numbers SHALL show a message of their own. No request SHALL be made while there is an error. Spaces at the ends of the texts SHALL be ignored.
 
-#### Scenario: Envio com campos inválidos
-- **WHEN** o usuário envia o formulário vazio
-- **THEN** todos os campos obrigatórios mostram "Required", nenhuma requisição é feita e o foco vai para o primeiro campo
+#### Scenario: Submit with invalid fields
+- **WHEN** the user submits the empty form
+- **THEN** all required fields show "Required", no request is made and focus goes to the first field
 
-#### Scenario: Regras do produto
-- **WHEN** o usuário informa preço com três casas decimais, estoque negativo, categoria com maiúsculas ou SKU com letras minúsculas
-- **THEN** cada campo mostra a mensagem da regra violada e nenhuma requisição é feita
+#### Scenario: Product rules
+- **WHEN** the user enters a price with three decimal places, negative stock, a category with uppercase letters or a SKU with lowercase letters
+- **THEN** each field shows the message of the violated rule and no request is made
 
-#### Scenario: Valor não numérico
-- **WHEN** o usuário informa `abc` no preço
-- **THEN** o campo do preço mostra uma mensagem pedindo um número
+#### Scenario: Non-numeric value
+- **WHEN** the user enters `abc` in the price
+- **THEN** the price field shows a message asking for a number
 
-#### Scenario: Valores válidos
-- **WHEN** o usuário envia valores válidos (com espaços nas pontas do título)
-- **THEN** a requisição é feita com os valores convertidos e aparados
+#### Scenario: Valid values
+- **WHEN** the user submits valid values (with spaces at the ends of the title)
+- **THEN** the request is made with the converted and trimmed values
 
-### Requirement: Criar e salvar
-Ao enviar valores válidos em `/products/new`, a SPA SHALL criar o produto na API (`POST` com todos os campos). Ao enviar valores válidos em `/products/:id/edit`, SHALL atualizá-lo (`PATCH` com todos os campos). Em ambos os casos, com sucesso, SHALL mostrar um toast de sucesso e navegar para o detalhe do produto (o recém-criado, ou o editado). Durante o envio, o botão de envio SHALL ficar desabilitado e indicar que está salvando, de modo que um segundo envio não seja possível.
+### Requirement: Create and save
+When submitting valid values at `/products/new`, the SPA SHALL create the product in the API (`POST` with all fields). When submitting valid values at `/products/:id/edit`, it SHALL update it (`PATCH` with all fields). In both cases, on success, it SHALL show a success toast and navigate to the product's detail page (the newly created one, or the edited one). During submission, the submit button SHALL be disabled and indicate that it is saving, so that a second submission is not possible.
 
-#### Scenario: Criação bem-sucedida
-- **WHEN** o usuário envia o formulário de criação válido e a API responde `201`
-- **THEN** aparece o toast "Product created" e a SPA abre `/products/<id do novo produto>`
+#### Scenario: Successful creation
+- **WHEN** the user submits the valid create form and the API responds `201`
+- **THEN** the toast "Product created" appears and the SPA opens `/products/<id of the new product>`
 
-#### Scenario: Edição bem-sucedida
-- **WHEN** o usuário envia o formulário de edição válido e a API responde `200`
-- **THEN** aparece o toast "Product updated" e a SPA abre o detalhe do produto
+#### Scenario: Successful edit
+- **WHEN** the user submits the valid edit form and the API responds `200`
+- **THEN** the toast "Product updated" appears and the SPA opens the product's detail page
 
-#### Scenario: Envio em andamento
-- **WHEN** o usuário envia o formulário e a resposta ainda não chegou
-- **THEN** o botão de envio está desabilitado, indica "Saving…" e um novo clique não gera outra requisição
+#### Scenario: Submission in progress
+- **WHEN** the user submits the form and the response has not arrived yet
+- **THEN** the submit button is disabled, indicates "Saving…" and a new click does not generate another request
 
-### Requirement: Erros devolvidos pela API
-Se a API responder `409` `SKU_CONFLICT`, o formulário SHALL mostrar a mensagem no campo do SKU, manter todos os valores digitados e mover o foco para o SKU. Se responder `400` `VALIDATION_ERROR` com `details`, SHALL mostrar cada mensagem no campo correspondente; um `path` que não é um campo do formulário SHALL virar um toast de erro. Qualquer outra falha SHALL mostrar um toast de erro sem detalhes técnicos, manter os valores digitados e reabilitar o envio. Se a edição receber `404` `PRODUCT_NOT_FOUND` (o produto foi removido), SHALL mostrar um toast de erro e voltar ao dashboard.
+### Requirement: Errors returned by the API
+If the API responds `409` `SKU_CONFLICT`, the form SHALL show the message on the SKU field, keep all the typed values and move focus to the SKU. If it responds `400` `VALIDATION_ERROR` with `details`, it SHALL show each message on the corresponding field; a `path` that is not a form field SHALL become an error toast. Any other failure SHALL show an error toast with no technical details, keep the typed values and re-enable submission. If the edit receives `404` `PRODUCT_NOT_FOUND` (the product was removed), it SHALL show an error toast and go back to the dashboard.
 
-#### Scenario: SKU duplicado
-- **WHEN** a API responde `409` `SKU_CONFLICT` ao salvar
-- **THEN** o campo SKU mostra que o SKU já existe, os demais valores permanecem, o foco está no SKU e o botão volta a ficar habilitado
+#### Scenario: Duplicate SKU
+- **WHEN** the API responds `409` `SKU_CONFLICT` when saving
+- **THEN** the SKU field shows that the SKU already exists, the other values remain, focus is on the SKU and the button becomes enabled again
 
-#### Scenario: Validação do servidor
-- **WHEN** a API responde `400` com `details` apontando `price`
-- **THEN** a mensagem aparece no campo do preço
+#### Scenario: Server validation
+- **WHEN** the API responds `400` with `details` pointing to `price`
+- **THEN** the message appears on the price field
 
-#### Scenario: Falha de rede
-- **WHEN** o envio falha por erro de rede ou `5xx`
-- **THEN** aparece um toast de erro genérico, os valores permanecem e o usuário pode enviar de novo
+#### Scenario: Network failure
+- **WHEN** submission fails due to a network error or `5xx`
+- **THEN** a generic error toast appears, the values remain and the user can submit again
 
-#### Scenario: Produto removido durante a edição
-- **WHEN** a API responde `404` `PRODUCT_NOT_FOUND` ao salvar
-- **THEN** aparece um toast de erro e a SPA volta ao dashboard
+#### Scenario: Product removed during editing
+- **WHEN** the API responds `404` `PRODUCT_NOT_FOUND` when saving
+- **THEN** an error toast appears and the SPA goes back to the dashboard
 
-### Requirement: Cancelar
-O formulário SHALL ter a ação "Cancel", que volta ao dashboard (criação) ou ao detalhe do produto (edição) sem enviar nada.
+### Requirement: Cancel
+The form SHALL have the "Cancel" action, which goes back to the dashboard (create) or to the product's detail page (edit) without sending anything.
 
-#### Scenario: Cancelar a criação
-- **WHEN** o usuário aciona "Cancel" em `/products/new`
-- **THEN** a SPA abre `/` e nenhuma requisição de escrita é feita
+#### Scenario: Cancel creation
+- **WHEN** the user activates "Cancel" at `/products/new`
+- **THEN** the SPA opens `/` and no write request is made
 
-#### Scenario: Cancelar a edição
-- **WHEN** o usuário aciona "Cancel" em `/products/1/edit`
-- **THEN** a SPA abre `/products/1` e nenhuma requisição de escrita é feita
+#### Scenario: Cancel editing
+- **WHEN** the user activates "Cancel" at `/products/1/edit`
+- **THEN** the SPA opens `/products/1` and no write request is made
 
-### Requirement: Layout responsivo do formulário
-O formulário SHALL usar uma coluna abaixo de 640 px e duas colunas a partir de 640 px (título e descrição ocupam a largura toda), com controles de pelo menos 44 px de altura e sem rolagem horizontal em 360, 768 e 1280 px.
+### Requirement: Responsive form layout
+The form SHALL use one column below 640 px and two columns from 640 px (title and description take the full width), with controls at least 44 px tall and no horizontal scrolling at 360, 768 and 1280 px.
 
-#### Scenario: Mobile e desktop
-- **WHEN** a largura é de 360 px e depois de 1280 px
-- **THEN** os campos aparecem em uma coluna e em duas colunas, respectivamente, sem rolagem horizontal
+#### Scenario: Mobile and desktop
+- **WHEN** the width is 360 px and then 1280 px
+- **THEN** the fields appear in one column and in two columns, respectively, with no horizontal scrolling

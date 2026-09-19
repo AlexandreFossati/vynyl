@@ -2,37 +2,37 @@
 
 ## Why
 
-O repositório contém apenas documentos de planejamento. Todas as tarefas seguintes (API, SPA, testes, `npm start`) dependem de uma base comum: monorepo instalável, tooling validado, banco de dados com schema versionado e o data set que alimenta a aplicação. Fixar isso primeiro, **sem lógica de aplicação**, permite revisar a estrutura em um commit isolado (T1 do `OPENSPEC_TASKS.md`) antes de construir sobre ela, e detectar cedo problemas de instalação em Windows (`@libsql/client`, Cypress) e incompatibilidades entre versões de pacotes.
+The repository contains only planning documents. All the following tasks (API, SPA, tests, `npm start`) depend on a common base: an installable monorepo, validated tooling, a database with a versioned schema and the data set that feeds the application. Fixing this first, **with no application logic**, allows reviewing the structure in an isolated commit (T1 of `OPENSPEC_TASKS.md`) before building on top of it, and detecting early installation problems on Windows (`@libsql/client`, Cypress) and incompatibilities between package versions.
 
 ## What Changes
 
-- Criar o monorepo com npm workspaces: `apps/api`, `apps/web` e `packages/shared`, com scripts de raiz multiplataforma (`lint`, `typecheck`, `test`, `format`, `build`, `dev`).
-- Fixar o runtime (`.nvmrc` + `engines`) e configurar TypeScript estrito, ESLint e Prettier em uma configuração única na raiz.
-- Criar o esqueleto de pastas de cada pacote conforme a seção 3 do guia (camadas da API e níveis do Atomic Design), com arquivos placeholder mínimos e sem lógica.
-- Criar um `App.svelte` mínimo que apenas renderiza o título, para provar que a toolchain do frontend funciona.
-- Configurar Vitest (api, web e shared), Testing Library no web e o Cypress (`cypress.config.ts`, sem specs).
-- Instalar as dependências já decididas no guia, fechando o `package-lock.json`, e validar a instalação em Windows.
-- Definir o schema Drizzle da tabela `products` (com constraints e índice) e gerar/versionar a migration inicial em `apps/api/drizzle/`, com o script `db:generate`.
-- Criar o data set `data/products.json` (40+ produtos) no formato do template do PDF.
-- Criar `.gitignore` e `.env.example`.
+- Create the monorepo with npm workspaces: `apps/api`, `apps/web` and `packages/shared`, with cross-platform root scripts (`lint`, `typecheck`, `test`, `format`, `build`, `dev`).
+- Pin the runtime (`.nvmrc` + `engines`) and configure strict TypeScript, ESLint and Prettier in a single configuration at the root.
+- Create the folder skeleton of each package per section 3 of the guide (API layers and Atomic Design levels), with minimal placeholder files and no logic.
+- Create a minimal `App.svelte` that only renders the title, to prove the frontend toolchain works.
+- Configure Vitest (api, web and shared), Testing Library in web and Cypress (`cypress.config.ts`, no specs).
+- Install the dependencies already decided in the guide, closing the `package-lock.json`, and validate the installation on Windows.
+- Define the Drizzle schema of the `products` table (with constraints and index) and generate/version the initial migration in `apps/api/drizzle/`, with the `db:generate` script.
+- Create the `data/products.json` data set (40+ products) in the PDF template's format.
+- Create `.gitignore` and `.env.example`.
 
-**Fora de escopo** (T2 em diante): app Express, handlers, schemas Zod, seed, config/logger, componentes, tokens de design, CI e README final. Nenhuma alteração de comportamento de produto é introduzida.
+**Out of scope** (T2 onward): Express app, handlers, Zod schemas, seed, config/logger, components, design tokens, CI and final README. No product behavior change is introduced.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `monorepo-workspace`: estrutura do repositório, pacotes do workspace, scripts de raiz, versão do runtime, verificações estáticas (lint, tipos, testes) e regras de arquivos ignorados/versionados.
-- `product-database-schema`: estrutura da tabela `products`, suas restrições de integridade e índice, e a migration versionada que a cria.
-- `product-dataset`: contrato do data set inicial de produtos (`data/products.json`) que será carregado pela aplicação.
+- `monorepo-workspace`: repository structure, workspace packages, root scripts, runtime version, static checks (lint, types, tests) and ignored/versioned file rules.
+- `product-database-schema`: structure of the `products` table, its integrity constraints and index, and the versioned migration that creates it.
+- `product-dataset`: contract of the initial product data set (`data/products.json`) that will be loaded by the application.
 
 ### Modified Capabilities
 
-<!-- Nenhuma: openspec/specs/ está vazio, não há capabilities existentes. -->
+<!-- None: openspec/specs/ is empty, there are no existing capabilities. -->
 
 ## Impact
 
-- **Código**: nenhum código de aplicação. Apenas configuração, placeholders, o schema Drizzle (`apps/api/src/db/schema.ts`), a migration SQL gerada e o JSON de dados.
-- **Dependências**: todas as decididas na seção 2 do guia (Express 5, Drizzle ORM/Kit, `@libsql/client`, Zod, pino, pino-http, express-rate-limit, Svelte 5, Vite, Vitest, Testing Library, Cypress, ESLint, Prettier, TypeScript etc.), mais `tsup` (bundle da API), `tsx` (execução em desenvolvimento) e `concurrently` (script `dev` na raiz). Versões e restrições de compatibilidade estão no `design.md`.
-- **Riscos que motivam a ordem**: o `latest` de alguns pacotes é incompatível com o restante do tooling (ex.: TypeScript 7 não é aceito pelo `typescript-eslint` nem pelo `svelte-check`); o download do binário do Cypress pesa no `npm install`; e o `better-sqlite3` v13 tenta compilar via `node-gyp` ao instalar a partir do lockfile, o que motivou o uso do `@libsql/client` (ver `design.md`, D16).
-- **Documentação**: o progresso é refletido no `OPENSPEC_TASKS.md`; nenhuma decisão do `PROJECT_GUIDE.md` é alterada por este change, apenas detalhadas no `design.md`.
+- **Code**: no application code. Only configuration, placeholders, the Drizzle schema (`apps/api/src/db/schema.ts`), the generated SQL migration and the data JSON.
+- **Dependencies**: all those decided in section 2 of the guide (Express 5, Drizzle ORM/Kit, `@libsql/client`, Zod, pino, pino-http, express-rate-limit, Svelte 5, Vite, Vitest, Testing Library, Cypress, ESLint, Prettier, TypeScript etc.), plus `tsup` (API bundle), `tsx` (development execution) and `concurrently` (root `dev` script). Versions and compatibility constraints are in `design.md`.
+- **Risks that motivate the order**: the `latest` of some packages is incompatible with the rest of the tooling (e.g. TypeScript 7 is not accepted by `typescript-eslint` or `svelte-check`); downloading the Cypress binary weighs on `npm install`; and `better-sqlite3` v13 tries to compile via `node-gyp` when installing from the lockfile, which motivated the use of `@libsql/client` (see `design.md`, D16).
+- **Documentation**: progress is reflected in `OPENSPEC_TASKS.md`; no decision in `PROJECT_GUIDE.md` is changed by this change, only detailed in `design.md`.

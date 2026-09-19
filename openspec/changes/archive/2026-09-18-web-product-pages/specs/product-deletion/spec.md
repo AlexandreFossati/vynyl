@@ -2,55 +2,55 @@
 
 ## Purpose
 
-Permitir excluir um produto pelo detalhe, com uma confirmação explícita que evita a remoção acidental e é utilizável por teclado e leitor de tela.
+Allow deleting a product from the detail page, with an explicit confirmation that prevents accidental removal and is usable by keyboard and screen reader.
 
 ## ADDED Requirements
 
-### Requirement: Confirmação antes de excluir
-Ao acionar "Delete" no detalhe, a SPA SHALL abrir um diálogo modal com o título "Delete product?", o nome do produto, e as ações "Delete" (confirmar) e "Cancel". Nenhuma requisição de remoção SHALL ser feita antes da confirmação. "Cancel" SHALL fechar o diálogo sem remover nada.
+### Requirement: Confirmation before deleting
+When activating "Delete" on the detail page, the SPA SHALL open a modal dialog with the title "Delete product?", the product's name, and the actions "Delete" (confirm) and "Cancel". No removal request SHALL be made before confirmation. "Cancel" SHALL close the dialog without removing anything.
 
-#### Scenario: Abrir o diálogo
-- **WHEN** o usuário aciona "Delete" no detalhe de um produto
-- **THEN** o diálogo aparece com o título "Delete product?" e o nome do produto, e nenhuma requisição de remoção foi feita
+#### Scenario: Open the dialog
+- **WHEN** the user activates "Delete" on a product's detail page
+- **THEN** the dialog appears with the title "Delete product?" and the product's name, and no removal request has been made
 
-#### Scenario: Cancelar
-- **WHEN** o usuário aciona "Cancel"
-- **THEN** o diálogo fecha, o produto permanece na tela e nenhuma requisição de remoção é feita
+#### Scenario: Cancel
+- **WHEN** the user activates "Cancel"
+- **THEN** the dialog closes, the product stays on screen and no removal request is made
 
-### Requirement: Foco e teclado no diálogo
-O diálogo SHALL ser modal: ao abrir, o foco inicial SHALL ficar em "Cancel" (a ação segura), o foco SHALL permanecer dentro do diálogo enquanto ele está aberto e SHALL voltar ao botão que o abriu ao fechar. A tecla Esc SHALL cancelar o diálogo, exceto enquanto a remoção está em andamento. O diálogo SHALL ter nome acessível (o título) e SHALL ocupar a tela toda abaixo de 640 px.
+### Requirement: Focus and keyboard in the dialog
+The dialog SHALL be modal: on opening, the initial focus SHALL be on "Cancel" (the safe action), focus SHALL stay inside the dialog while it is open and SHALL return to the button that opened it on closing. The Esc key SHALL cancel the dialog, except while removal is in progress. The dialog SHALL have an accessible name (the title) and SHALL take up the whole screen below 640 px.
 
-#### Scenario: Esc cancela
-- **WHEN** o diálogo está aberto e o usuário pressiona Esc
-- **THEN** o diálogo fecha sem remover o produto e o foco volta ao botão "Delete" da página
+#### Scenario: Esc cancels
+- **WHEN** the dialog is open and the user presses Esc
+- **THEN** the dialog closes without removing the product and focus returns to the page's "Delete" button
 
-#### Scenario: Foco inicial
-- **WHEN** o diálogo abre
-- **THEN** o foco está em "Cancel"
+#### Scenario: Initial focus
+- **WHEN** the dialog opens
+- **THEN** focus is on "Cancel"
 
-#### Scenario: Reabrir depois do Esc
-- **WHEN** o usuário fecha o diálogo com Esc e aciona "Delete" de novo
-- **THEN** o diálogo abre outra vez
+#### Scenario: Reopen after Esc
+- **WHEN** the user closes the dialog with Esc and activates "Delete" again
+- **THEN** the dialog opens again
 
-#### Scenario: Foco preso
-- **WHEN** o usuário pressiona Tab mais vezes do que o diálogo tem controles
-- **THEN** o foco nunca vai para um controle da página que está atrás dele
+#### Scenario: Trapped focus
+- **WHEN** the user presses Tab more times than the dialog has controls
+- **THEN** focus never goes to a page control behind it
 
-### Requirement: Excluir
-Ao confirmar, a SPA SHALL remover o produto na API. Durante a remoção, as ações do diálogo SHALL ficar desabilitadas. Com sucesso (`204`), SHALL mostrar o toast "Product deleted" e navegar para `/`. Se a API responder `404` `PRODUCT_NOT_FOUND`, SHALL mostrar um toast de erro informando que o produto não existe mais e navegar para `/`. Qualquer outra falha SHALL fechar o diálogo, mostrar um toast de erro sem detalhes técnicos e manter o usuário no detalhe.
+### Requirement: Delete
+On confirming, the SPA SHALL remove the product in the API. During removal, the dialog's actions SHALL be disabled. On success (`204`), it SHALL show the toast "Product deleted" and navigate to `/`. If the API responds `404` `PRODUCT_NOT_FOUND`, it SHALL show an error toast saying the product no longer exists and navigate to `/`. Any other failure SHALL close the dialog, show an error toast with no technical details and keep the user on the detail page.
 
-#### Scenario: Exclusão bem-sucedida
-- **WHEN** o usuário confirma e a API responde `204`
-- **THEN** aparece o toast "Product deleted" e a SPA abre `/`
+#### Scenario: Successful deletion
+- **WHEN** the user confirms and the API responds `204`
+- **THEN** the toast "Product deleted" appears and the SPA opens `/`
 
-#### Scenario: Remoção em andamento
-- **WHEN** o usuário confirma e a resposta ainda não chegou
-- **THEN** as ações do diálogo estão desabilitadas e Esc não fecha o diálogo
+#### Scenario: Removal in progress
+- **WHEN** the user confirms and the response has not arrived yet
+- **THEN** the dialog's actions are disabled and Esc does not close the dialog
 
-#### Scenario: Produto já removido
-- **WHEN** a API responde `404` `PRODUCT_NOT_FOUND` à remoção
-- **THEN** aparece um toast de erro e a SPA abre `/`
+#### Scenario: Product already removed
+- **WHEN** the API responds `404` `PRODUCT_NOT_FOUND` to the removal
+- **THEN** an error toast appears and the SPA opens `/`
 
-#### Scenario: Falha na remoção
-- **WHEN** a remoção falha por erro de rede ou `5xx`
-- **THEN** o diálogo fecha, aparece um toast de erro e o detalhe do produto continua na tela
+#### Scenario: Removal failure
+- **WHEN** removal fails due to a network error or `5xx`
+- **THEN** the dialog closes, an error toast appears and the product detail page stays on screen

@@ -2,122 +2,122 @@
 
 ## Purpose
 
-Isolar em um único lugar a comunicação HTTP da SPA com a API, tornando-a resiliente a falhas transitórias sem nunca duplicar uma escrita e entregando erros tipados ao resto da aplicação.
+Isolate in a single place the SPA's HTTP communication with the API, making it resilient to transient failures without ever duplicating a write and delivering typed errors to the rest of the application.
 
 ## Requirements
 
-### Requirement: Requisições JSON
-O cliente SHALL expor uma função de requisição que recebe o caminho, o método (padrão `GET`), parâmetros de consulta, um corpo opcional e um `AbortSignal` opcional. Parâmetros indefinidos SHALL ser omitidos da URL, um corpo SHALL ser enviado como JSON com `Content-Type: application/json`, uma resposta `2xx` com corpo SHALL ser devolvida já interpretada como JSON, e uma resposta `204` SHALL resultar em `undefined`.
+### Requirement: JSON requests
+The client SHALL expose a request function that receives the path, the method (default `GET`), query parameters, an optional body and an optional `AbortSignal`. Undefined parameters SHALL be omitted from the URL, a body SHALL be sent as JSON with `Content-Type: application/json`, a `2xx` response with a body SHALL be returned already parsed as JSON, and a `204` response SHALL result in `undefined`.
 
-#### Scenario: Consulta e resposta
-- **WHEN** o cliente faz `GET /api/products` com `limit=30`, `offset=0` e `q` indefinido
-- **THEN** a URL pedida contém `limit=30&offset=0`, não contém `q`, e o resultado é o JSON da resposta
+#### Scenario: Query and response
+- **WHEN** the client makes `GET /api/products` with `limit=30`, `offset=0` and `q` undefined
+- **THEN** the requested URL contains `limit=30&offset=0`, does not contain `q`, and the result is the response's JSON
 
-#### Scenario: Corpo JSON
-- **WHEN** o cliente faz `POST` com um objeto como corpo
-- **THEN** o corpo enviado é o JSON do objeto com `Content-Type: application/json`
+#### Scenario: JSON body
+- **WHEN** the client makes a `POST` with an object as the body
+- **THEN** the body sent is the object's JSON with `Content-Type: application/json`
 
-### Requirement: Erros tipados
-Toda falha SHALL ser sinalizada com um `ApiError` que traz `status`, `code`, `message` e, quando existirem, `details`. Uma resposta fora de `2xx` com o envelope de erro da API SHALL preservar o `code`, a `message` e os `details` do envelope. Sem o envelope, o `code` SHALL ser `UNKNOWN`. Falha de rede SHALL ter `status` `0` e `code` `NETWORK_ERROR`; estouro do tempo limite SHALL ter `status` `0` e `code` `TIMEOUT`; resposta `2xx` cujo corpo não é JSON válido SHALL ter `code` `INVALID_RESPONSE`.
+### Requirement: Typed errors
+Every failure SHALL be signaled with an `ApiError` carrying `status`, `code`, `message` and, when present, `details`. A non-`2xx` response with the API's error envelope SHALL preserve the envelope's `code`, `message` and `details`. Without the envelope, the `code` SHALL be `UNKNOWN`. A network failure SHALL have `status` `0` and `code` `NETWORK_ERROR`; a timeout SHALL have `status` `0` and `code` `TIMEOUT`; a `2xx` response whose body is not valid JSON SHALL have `code` `INVALID_RESPONSE`.
 
-#### Scenario: Envelope da API
-- **WHEN** a API responde `404` com `{ "error": { "code": "PRODUCT_NOT_FOUND", "message": "Product 9 not found" } }`
-- **THEN** o cliente rejeita com um `ApiError` de `status` 404, `code` `PRODUCT_NOT_FOUND` e a mesma mensagem
+#### Scenario: API envelope
+- **WHEN** the API responds `404` with `{ "error": { "code": "PRODUCT_NOT_FOUND", "message": "Product 9 not found" } }`
+- **THEN** the client rejects with an `ApiError` with `status` 404, `code` `PRODUCT_NOT_FOUND` and the same message
 
-#### Scenario: Resposta sem envelope
-- **WHEN** um intermediário responde `502` com um corpo HTML
-- **THEN** o cliente rejeita com um `ApiError` de `status` 502 e `code` `UNKNOWN`
+#### Scenario: Response without envelope
+- **WHEN** an intermediary responds `502` with an HTML body
+- **THEN** the client rejects with an `ApiError` with `status` 502 and `code` `UNKNOWN`
 
-#### Scenario: Falha de rede
-- **WHEN** o `fetch` rejeita por falta de conexão
-- **THEN** o cliente rejeita com um `ApiError` de `status` 0 e `code` `NETWORK_ERROR`
+#### Scenario: Network failure
+- **WHEN** `fetch` rejects due to lack of connection
+- **THEN** the client rejects with an `ApiError` with `status` 0 and `code` `NETWORK_ERROR`
 
-### Requirement: Tempo limite por tentativa
-Cada tentativa SHALL ser interrompida após o tempo limite configurado (padrão 10 s) e tratada como falha `TIMEOUT`.
+### Requirement: Per-attempt timeout
+Each attempt SHALL be interrupted after the configured timeout (default 10 s) and treated as a `TIMEOUT` failure.
 
-#### Scenario: Tentativa que não responde
-- **WHEN** o servidor não responde dentro do tempo limite
-- **THEN** a tentativa é abortada e falha com `code` `TIMEOUT`
+#### Scenario: Attempt that does not respond
+- **WHEN** the server does not respond within the timeout
+- **THEN** the attempt is aborted and fails with `code` `TIMEOUT`
 
-### Requirement: Cancelamento pelo chamador
-Quando o `AbortSignal` do chamador é acionado, o cliente SHALL rejeitar com um `AbortError`, SHALL cancelar a espera de um backoff em andamento e SHALL NOT fazer novas tentativas.
+### Requirement: Cancellation by the caller
+When the caller's `AbortSignal` is triggered, the client SHALL reject with an `AbortError`, SHALL cancel the wait of an in-progress backoff and SHALL NOT make new attempts.
 
-#### Scenario: Cancelamento durante a requisição
-- **WHEN** o chamador cancela enquanto a requisição está em andamento
-- **THEN** a promise rejeita com `AbortError` e nenhuma nova tentativa é feita
+#### Scenario: Cancellation during the request
+- **WHEN** the caller cancels while the request is in progress
+- **THEN** the promise rejects with `AbortError` and no new attempt is made
 
-#### Scenario: Cancelamento durante a espera do backoff
-- **WHEN** o chamador cancela enquanto o cliente aguarda para tentar de novo
-- **THEN** a promise rejeita com `AbortError` imediatamente
+#### Scenario: Cancellation during the backoff wait
+- **WHEN** the caller cancels while the client is waiting to try again
+- **THEN** the promise rejects with `AbortError` immediately
 
-### Requirement: Retry apenas quando seguro
-O cliente SHALL repetir uma requisição somente se o método for idempotente (`GET`, `HEAD`, `PUT` ou `DELETE`) e a falha for de rede, `TIMEOUT` ou status `408`, `429`, `502`, `503` ou `504`. `POST` e `PATCH` SHALL NOT ser repetidos. Erros `4xx` de validação ou de negócio SHALL NOT ser repetidos. O número máximo de repetições é 3 por padrão.
+### Requirement: Retry only when safe
+The client SHALL retry a request only if the method is idempotent (`GET`, `HEAD`, `PUT` or `DELETE`) and the failure is a network failure, `TIMEOUT` or status `408`, `429`, `502`, `503` or `504`. `POST` and `PATCH` SHALL NOT be retried. Validation or business `4xx` errors SHALL NOT be retried. The maximum number of retries is 3 by default.
 
-#### Scenario: Repetição até o sucesso
-- **WHEN** um `GET` recebe `503` duas vezes e depois `200`
-- **THEN** o resultado é o da resposta `200` e o `fetch` foi chamado três vezes
+#### Scenario: Retry until success
+- **WHEN** a `GET` receives `503` twice and then `200`
+- **THEN** the result is the `200` response's and `fetch` was called three times
 
-#### Scenario: Tentativas esgotadas
-- **WHEN** um `GET` recebe `503` em todas as tentativas
-- **THEN** após 1 tentativa inicial e 3 repetições o cliente rejeita com o `ApiError` da última resposta
+#### Scenario: Attempts exhausted
+- **WHEN** a `GET` receives `503` on all attempts
+- **THEN** after 1 initial attempt and 3 retries the client rejects with the `ApiError` of the last response
 
-#### Scenario: Escrita não é repetida
-- **WHEN** um `POST` recebe `503` ou sofre falha de rede
-- **THEN** o `fetch` é chamado uma única vez e o erro é devolvido
+#### Scenario: Write is not retried
+- **WHEN** a `POST` receives `503` or suffers a network failure
+- **THEN** `fetch` is called only once and the error is returned
 
-#### Scenario: Erro de validação não é repetido
-- **WHEN** um `GET` recebe `400` ou `404`
-- **THEN** o `fetch` é chamado uma única vez
+#### Scenario: Validation error is not retried
+- **WHEN** a `GET` receives `400` or `404`
+- **THEN** `fetch` is called only once
 
-### Requirement: Backoff exponencial com jitter
-A espera antes da repetição de número `n` (a partir de 0) SHALL ser um valor aleatório uniforme entre 0 e `min(teto, base × fator^n)` (full jitter), com base 300 ms, fator 2 e teto 5 s por padrão, todos configuráveis. A fonte de aleatoriedade SHALL ser injetável para que o comportamento seja determinístico em testes.
+### Requirement: Exponential backoff with jitter
+The wait before the retry number `n` (starting at 0) SHALL be a uniform random value between 0 and `min(cap, base × factor^n)` (full jitter), with base 300 ms, factor 2 and cap 5 s by default, all configurable. The source of randomness SHALL be injectable so that behavior is deterministic in tests.
 
-#### Scenario: Espera crescente
-- **WHEN** a fonte de aleatoriedade sempre devolve 1 e ocorrem falhas repetidas
-- **THEN** as esperas antes das repetições são de 300 ms, 600 ms e 1200 ms
+#### Scenario: Increasing wait
+- **WHEN** the randomness source always returns 1 and repeated failures occur
+- **THEN** the waits before the retries are 300 ms, 600 ms and 1200 ms
 
-#### Scenario: Teto
-- **WHEN** o valor `base × fator^n` excede o teto
-- **THEN** a espera máxima é o teto
+#### Scenario: Cap
+- **WHEN** the value `base × factor^n` exceeds the cap
+- **THEN** the maximum wait is the cap
 
-### Requirement: Respeito ao Retry-After
-Quando a resposta que motivou a repetição traz `Retry-After` (em segundos ou como data HTTP), a espera SHALL ser esse valor, limitado ao teto do backoff, em vez do valor calculado.
+### Requirement: Respect for Retry-After
+When the response that prompted the retry carries `Retry-After` (in seconds or as an HTTP date), the wait SHALL be that value, limited to the backoff cap, instead of the computed value.
 
-#### Scenario: Retry-After em segundos
-- **WHEN** um `GET` recebe `429` com `Retry-After: 2`
-- **THEN** o cliente espera 2 s antes de repetir
+#### Scenario: Retry-After in seconds
+- **WHEN** a `GET` receives `429` with `Retry-After: 2`
+- **THEN** the client waits 2 s before retrying
 
-#### Scenario: Retry-After acima do teto
-- **WHEN** a resposta traz `Retry-After: 120` e o teto é de 5 s
-- **THEN** o cliente espera 5 s
+#### Scenario: Retry-After above the cap
+- **WHEN** the response carries `Retry-After: 120` and the cap is 5 s
+- **THEN** the client waits 5 s
 
-### Requirement: API de produtos
-O módulo de produtos SHALL oferecer: a listagem com `limit`, `offset` e `q` opcionais; obter um produto por `id`; criar um produto (`POST /api/products`); atualizar um produto (`PATCH /api/products/:id`); e remover um produto (`DELETE /api/products/:id`). As respostas com corpo (listagem, produto obtido, criado e atualizado) SHALL ser validadas com o schema compartilhado correspondente; uma resposta que não o satisfaz SHALL falhar com `ApiError` de `code` `INVALID_RESPONSE`. A remoção SHALL resolver sem valor. Todas as operações SHALL aceitar um sinal de cancelamento e SHALL deixar passar, sem alteração, as falhas do cliente HTTP (incluindo o envelope de erro `409` e `400` com `details`).
+### Requirement: Products API
+The products module SHALL offer: the listing with optional `limit`, `offset` and `q`; getting a product by `id`; creating a product (`POST /api/products`); updating a product (`PATCH /api/products/:id`); and removing a product (`DELETE /api/products/:id`). Responses with a body (listing, product obtained, created and updated) SHALL be validated with the corresponding shared schema; a response that does not satisfy it SHALL fail with `ApiError` with `code` `INVALID_RESPONSE`. Removal SHALL resolve with no value. All operations SHALL accept a cancellation signal and SHALL let the HTTP client's failures pass through unchanged (including the `409` error envelope and `400` with `details`).
 
-#### Scenario: Listagem válida
-- **WHEN** a API devolve uma página de produtos conforme o contrato
-- **THEN** a função resolve com `data`, `total`, `limit` e `offset`
+#### Scenario: Valid listing
+- **WHEN** the API returns a page of products per the contract
+- **THEN** the function resolves with `data`, `total`, `limit` and `offset`
 
-#### Scenario: Resposta fora do contrato
-- **WHEN** a API devolve um corpo que não satisfaz o schema
-- **THEN** a função rejeita com `ApiError` `INVALID_RESPONSE`
+#### Scenario: Response outside the contract
+- **WHEN** the API returns a body that does not satisfy the schema
+- **THEN** the function rejects with `ApiError` `INVALID_RESPONSE`
 
-#### Scenario: Obter um produto
-- **WHEN** a função de obter é chamada com o `id` 7 e a API devolve o produto
-- **THEN** a requisição é `GET /api/products/7` e a função resolve com o produto
+#### Scenario: Get a product
+- **WHEN** the get function is called with `id` 7 and the API returns the product
+- **THEN** the request is `GET /api/products/7` and the function resolves with the product
 
-#### Scenario: Criar um produto
-- **WHEN** a função de criar é chamada com os dados de um produto e a API responde `201` com o produto criado
-- **THEN** a requisição é `POST /api/products` com os dados como corpo JSON e a função resolve com o produto criado
+#### Scenario: Create a product
+- **WHEN** the create function is called with a product's data and the API responds `201` with the created product
+- **THEN** the request is `POST /api/products` with the data as the JSON body and the function resolves with the created product
 
-#### Scenario: Atualizar um produto
-- **WHEN** a função de atualizar é chamada com o `id` 7 e os dados
-- **THEN** a requisição é `PATCH /api/products/7` com os dados como corpo JSON e a função resolve com o produto atualizado
+#### Scenario: Update a product
+- **WHEN** the update function is called with `id` 7 and the data
+- **THEN** the request is `PATCH /api/products/7` with the data as the JSON body and the function resolves with the updated product
 
-#### Scenario: Remover um produto
-- **WHEN** a função de remover é chamada com o `id` 7 e a API responde `204`
-- **THEN** a requisição é `DELETE /api/products/7` e a função resolve sem valor
+#### Scenario: Remove a product
+- **WHEN** the remove function is called with `id` 7 and the API responds `204`
+- **THEN** the request is `DELETE /api/products/7` and the function resolves with no value
 
-#### Scenario: Falha da API
-- **WHEN** a API responde `409` `SKU_CONFLICT` a uma criação
-- **THEN** a função rejeita com o mesmo `ApiError` (`status` 409, `code` `SKU_CONFLICT`), sem repetir a requisição
+#### Scenario: API failure
+- **WHEN** the API responds `409` `SKU_CONFLICT` to a creation
+- **THEN** the function rejects with the same `ApiError` (`status` 409, `code` `SKU_CONFLICT`), without retrying the request

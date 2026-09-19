@@ -1,32 +1,32 @@
 # web-notifications Specification
 
 ## Purpose
-Dar feedback curto e acessível sobre o resultado das ações do usuário (sucesso ou erro) sem tirá-lo da tela em que está.
+Give short, accessible feedback on the outcome of the user's actions (success or error) without taking them off the screen they are on.
 
 ## Requirements
 
-### Requirement: Toasts de sucesso e de erro
-A SPA SHALL exibir mensagens curtas (toasts) de sucesso ou de erro em uma região `aria-live="polite"` presente em todas as telas; toasts de erro SHALL ter `role="alert"`. Mais de um toast SHALL poder ficar visível ao mesmo tempo. Os toasts SHALL sobreviver à navegação entre telas (por exemplo, o toast de "Product created" aparece já no detalhe do produto).
+### Requirement: Success and error toasts
+The SPA SHALL display short messages (toasts) of success or error in an `aria-live="polite"` region present on all screens; error toasts SHALL have `role="alert"`. More than one toast SHALL be able to be visible at the same time. Toasts SHALL survive navigation between screens (for example, the "Product created" toast already appears on the product detail page).
 
-#### Scenario: Mensagem de sucesso
-- **WHEN** uma ação termina com sucesso
-- **THEN** o toast com a mensagem aparece na região `aria-live`
+#### Scenario: Success message
+- **WHEN** an action finishes successfully
+- **THEN** the toast with the message appears in the `aria-live` region
 
-#### Scenario: Mensagem de erro
-- **WHEN** uma ação falha
-- **THEN** o toast aparece com `role="alert"`
+#### Scenario: Error message
+- **WHEN** an action fails
+- **THEN** the toast appears with `role="alert"`
 
-#### Scenario: Sobrevive à navegação
-- **WHEN** a ação navega para outra tela logo depois de mostrar o toast
-- **THEN** o toast continua visível na nova tela
+#### Scenario: Survives navigation
+- **WHEN** the action navigates to another screen right after showing the toast
+- **THEN** the toast remains visible on the new screen
 
-### Requirement: Fechamento dos toasts
-Cada toast SHALL fechar sozinho depois de um tempo (5 s para sucesso, 8 s para erro) e SHALL poder ser fechado pelo usuário com o botão "Dismiss notification", operável por teclado.
+### Requirement: Closing toasts
+Each toast SHALL close by itself after some time (5 s for success, 8 s for error) and SHALL be closable by the user with the "Dismiss notification" button, operable by keyboard.
 
-#### Scenario: Fechamento automático
-- **WHEN** passam 5 s desde a exibição de um toast de sucesso
-- **THEN** o toast desaparece
+#### Scenario: Automatic closing
+- **WHEN** 5 s pass since a success toast was displayed
+- **THEN** the toast disappears
 
-#### Scenario: Fechamento manual
-- **WHEN** o usuário aciona "Dismiss notification" em um toast
-- **THEN** somente esse toast desaparece
+#### Scenario: Manual closing
+- **WHEN** the user activates "Dismiss notification" on a toast
+- **THEN** only that toast disappears

@@ -1,3 +1,3 @@
 # docs-readme-ai
 
-README.md e AI.md finais e verificação em clone limpo (T8)
+Final README.md and AI.md and verification on a clean clone (T8)

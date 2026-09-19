@@ -2,109 +2,109 @@
 
 ## Purpose
 
-Definir o contrato HTTP da listagem de produtos, com paginação e busca, consumida pela SPA e por qualquer outro cliente da API. É o primeiro endpoint do catálogo e serve de modelo para os demais.
+Define the HTTP contract of the product listing, with pagination and search, consumed by the SPA and any other API client. It is the catalog's first endpoint and serves as a model for the others.
 
 ## ADDED Requirements
 
-### Requirement: Listagem padrão paginada
-`GET /api/products` sem parâmetros SHALL responder `200` com um objeto JSON `{ data, total, limit, offset }`. `data` é um array de produtos ordenado por `id` crescente, com no máximo `limit` itens. `limit` assume **30** e `offset` assume **0** quando omitidos. `total` é o número de produtos que satisfazem a busca, independentemente da paginação.
+### Requirement: Default paginated listing
+`GET /api/products` without parameters SHALL respond `200` with a JSON object `{ data, total, limit, offset }`. `data` is an array of products ordered by ascending `id`, with at most `limit` items. `limit` defaults to **30** and `offset` defaults to **0** when omitted. `total` is the number of products that satisfy the search, regardless of pagination.
 
-#### Scenario: Listagem padrão com o catálogo inicial
-- **WHEN** um cliente faz `GET /api/products` e o catálogo contém os 44 produtos do data set
-- **THEN** a resposta é `200`, `data` tem 30 produtos com `id` de 1 a 30 em ordem crescente, `total` é 44, `limit` é 30 e `offset` é 0
+#### Scenario: Default listing with the initial catalog
+- **WHEN** a client calls `GET /api/products` and the catalog contains the data set's 44 products
+- **THEN** the response is `200`, `data` has 30 products with `id` from 1 to 30 in ascending order, `total` is 44, `limit` is 30 and `offset` is 0
 
-#### Scenario: Catálogo vazio
-- **WHEN** um cliente faz `GET /api/products` e não há produtos cadastrados
-- **THEN** a resposta é `200` com `data` igual a `[]`, `total` igual a 0, `limit` igual a 30 e `offset` igual a 0
+#### Scenario: Empty catalog
+- **WHEN** a client calls `GET /api/products` and there are no registered products
+- **THEN** the response is `200` with `data` equal to `[]`, `total` equal to 0, `limit` equal to 30 and `offset` equal to 0
 
-### Requirement: Representação do produto
-Cada item de `data` SHALL conter exatamente os campos `id`, `title`, `description`, `category`, `price`, `stock`, `brand`, `sku`, `weight` e `meta`, onde `meta` contém `createdAt` e `updatedAt` como texto ISO 8601 UTC. `price` SHALL ser um número decimal em unidade monetária (por exemplo, `9.99`), e não em centavos. Nenhum detalhe interno de armazenamento (como nomes de colunas ou valores em centavos) SHALL ser exposto.
+### Requirement: Product representation
+Each item in `data` SHALL contain exactly the fields `id`, `title`, `description`, `category`, `price`, `stock`, `brand`, `sku`, `weight` and `meta`, where `meta` contains `createdAt` and `updatedAt` as ISO 8601 UTC text. `price` SHALL be a decimal number in monetary units (for example, `9.99`), not in cents. No internal storage detail (such as column names or values in cents) SHALL be exposed.
 
-#### Scenario: Produto do enunciado
-- **WHEN** um cliente faz `GET /api/products` e localiza o produto de `id` 1
-- **THEN** ele é `{ id: 1, title: "Large Flux Capacitor", category: "automotive", price: 9.99, stock: 42, brand: "ACME", sku: "ACM-FC-001", weight: 4, meta: { createdAt: "2025-04-30T09:41:02.053Z", updatedAt: "2025-04-30T09:41:02.053Z" } }` acompanhado de `description`, sem nenhum campo adicional
+#### Scenario: Product from the statement
+- **WHEN** a client calls `GET /api/products` and locates the product with `id` 1
+- **THEN** it is `{ id: 1, title: "Large Flux Capacitor", category: "automotive", price: 9.99, stock: 42, brand: "ACME", sku: "ACM-FC-001", weight: 4, meta: { createdAt: "2025-04-30T09:41:02.053Z", updatedAt: "2025-04-30T09:41:02.053Z" } }` accompanied by `description`, with no additional field
 
-#### Scenario: Preço em unidade monetária
-- **WHEN** um produto está armazenado com 1999 centavos
-- **THEN** a resposta expõe `price` igual a `19.99`
+#### Scenario: Price in monetary units
+- **WHEN** a product is stored with 1999 cents
+- **THEN** the response exposes `price` equal to `19.99`
 
-### Requirement: Paginação por limit e offset
-O parâmetro `limit` SHALL ser um inteiro entre 1 e 100 e `offset` um inteiro maior ou igual a 0. A resposta SHALL ecoar os valores efetivamente aplicados. Páginas consecutivas SHALL não repetir nem omitir produtos, e `total` SHALL ser o mesmo em todas as páginas de uma mesma busca. Um `offset` além do fim do resultado SHALL produzir `200` com `data` vazio.
+### Requirement: Pagination by limit and offset
+The `limit` parameter SHALL be an integer between 1 and 100 and `offset` an integer greater than or equal to 0. The response SHALL echo the values actually applied. Consecutive pages SHALL NOT repeat or omit products, and `total` SHALL be the same on all pages of the same search. An `offset` beyond the end of the result SHALL produce `200` with empty `data`.
 
-#### Scenario: Segunda página
-- **WHEN** um cliente faz `GET /api/products?limit=10&offset=10` com 44 produtos cadastrados
-- **THEN** `data` contém os produtos de `id` 11 a 20, `total` é 44, `limit` é 10 e `offset` é 10
+#### Scenario: Second page
+- **WHEN** a client calls `GET /api/products?limit=10&offset=10` with 44 registered products
+- **THEN** `data` contains the products with `id` 11 to 20, `total` is 44, `limit` is 10 and `offset` is 10
 
-#### Scenario: Última página parcial
-- **WHEN** um cliente faz `GET /api/products?offset=30` com 44 produtos cadastrados
-- **THEN** `data` contém 14 produtos (`id` de 31 a 44) e `total` é 44
+#### Scenario: Partial last page
+- **WHEN** a client calls `GET /api/products?offset=30` with 44 registered products
+- **THEN** `data` contains 14 products (`id` from 31 to 44) and `total` is 44
 
-#### Scenario: Limite máximo
-- **WHEN** um cliente faz `GET /api/products?limit=100` com 44 produtos cadastrados
-- **THEN** `data` contém os 44 produtos e `limit` é 100
+#### Scenario: Maximum limit
+- **WHEN** a client calls `GET /api/products?limit=100` with 44 registered products
+- **THEN** `data` contains all 44 products and `limit` is 100
 
-#### Scenario: Offset além do fim
-- **WHEN** um cliente faz `GET /api/products?offset=1000` com 44 produtos cadastrados
-- **THEN** a resposta é `200` com `data` igual a `[]`, `total` igual a 44 e `offset` igual a 1000
+#### Scenario: Offset beyond the end
+- **WHEN** a client calls `GET /api/products?offset=1000` with 44 registered products
+- **THEN** the response is `200` with `data` equal to `[]`, `total` equal to 44 and `offset` equal to 1000
 
-### Requirement: Validação dos parâmetros de consulta
-Parâmetros inválidos SHALL ser rejeitados com `400` e código `VALIDATION_ERROR`, sem serem corrigidos ou truncados em silêncio. São inválidos: `limit` fora de 1–100 ou que não seja um inteiro decimal simples (dígitos apenas: rejeitam-se `abc`, `1.5`, `-1`, `1e2`, `+5`, valor vazio ou com espaços); `offset` negativo ou que não seja um inteiro decimal simples; qualquer parâmetro repetido; qualquer parâmetro desconhecido; e `q` com mais de 100 caracteres. O erro SHALL identificar o parâmetro problemático em `details`.
+### Requirement: Validation of query parameters
+Invalid parameters SHALL be rejected with `400` and code `VALIDATION_ERROR`, without being silently corrected or truncated. Invalid are: `limit` outside 1–100 or that is not a plain decimal integer (digits only: `abc`, `1.5`, `-1`, `1e2`, `+5`, an empty value or one with spaces are rejected); `offset` negative or that is not a plain decimal integer; any repeated parameter; any unknown parameter; and `q` with more than 100 characters. The error SHALL identify the problematic parameter in `details`.
 
-#### Scenario: Limite zero
-- **WHEN** um cliente faz `GET /api/products?limit=0`
-- **THEN** a resposta é `400` com `error.code` igual a `VALIDATION_ERROR` e `error.details` apontando `limit`
+#### Scenario: Zero limit
+- **WHEN** a client calls `GET /api/products?limit=0`
+- **THEN** the response is `400` with `error.code` equal to `VALIDATION_ERROR` and `error.details` pointing to `limit`
 
-#### Scenario: Limite acima do máximo
-- **WHEN** um cliente faz `GET /api/products?limit=101`
-- **THEN** a resposta é `400` com `error.code` igual a `VALIDATION_ERROR` e nenhum dado é retornado
+#### Scenario: Limit above the maximum
+- **WHEN** a client calls `GET /api/products?limit=101`
+- **THEN** the response is `400` with `error.code` equal to `VALIDATION_ERROR` and no data is returned
 
-#### Scenario: Valores que não são inteiros simples
-- **WHEN** um cliente envia `limit=abc`, `limit=1.5`, `limit=1e2`, `limit=+5`, `limit=` ou `offset=-1`
-- **THEN** cada requisição recebe `400` com `error.code` igual a `VALIDATION_ERROR`
+#### Scenario: Values that are not plain integers
+- **WHEN** a client sends `limit=abc`, `limit=1.5`, `limit=1e2`, `limit=+5`, `limit=` or `offset=-1`
+- **THEN** each request receives `400` with `error.code` equal to `VALIDATION_ERROR`
 
-#### Scenario: Parâmetro repetido
-- **WHEN** um cliente faz `GET /api/products?limit=10&limit=20`
-- **THEN** a resposta é `400` com `error.code` igual a `VALIDATION_ERROR`
+#### Scenario: Repeated parameter
+- **WHEN** a client calls `GET /api/products?limit=10&limit=20`
+- **THEN** the response is `400` with `error.code` equal to `VALIDATION_ERROR`
 
-#### Scenario: Parâmetro desconhecido
-- **WHEN** um cliente faz `GET /api/products?foo=1`
-- **THEN** a resposta é `400` com `error.code` igual a `VALIDATION_ERROR`
+#### Scenario: Unknown parameter
+- **WHEN** a client calls `GET /api/products?foo=1`
+- **THEN** the response is `400` with `error.code` equal to `VALIDATION_ERROR`
 
-#### Scenario: Termo de busca longo demais
-- **WHEN** um cliente faz `GET /api/products` com `q` de 101 caracteres
-- **THEN** a resposta é `400` com `error.code` igual a `VALIDATION_ERROR` e `error.details` apontando `q`
+#### Scenario: Search term too long
+- **WHEN** a client calls `GET /api/products` with a 101-character `q`
+- **THEN** the response is `400` with `error.code` equal to `VALIDATION_ERROR` and `error.details` pointing to `q`
 
-### Requirement: Busca por texto
-O parâmetro opcional `q` SHALL filtrar os produtos cujo `title` **ou** `description` contenha `q` como substring, sem diferenciar maiúsculas de minúsculas para letras ASCII. `q` SHALL ser aparado nas extremidades; um `q` vazio ou só com espaços SHALL equivaler a nenhuma busca. Os caracteres `%`, `_` e `\` SHALL ser tratados literalmente, nunca como curingas. A busca SHALL combinar com `limit` e `offset`, e `total` SHALL refletir apenas os produtos encontrados.
+### Requirement: Text search
+The optional `q` parameter SHALL filter the products whose `title` **or** `description` contains `q` as a substring, case-insensitively for ASCII letters. `q` SHALL be trimmed at the ends; an empty or whitespace-only `q` SHALL be equivalent to no search. The characters `%`, `_` and `\` SHALL be treated literally, never as wildcards. The search SHALL combine with `limit` and `offset`, and `total` SHALL reflect only the products found.
 
-#### Scenario: Busca sem diferenciar maiúsculas
-- **WHEN** um cliente faz `GET /api/products?q=flux` e depois `GET /api/products?q=FLUX`
-- **THEN** as duas respostas têm o mesmo `total` e os mesmos produtos, todos com "flux" (em qualquer caixa) no título ou na descrição
+#### Scenario: Case-insensitive search
+- **WHEN** a client calls `GET /api/products?q=flux` and then `GET /api/products?q=FLUX`
+- **THEN** both responses have the same `total` and the same products, all with "flux" (in any case) in the title or description
 
-#### Scenario: Correspondência apenas na descrição
-- **WHEN** existe um produto cujo título não contém o termo, mas cuja descrição contém, e um cliente busca por esse termo
-- **THEN** esse produto está presente no resultado
+#### Scenario: Match only in the description
+- **WHEN** there is a product whose title does not contain the term, but whose description does, and a client searches for that term
+- **THEN** that product is present in the result
 
-#### Scenario: Busca combinada com paginação
-- **WHEN** um cliente faz `GET /api/products?q=flux&limit=5&offset=5`
-- **THEN** `data` contém até 5 produtos da segunda página dos resultados da busca, e `total` é o número total de correspondências
+#### Scenario: Search combined with pagination
+- **WHEN** a client calls `GET /api/products?q=flux&limit=5&offset=5`
+- **THEN** `data` contains up to 5 products from the second page of the search results, and `total` is the total number of matches
 
-#### Scenario: Busca sem resultados
-- **WHEN** um cliente busca por um termo que nenhum produto contém
-- **THEN** a resposta é `200` com `data` igual a `[]` e `total` igual a 0
+#### Scenario: Search with no results
+- **WHEN** a client searches for a term that no product contains
+- **THEN** the response is `200` with `data` equal to `[]` and `total` equal to 0
 
-#### Scenario: Curingas do LIKE são literais
-- **WHEN** um cliente faz `GET /api/products?q=%25` (o caractere `%`) e nenhum produto contém `%` no título ou na descrição
-- **THEN** a resposta é `200` com `data` igual a `[]` e `total` igual a 0, e não o catálogo inteiro
+#### Scenario: LIKE wildcards are literal
+- **WHEN** a client calls `GET /api/products?q=%25` (the `%` character) and no product contains `%` in the title or description
+- **THEN** the response is `200` with `data` equal to `[]` and `total` equal to 0, not the whole catalog
 
-#### Scenario: Caractere de sublinhado literal
-- **WHEN** existem produtos cujo título contém `_` e outros que não contêm, e um cliente busca por `_`
-- **THEN** somente os produtos que contêm o caractere `_` são retornados
+#### Scenario: Literal underscore character
+- **WHEN** there are products whose title contains `_` and others that do not, and a client searches for `_`
+- **THEN** only the products that contain the `_` character are returned
 
-#### Scenario: Termo vazio ou só com espaços
-- **WHEN** um cliente faz `GET /api/products?q=%20%20`
-- **THEN** a resposta é idêntica à de `GET /api/products` sem `q`
+#### Scenario: Empty or whitespace-only term
+- **WHEN** a client calls `GET /api/products?q=%20%20`
+- **THEN** the response is identical to that of `GET /api/products` without `q`
 
-#### Scenario: Termo com espaços nas extremidades
-- **WHEN** um cliente faz `GET /api/products?q=%20flux%20`
-- **THEN** a resposta é idêntica à de `GET /api/products?q=flux`
+#### Scenario: Term with spaces at the ends
+- **WHEN** a client calls `GET /api/products?q=%20flux%20`
+- **THEN** the response is identical to that of `GET /api/products?q=flux`

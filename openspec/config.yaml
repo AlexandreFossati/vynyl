@@ -11,9 +11,9 @@ context: |
   REQUIRED READING before creating any artifact:
   - PROJECT_GUIDE.md  -> source of truth for all technical decisions (stack, architecture,
     API contract, UI, extra feature, testing). It wins over any assumption.
-  - OPENSPEC_TASKS.md -> roadmap. The current task is the FIRST UNCHECKED task in "Status geral".
+  - OPENSPEC_TASKS.md -> roadmap. The current task is the FIRST UNCHECKED task in "Overall status".
     Each OpenSpec change maps to exactly one task (T1..T9); scope, out-of-scope and acceptance
-    criteria of that task must be reflected in the artifacts. Read "Padroes aprovados" too.
+    criteria of that task must be reflected in the artifacts. Read "Approved patterns" too.
   - CLAUDE.md -> agent profile (senior engineer), rules and Definition of Done.
 
   Stack summary: TypeScript, npm workspaces monorepo (apps/api, apps/web, packages/shared),

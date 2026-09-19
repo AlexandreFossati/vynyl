@@ -2,37 +2,37 @@
 
 ## Why
 
-A SPA só lista produtos (T5). O enunciado exige que a interface exercite a API inteira: ver o detalhe, criar, editar e excluir. A T6 replica na SPA os padrões aprovados na T5 (níveis Atomic Design, páginas que recebem a API por prop, estados de carregando/vazio/erro, tokens, estilo de testes) para completar o CRUD pela UI.
+The SPA only lists products (T5). The statement requires the interface to exercise the whole API: view detail, create, edit and delete. T6 replicates in the SPA the patterns approved in T5 (Atomic Design levels, pages that receive the API via a prop, loading/empty/error states, tokens, test style) to complete the CRUD through the UI.
 
 ## What Changes
 
-- **Rotas** `/products/new`, `/products/:id` e `/products/:id/edit`, além de `/`; identificador inválido cai na página de não encontrado. O roteador próprio da T5 é estendido, sem dependência nova.
-- **Detalhe do produto**: todos os campos do produto, ações "Edit" e "Delete", estados de carregando, erro (com "Try again") e produto inexistente (404).
-- **Criar e editar** com um `ProductForm` compartilhado: validação no cliente pelo **mesmo schema Zod de `@vynyl/shared`**, erro por campo, SKU duplicado (409) mostrado no campo do SKU, erros de validação do servidor (400) mostrados nos campos, botão desabilitado durante o envio, duas colunas no desktop e uma no mobile.
-- **Exclusão** com `ConfirmDialog` (elemento `<dialog>` nativo: foco preso e devolvido, tecla Esc, tela cheia no mobile).
-- **Toasts** de sucesso e erro (região `aria-live`, fechamento automático e manual) e navegação coerente depois de cada ação.
-- **`products-api`** ganha `get`, `create`, `update` e `remove`, validando as respostas com o schema compartilhado; o cliente HTTP continua sem repetir `POST` (nem `PATCH`).
-- **Navegação**: componente `Link` (navega sem recarregar), título do produto como link na lista, botão "Add product" no dashboard e marca do `Header` como link para `/`.
+- **Routes** `/products/new`, `/products/:id` and `/products/:id/edit`, besides `/`; an invalid identifier falls on the not-found page. T5's in-house router is extended, with no new dependency.
+- **Product detail**: all the product's fields, "Edit" and "Delete" actions, loading, error (with "Try again") and nonexistent product (404) states.
+- **Create and edit** with a shared `ProductForm`: client-side validation by the **same Zod schema from `@vynyl/shared`**, per-field error, duplicate SKU (409) shown on the SKU field, server validation errors (400) shown on the fields, button disabled while submitting, two columns on desktop and one on mobile.
+- **Deletion** with `ConfirmDialog` (native `<dialog>` element: trapped and returned focus, Esc key, full screen on mobile).
+- **Success and error toasts** (`aria-live` region, automatic and manual closing) and coherent navigation after each action.
+- **`products-api`** gains `get`, `create`, `update` and `remove`, validating the responses with the shared schema; the HTTP client still does not retry `POST` (nor `PATCH`).
+- **Navigation**: `Link` component (navigates without reloading), product title as a link in the list, "Add product" button on the dashboard and the `Header` brand as a link to `/`.
 
-**Fora de escopo**: qualquer feature nova de UI (ordenação, filtros, categorias, exclusão em massa, desfazer), Cypress e servir a SPA pelo Express (T7), alterações na API ou em `packages/shared`.
+**Out of scope**: any new UI feature (sorting, filters, categories, bulk deletion, undo), Cypress and serving the SPA through Express (T7), changes to the API or `packages/shared`.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `product-detail`: tela de detalhe, seus estados e a navegação a partir da lista.
-- `product-editing`: criação e edição com o formulário compartilhado, validação e erros por campo.
-- `product-deletion`: exclusão com diálogo de confirmação.
-- `web-notifications`: toasts de sucesso e erro, acessíveis.
+- `product-detail`: detail screen, its states and navigation from the list.
+- `product-editing`: creation and editing with the shared form, validation and per-field errors.
+- `product-deletion`: deletion with a confirmation dialog.
+- `web-notifications`: accessible success and error toasts.
 
 ### Modified Capabilities
 
-- `web-app-structure`: o roteamento passa a ter as rotas de produto (parametrizadas).
-- `web-http-client`: a API de produtos passa a oferecer obter, criar, atualizar e remover.
-- `product-dashboard`: cada produto da lista leva ao detalhe e o dashboard oferece "Add product".
+- `web-app-structure`: routing now has the product routes (parameterized).
+- `web-http-client`: the products API now offers get, create, update and remove.
+- `product-dashboard`: each product in the list leads to the detail page and the dashboard offers "Add product".
 
 ## Impact
 
-- **Código**: `apps/web/src` (novas páginas, organismos, moléculas e átomos; `lib/routes.ts`, `lib/toasts.svelte.ts`, `lib/product-form.ts`, `lib/product-loader.svelte.ts`; `products-api`; `App.svelte`, `Header`, `ProductList`, `DashboardPage`, `NotFoundPage`). Nenhuma alteração em `apps/api` nem em `packages/shared`. **Sem novas dependências.**
-- **Comportamento observável**: o CRUD completo funciona pela UI em `npm run dev`.
-- **Riscos**: `<dialog>` não é implementado pelo jsdom (o teste usa um polyfill mínimo; foco e Esc reais são verificados em navegador real); mensagens de validação vêm do Zod e podem soar técnicas em alguns campos; a estética é subjetiva e é o foco da revisão.
+- **Code**: `apps/web/src` (new pages, organisms, molecules and atoms; `lib/routes.ts`, `lib/toasts.svelte.ts`, `lib/product-form.ts`, `lib/product-loader.svelte.ts`; `products-api`; `App.svelte`, `Header`, `ProductList`, `DashboardPage`, `NotFoundPage`). No change to `apps/api` or `packages/shared`. **No new dependencies.**
+- **Observable behavior**: the full CRUD works through the UI in `npm run dev`.
+- **Risks**: `<dialog>` is not implemented by jsdom (the test uses a minimal polyfill; real focus and Esc are verified in a real browser); validation messages come from Zod and may sound technical in some fields; aesthetics are subjective and are the focus of the review.

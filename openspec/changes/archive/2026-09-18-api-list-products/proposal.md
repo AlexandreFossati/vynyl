@@ -2,42 +2,42 @@
 
 ## Why
 
-O repositório tem o esqueleto (T1), mas nenhuma lógica de backend. A T2 entrega o **primeiro endpoint de ponta a ponta** (`GET /api/products`, com paginação e busca) junto com toda a fundação que ele exige: configuração, logs, banco, migrations, seed, camadas, validação e tratamento de erros. Como é a tarefa-modelo do backend (`OPENSPEC_TASKS.md`), o que for decidido e aprovado aqui vira o padrão que a T3 (demais endpoints) e a T4 replicam. Por isso a revisão do usuário é um checkpoint: corrigir um padrão agora custa pouco, corrigi-lo depois de replicado custa muito.
+The repository has the skeleton (T1), but no backend logic. T2 delivers the **first end-to-end endpoint** (`GET /api/products`, with pagination and search) together with the whole foundation it requires: configuration, logs, database, migrations, seed, layers, validation and error handling. Since it is the backend model task (`OPENSPEC_TASKS.md`), what is decided and approved here becomes the pattern that T3 (remaining endpoints) and T4 replicate. That is why the user's review is a checkpoint: correcting a pattern now costs little, correcting it after it has been replicated costs a lot.
 
 ## What Changes
 
-- **`packages/shared`**: schema do produto (usado na resposta e para validar o data set no seed), schema da query de listagem (`limit`, `offset`, `q`), tipo/schema da resposta paginada `{ data, total, limit, offset }`, códigos de erro e schema do envelope de erro, constantes de limites.
-- **Fundação da API** (`apps/api/src`):
-  - configuração por variáveis de ambiente validadas, com falha rápida no boot e `.env` opcional;
-  - logger `pino` e log por request (`pino-http`) com `X-Request-Id` e sem dados sensíveis;
-  - cliente `@libsql/client` via `drizzle-orm/libsql`, migrations aplicadas no start e seed idempotente de `data/products.json`;
-  - camadas `routes → handlers → services → repositories` e `mappers` (um arquivo por camada), com injeção de dependências por parâmetro;
-  - middlewares `validate`, tratamento central de erros (`AppError`) e 404 para rota inexistente;
-  - `createApp(deps)` e o bootstrap em `server.ts`.
-- **Endpoint** `GET /api/products`: 30 itens por padrão, `limit` 1–100, `offset`, busca `q` por substring sem diferenciar maiúsculas de minúsculas em título e descrição, ordenação por `id` crescente.
-- **Testes** (Vitest): unitários por camada, repository contra SQLite em memória com as migrations, rotas via Supertest, configuração inválida e seed idempotente.
-- Remoção dos `.gitkeep` das pastas que passam a ter arquivos.
+- **`packages/shared`**: product schema (used in the response and to validate the data set in the seed), list query schema (`limit`, `offset`, `q`), paginated response type/schema `{ data, total, limit, offset }`, error codes and error envelope schema, limit constants.
+- **API foundation** (`apps/api/src`):
+  - configuration via validated environment variables, with fail fast at boot and optional `.env`;
+  - `pino` logger and per-request log (`pino-http`) with `X-Request-Id` and no sensitive data;
+  - `@libsql/client` client via `drizzle-orm/libsql`, migrations applied at start and idempotent seed of `data/products.json`;
+  - `routes → handlers → services → repositories` layers and `mappers` (one file per layer), with dependency injection by parameter;
+  - `validate` middlewares, central error handling (`AppError`) and 404 for a nonexistent route;
+  - `createApp(deps)` and the bootstrap in `server.ts`.
+- **Endpoint** `GET /api/products`: 30 items by default, `limit` 1–100, `offset`, `q` search by case-insensitive substring in title and description, ordering by ascending `id`.
+- **Tests** (Vitest): unit tests per layer, repository against in-memory SQLite with the migrations, routes via Supertest, invalid configuration and idempotent seed.
+- Removal of the `.gitkeep` files from folders that now have files.
 
-**Fora de escopo**: demais endpoints (T3), parser de JSON no corpo (entra com o primeiro `POST`, T3), rate limit, `/health`, graceful shutdown e singleflight (T4), frontend e servir a SPA (T5 a T7), ordenação e categorias (T9).
+**Out of scope**: remaining endpoints (T3), JSON body parser (comes in with the first `POST`, T3), rate limit, `/health`, graceful shutdown and singleflight (T4), frontend and serving the SPA (T5 to T7), sorting and categories (T9).
 
 ## Capabilities
 
 ### New Capabilities
 
-- `product-listing-api`: contrato HTTP de `GET /api/products`: formato da resposta, representação do produto, paginação, validação dos parâmetros e busca.
-- `api-error-handling`: envelope de erro padronizado, códigos e status, rota inexistente e erros inesperados sem vazamento de detalhes.
-- `api-configuration`: variáveis de ambiente suportadas, valores padrão, falha rápida com configuração inválida, `.env` opcional e resolução do caminho do banco.
-- `catalog-bootstrap`: migrations e seed inicial aplicados automaticamente ao iniciar, de forma idempotente e atômica.
-- `api-request-logging`: identificador de request, log estruturado por request e ausência de dados sensíveis nos logs.
+- `product-listing-api`: HTTP contract of `GET /api/products`: response format, product representation, pagination, parameter validation and search.
+- `api-error-handling`: standardized error envelope, codes and statuses, nonexistent route and unexpected errors with no leak of details.
+- `api-configuration`: supported environment variables, default values, fail fast with invalid configuration, optional `.env` and database path resolution.
+- `catalog-bootstrap`: migrations and initial seed applied automatically at startup, idempotently and atomically.
+- `api-request-logging`: request identifier, structured log per request and absence of sensitive data in the logs.
 
 ### Modified Capabilities
 
-<!-- Nenhuma: os requisitos das capabilities existentes (monorepo-workspace, product-database-schema, product-dataset) não mudam. -->
+<!-- None: the requirements of the existing capabilities (monorepo-workspace, product-database-schema, product-dataset) do not change. -->
 
 ## Impact
 
-- **Código**: `packages/shared/src` (novos módulos e testes) e `apps/api/src` (config, db, lib, middleware, mappers, repositories, services, handlers, routes, `app.ts`, `server.ts` e testes). Nenhuma alteração no schema do banco nem nas migrations.
-- **Dependências**: nenhuma nova. Passam a ser usadas as já instaladas na T1: `express`, `zod`, `pino`, `pino-http`, `@libsql/client`, `drizzle-orm`, `supertest`.
-- **Comportamento observável**: a API passa a subir em `PORT` (padrão 3000), criar `data/app.db` (ignorado pelo git) e responder `GET /api/products`.
-- **Documentação**: o progresso da T2 é refletido no `OPENSPEC_TASKS.md`; a seção "Padrões aprovados" é preenchida pelo usuário após a revisão. Nenhuma decisão do `PROJECT_GUIDE.md` é alterada; o `design.md` registra as poucas escolhas de detalhe (ex.: um único schema de produto, validação em `res.locals`).
-- **Riscos**: por ser tarefa-modelo, o maior risco é consolidar um padrão ruim. O `design.md` lista explicitamente os pontos que merecem atenção na revisão.
+- **Code**: `packages/shared/src` (new modules and tests) and `apps/api/src` (config, db, lib, middleware, mappers, repositories, services, handlers, routes, `app.ts`, `server.ts` and tests). No change to the database schema or the migrations.
+- **Dependencies**: none new. The ones already installed in T1 start being used: `express`, `zod`, `pino`, `pino-http`, `@libsql/client`, `drizzle-orm`, `supertest`.
+- **Observable behavior**: the API starts listening on `PORT` (default 3000), creates `data/app.db` (ignored by git) and responds to `GET /api/products`.
+- **Documentation**: T2's progress is reflected in `OPENSPEC_TASKS.md`; the "Approved patterns" section is filled in by the user after the review. No decision in `PROJECT_GUIDE.md` is changed; `design.md` records the few detail choices (e.g. a single product schema, validation in `res.locals`).
+- **Risks**: as it is a model task, the biggest risk is consolidating a bad pattern. `design.md` explicitly lists the points that deserve attention in the review.

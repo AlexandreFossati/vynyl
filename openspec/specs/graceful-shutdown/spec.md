@@ -2,35 +2,35 @@
 
 ## Purpose
 
-Garantir que a API encerre sem interromper requisições em andamento nem deixar o banco aberto, tanto ao receber um sinal do sistema quanto no `Ctrl+C` do desenvolvedor.
+Ensure the API shuts down without interrupting in-flight requests or leaving the database open, both when receiving a system signal and on the developer's `Ctrl+C`.
 
 ## Requirements
 
-### Requirement: Encerramento limpo por sinal
-Ao receber `SIGINT` ou `SIGTERM`, a API SHALL parar de aceitar novas conexões, aguardar a conclusão das requisições em andamento, fechar a conexão com o banco de dados e encerrar o processo com código de saída 0, registrando o início e o fim do encerramento. Durante o encerramento, novas conexões SHALL ser recusadas.
+### Requirement: Clean shutdown on signal
+On receiving `SIGINT` or `SIGTERM`, the API SHALL stop accepting new connections, wait for in-flight requests to complete, close the database connection and end the process with exit code 0, recording the start and end of the shutdown. During shutdown, new connections SHALL be refused.
 
-#### Scenario: Requisição em andamento conclui
-- **WHEN** o sinal chega enquanto uma requisição ainda está sendo atendida
-- **THEN** essa requisição recebe sua resposta completa, o banco é fechado depois dela e o processo encerra com código 0
+#### Scenario: In-flight request completes
+- **WHEN** the signal arrives while a request is still being served
+- **THEN** that request receives its complete response, the database is closed after it and the process exits with code 0
 
-#### Scenario: Novas conexões recusadas
-- **WHEN** o encerramento já começou e um cliente tenta se conectar
-- **THEN** a conexão é recusada
+#### Scenario: New connections refused
+- **WHEN** shutdown has already started and a client tries to connect
+- **THEN** the connection is refused
 
-#### Scenario: Sem requisições em andamento
-- **WHEN** o sinal chega com o servidor ocioso
-- **THEN** o processo encerra rapidamente com código 0 e o banco fechado
+#### Scenario: No in-flight requests
+- **WHEN** the signal arrives with the server idle
+- **THEN** the process exits quickly with code 0 and the database closed
 
-### Requirement: Tempo máximo de encerramento
-Se as requisições em andamento não terminarem em 10 segundos, a API SHALL encerrar as conexões restantes, registrar o encerramento forçado e sair com código diferente de zero.
+### Requirement: Maximum shutdown time
+If in-flight requests do not finish within 10 seconds, the API SHALL close the remaining connections, record the forced shutdown and exit with a non-zero code.
 
-#### Scenario: Requisição que não termina
-- **WHEN** uma requisição permanece pendente além do tempo máximo após o sinal
-- **THEN** as conexões são encerradas, o log registra o encerramento forçado e o código de saída é 1
+#### Scenario: Request that does not finish
+- **WHEN** a request remains pending beyond the maximum time after the signal
+- **THEN** the connections are closed, the log records the forced shutdown and the exit code is 1
 
-### Requirement: Encerramento único
-Sinais repetidos durante o encerramento SHALL ser ignorados: apenas um encerramento é executado. Uma falha ao encerrar SHALL ser registrada e resultar em código de saída 1.
+### Requirement: Single shutdown
+Repeated signals during shutdown SHALL be ignored: only one shutdown is executed. A failure while shutting down SHALL be recorded and result in exit code 1.
 
-#### Scenario: Sinal repetido
-- **WHEN** um segundo sinal chega enquanto o encerramento está em curso
-- **THEN** nenhum segundo encerramento é iniciado e o resultado é o mesmo de um único sinal
+#### Scenario: Repeated signal
+- **WHEN** a second signal arrives while shutdown is in progress
+- **THEN** no second shutdown is started and the result is the same as for a single signal

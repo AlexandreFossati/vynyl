@@ -2,29 +2,29 @@
 
 ## MODIFIED Requirements
 
-### Requirement: Scripts de raiz multiplataforma
-A raiz SHALL expor os scripts `lint`, `typecheck`, `test`, `format`, `build`, `dev` e `start`. Nenhum script SHALL depender de sintaxe exclusiva de um shell específico, de modo que funcionem em Windows, Linux e macOS.
+### Requirement: Cross-platform root scripts
+The root SHALL expose the scripts `lint`, `typecheck`, `test`, `format`, `build`, `dev` and `start`. No script SHALL depend on syntax exclusive to a specific shell, so that they work on Windows, Linux and macOS.
 
-#### Scenario: Verificações estáticas passam em uma árvore limpa
-- **WHEN** o desenvolvedor executa `npm run lint` e `npm run typecheck` na raiz de uma árvore sem modificações
-- **THEN** ambos terminam com código de saída 0
+#### Scenario: Static checks pass on a clean tree
+- **WHEN** the developer runs `npm run lint` and `npm run typecheck` at the root of an unmodified tree
+- **THEN** both finish with exit code 0
 
-#### Scenario: Testes sem casos ainda
-- **WHEN** o desenvolvedor executa `npm test` na raiz e nenhum pacote possui testes
-- **THEN** o comando termina com código de saída 0, sem falhar por ausência de testes
+#### Scenario: Tests with no cases yet
+- **WHEN** the developer runs `npm test` at the root and no package has tests
+- **THEN** the command finishes with exit code 0, without failing for lack of tests
 
-#### Scenario: Build de todos os pacotes
-- **WHEN** o desenvolvedor executa `npm run build` na raiz
-- **THEN** a API e a SPA são compiladas com sucesso e nenhum artefato de build é versionado
+#### Scenario: Build of all packages
+- **WHEN** the developer runs `npm run build` at the root
+- **THEN** the API and the SPA are built successfully and no build artifact is versioned
 
-#### Scenario: Modo de desenvolvimento
-- **WHEN** o desenvolvedor executa `npm run dev` na raiz
-- **THEN** os processos de desenvolvimento da API e da SPA iniciam juntos, e a SPA fica acessível em um endereço local exibido no terminal
+#### Scenario: Development mode
+- **WHEN** the developer runs `npm run dev` at the root
+- **THEN** the API and SPA development processes start together, and the SPA is reachable at a local address shown in the terminal
 
-#### Scenario: Início de um comando
-- **WHEN** o desenvolvedor executa `npm start` na raiz de um clone com as dependências instaladas e sem nenhum build anterior
-- **THEN** a API e a SPA são compiladas, o servidor sobe em `http://localhost:3000` (ou na `PORT` configurada) servindo a API e a SPA, e o log indica que está escutando
+#### Scenario: One-command start
+- **WHEN** the developer runs `npm start` at the root of a clone with dependencies installed and no previous build
+- **THEN** the API and the SPA are built, the server comes up at `http://localhost:3000` (or at the configured `PORT`) serving the API and the SPA, and the log indicates it is listening
 
-#### Scenario: Início falha se o build falha
-- **WHEN** o build de algum pacote falha durante `npm start`
-- **THEN** o servidor não é iniciado e o comando termina com código de saída diferente de 0
+#### Scenario: Start fails if the build fails
+- **WHEN** the build of some package fails during `npm start`
+- **THEN** the server is not started and the command finishes with a non-zero exit code

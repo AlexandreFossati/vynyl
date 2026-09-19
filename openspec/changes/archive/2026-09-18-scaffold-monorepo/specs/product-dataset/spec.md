@@ -2,67 +2,67 @@
 
 ## Purpose
 
-Definir o contrato do data set inicial de produtos, no formato do template do enunciado, que alimenta a aplicação e permite demonstrar paginação, busca e filtragem com dados realistas e válidos.
+Define the contract of the initial product data set, in the format of the statement's template, that feeds the application and allows demonstrating pagination, search and filtering with realistic and valid data.
 
 ## ADDED Requirements
 
-### Requirement: Formato do arquivo
-O arquivo `data/products.json` SHALL conter um array JSON válido (sem vírgulas finais, sem comentários) de objetos com exatamente os campos do template: `id`, `title`, `description`, `category`, `price`, `stock`, `brand`, `sku`, `weight` e `meta` com `createdAt` e `updatedAt`.
+### Requirement: File format
+The `data/products.json` file SHALL contain a valid JSON array (no trailing commas, no comments) of objects with exactly the template's fields: `id`, `title`, `description`, `category`, `price`, `stock`, `brand`, `sku`, `weight` and `meta` with `createdAt` and `updatedAt`.
 
-#### Scenario: JSON estritamente válido
-- **WHEN** o arquivo é lido por um parser JSON estrito
-- **THEN** a leitura conclui sem erro e o resultado é um array de objetos
+#### Scenario: Strictly valid JSON
+- **WHEN** the file is read by a strict JSON parser
+- **THEN** reading completes without error and the result is an array of objects
 
-#### Scenario: Campos exatos do template
-- **WHEN** as chaves de cada produto são inspecionadas
-- **THEN** cada produto possui exatamente as chaves do template, sem campos ausentes ou extras
+#### Scenario: Exact template fields
+- **WHEN** the keys of each product are inspected
+- **THEN** each product has exactly the template's keys, with no missing or extra fields
 
-### Requirement: Volume mínimo
-O data set SHALL conter pelo menos 40 produtos, de modo que a listagem padrão de 30 itens produza mais de uma página.
+### Requirement: Minimum volume
+The data set SHALL contain at least 40 products, so that the default listing of 30 items produces more than one page.
 
-#### Scenario: Mais de uma página no padrão
-- **WHEN** os produtos do arquivo são contados
-- **THEN** o total é maior ou igual a 40
+#### Scenario: More than one page by default
+- **WHEN** the products in the file are counted
+- **THEN** the total is greater than or equal to 40
 
-### Requirement: Identificadores e SKUs únicos
-Os `id` SHALL ser inteiros sequenciais começando em 1, sem repetição nem lacunas. Os `sku` SHALL ser únicos, ter entre 3 e 40 caracteres e conter apenas letras maiúsculas, dígitos e hífens.
+### Requirement: Unique identifiers and SKUs
+The `id`s SHALL be sequential integers starting at 1, with no repetition or gaps. The `sku`s SHALL be unique, have between 3 and 40 characters and contain only uppercase letters, digits and hyphens.
 
-#### Scenario: Identificadores sequenciais
-- **WHEN** os `id` são ordenados
-- **THEN** formam a sequência 1, 2, 3, ..., N sem lacunas nem duplicatas
+#### Scenario: Sequential identifiers
+- **WHEN** the `id`s are sorted
+- **THEN** they form the sequence 1, 2, 3, ..., N with no gaps or duplicates
 
-#### Scenario: SKUs únicos e bem formados
-- **WHEN** os `sku` são verificados
-- **THEN** não há duplicatas e todos casam com `^[A-Z0-9-]{3,40}$`
+#### Scenario: Unique and well-formed SKUs
+- **WHEN** the `sku`s are checked
+- **THEN** there are no duplicates and all match `^[A-Z0-9-]{3,40}$`
 
-### Requirement: Valores dentro das regras de negócio
-Cada produto SHALL respeitar: `title` com 1 a 200 caracteres; `description` com 1 a 2000 caracteres; `category` em minúsculas com 1 a 50 caracteres; `price` numérico maior ou igual a 0 com no máximo 2 casas decimais; `stock` inteiro maior ou igual a 0; `brand` com 1 a 100 caracteres; `weight` numérico maior que 0. Textos SHALL não ter espaços nas extremidades.
+### Requirement: Values within the business rules
+Each product SHALL respect: `title` with 1 to 200 characters; `description` with 1 to 2000 characters; `category` in lowercase with 1 to 50 characters; `price` numeric greater than or equal to 0 with at most 2 decimal places; `stock` integer greater than or equal to 0; `brand` with 1 to 100 characters; `weight` numeric greater than 0. Texts SHALL NOT have spaces at the ends.
 
-#### Scenario: Todos os produtos válidos
-- **WHEN** cada produto é validado contra as regras acima
-- **THEN** nenhum produto viola qualquer regra
+#### Scenario: All products valid
+- **WHEN** each product is validated against the rules above
+- **THEN** no product violates any rule
 
-### Requirement: Carimbos de data e hora coerentes
-`meta.createdAt` e `meta.updatedAt` SHALL estar no formato ISO 8601 UTC com milissegundos e sufixo `Z`, e `updatedAt` SHALL ser maior ou igual a `createdAt` em todo produto.
+### Requirement: Coherent timestamps
+`meta.createdAt` and `meta.updatedAt` SHALL be in ISO 8601 UTC format with milliseconds and the `Z` suffix, and `updatedAt` SHALL be greater than or equal to `createdAt` in every product.
 
-#### Scenario: Carimbos válidos e ordenados
-- **WHEN** os carimbos de cada produto são verificados
-- **THEN** ambos casam com o formato esperado e `updatedAt` não é anterior a `createdAt`
+#### Scenario: Valid and ordered timestamps
+- **WHEN** each product's timestamps are checked
+- **THEN** both match the expected format and `updatedAt` is not earlier than `createdAt`
 
-### Requirement: Itens de referência do enunciado
-Os dois primeiros produtos SHALL ser os exemplos do enunciado: "Large Flux Capacitor" (`id` 1, categoria `automotive`, preço 9.99, estoque 42, marca `ACME`, SKU `ACM-FC-001`, peso 4) e "Medium Flux Capacitor" (`id` 2, categoria `automotive`, preço 5.99, estoque 42, marca `ACME`, SKU `ACM-FC-002`, peso 3.25), com as descrições e datas do enunciado.
+### Requirement: Reference items from the statement
+The first two products SHALL be the statement's examples: "Large Flux Capacitor" (`id` 1, category `automotive`, price 9.99, stock 42, brand `ACME`, SKU `ACM-FC-001`, weight 4) and "Medium Flux Capacitor" (`id` 2, category `automotive`, price 5.99, stock 42, brand `ACME`, SKU `ACM-FC-002`, weight 3.25), with the statement's descriptions and dates.
 
-#### Scenario: Exemplos do enunciado preservados
-- **WHEN** os produtos de `id` 1 e 2 são lidos
-- **THEN** seus campos correspondem exatamente aos valores do enunciado
+#### Scenario: Statement examples preserved
+- **WHEN** the products with `id` 1 and 2 are read
+- **THEN** their fields match the statement's values exactly
 
-### Requirement: Diversidade para demonstração
-O data set SHALL conter pelo menos 5 categorias distintas e pelo menos 3 marcas distintas, e SHALL incluir ao menos um produto com `stock` igual a 0 (valor-limite válido). O conteúdo textual SHALL estar em inglês.
+### Requirement: Diversity for demonstration
+The data set SHALL contain at least 5 distinct categories and at least 3 distinct brands, and SHALL include at least one product with `stock` equal to 0 (a valid boundary value). The textual content SHALL be in English.
 
-#### Scenario: Variedade de categorias e marcas
-- **WHEN** as categorias e marcas distintas são contadas
-- **THEN** existem pelo menos 5 categorias e 3 marcas
+#### Scenario: Variety of categories and brands
+- **WHEN** the distinct categories and brands are counted
+- **THEN** there are at least 5 categories and 3 brands
 
-#### Scenario: Valor-limite de estoque presente
-- **WHEN** os valores de `stock` são inspecionados
-- **THEN** existe ao menos um produto com `stock` igual a 0
+#### Scenario: Stock boundary value present
+- **WHEN** the `stock` values are inspected
+- **THEN** there is at least one product with `stock` equal to 0

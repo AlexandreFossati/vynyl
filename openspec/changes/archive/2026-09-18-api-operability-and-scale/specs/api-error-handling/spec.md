@@ -2,13 +2,13 @@
 
 ## MODIFIED Requirements
 
-### Requirement: Códigos e status do contrato
-O contrato compartilhado SHALL definir os códigos `VALIDATION_ERROR` (400), `NOT_FOUND` (404), `PRODUCT_NOT_FOUND` (404), `SKU_CONFLICT` (409), `RATE_LIMITED` (429) e `INTERNAL_ERROR` (500), e a API SHALL responder com o status HTTP associado ao código. A API SHALL emitir todos os seis códigos.
+### Requirement: Contract codes and statuses
+The shared contract SHALL define the codes `VALIDATION_ERROR` (400), `NOT_FOUND` (404), `PRODUCT_NOT_FOUND` (404), `SKU_CONFLICT` (409), `RATE_LIMITED` (429) and `INTERNAL_ERROR` (500), and the API SHALL respond with the HTTP status associated with the code. The API SHALL emit all six codes.
 
-#### Scenario: Status corresponde ao código
-- **WHEN** a API responde com `VALIDATION_ERROR`, `NOT_FOUND`, `PRODUCT_NOT_FOUND`, `SKU_CONFLICT`, `RATE_LIMITED` ou `INTERNAL_ERROR`
-- **THEN** o status HTTP é, respectivamente, 400, 404, 404, 409, 429 e 500
+#### Scenario: Status matches the code
+- **WHEN** the API responds with `VALIDATION_ERROR`, `NOT_FOUND`, `PRODUCT_NOT_FOUND`, `SKU_CONFLICT`, `RATE_LIMITED` or `INTERNAL_ERROR`
+- **THEN** the HTTP status is, respectively, 400, 404, 404, 409, 429 and 500
 
-#### Scenario: Contrato completo definido
-- **WHEN** o contrato compartilhado é consultado
-- **THEN** ele lista exatamente os seis códigos acima, cada um com o status HTTP associado
+#### Scenario: Complete contract defined
+- **WHEN** the shared contract is consulted
+- **THEN** it lists exactly the six codes above, each with its associated HTTP status

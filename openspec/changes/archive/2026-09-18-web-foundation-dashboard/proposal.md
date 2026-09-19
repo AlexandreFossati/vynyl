@@ -2,34 +2,34 @@
 
 ## Why
 
-A API está completa e operável (T1–T4), mas a SPA ainda é um `<h1>`. A T5 é a **tarefa-modelo do frontend**: entrega a base visual, o REST client resiliente (a metade de frontend da **feature extra** de resiliência) e a primeira tela real, o dashboard de produtos. Os padrões definidos aqui (níveis de componentes, acesso a dados nas páginas, estados, tokens, estilo de testes) serão aprovados pelo usuário e replicados na T6, então o objetivo é acertar o padrão, não cobrir telas.
+The API is complete and operable (T1–T4), but the SPA is still an `<h1>`. T5 is the **frontend model task**: it delivers the visual foundation, the resilient REST client (the frontend half of the resilience **extra feature**) and the first real screen, the product dashboard. The patterns defined here (component levels, data access in pages, states, tokens, test style) will be approved by the user and replicated in T6, so the goal is to get the pattern right, not to cover screens.
 
 ## What Changes
 
-- **Base visual**: `styles/tokens.css` (única fonte de cores, espaçamento, tipografia, raios e sombras) e `styles/base.css` (reset leve, fonte do sistema, foco visível, alvos de toque de 44 px). Mobile-first, breakpoints 640 e 1024 px. CSS puro, sem biblioteca de UI.
-- **REST client** (`lib/api/http-client.ts`): timeout por tentativa, cancelamento, retry só em métodos idempotentes e só em erro de rede/timeout/408/429/502/503/504, backoff exponencial com full jitter, respeito ao `Retry-After`, `ApiError` tipado. `products-api` com a listagem, validando a resposta com o schema compartilhado.
-- **Componentes Atomic Design**, somente os que o dashboard usa: átomos (Button, Input, Badge, Spinner), moléculas (SearchBox, Pagination, PriceTag, StockBadge, StatusMessage), organismos (Header, ProductList com tabela no desktop e cartões no mobile), template (AppShell) e página (DashboardPage, NotFoundPage).
-- **Dashboard** (`/`): lista os produtos reais da API, busca com debounce, paginação de 30 por página, estados de carregando, vazio e erro (com "Try again"), sem scroll horizontal em 360, 768 e 1280 px.
-- **Roteamento mínimo** próprio sobre a History API (rota `/` e página de não encontrado) e **proxy do Vite** para `/api` no desenvolvimento.
-- **Regra de lint** que impede componentes abaixo de `pages` de importar de `lib/api` (critério de aceite da tarefa).
+- **Visual foundation**: `styles/tokens.css` (single source of colors, spacing, typography, radii and shadows) and `styles/base.css` (light reset, system font, visible focus, 44 px touch targets). Mobile-first, breakpoints 640 and 1024 px. Plain CSS, no UI library.
+- **REST client** (`lib/api/http-client.ts`): per-attempt timeout, cancellation, retry only on idempotent methods and only on network error/timeout/408/429/502/503/504, exponential backoff with full jitter, respect for `Retry-After`, typed `ApiError`. `products-api` with the listing, validating the response with the shared schema.
+- **Atomic Design components**, only the ones the dashboard uses: atoms (Button, Input, Badge, Spinner), molecules (SearchBox, Pagination, PriceTag, StockBadge, StatusMessage), organisms (Header, ProductList with a table on desktop and cards on mobile), template (AppShell) and page (DashboardPage, NotFoundPage).
+- **Dashboard** (`/`): lists the real products from the API, debounced search, pagination of 30 per page, loading, empty and error states (with "Try again"), no horizontal scroll at 360, 768 and 1280 px.
+- **Minimal in-house routing** over the History API (route `/` and a not-found page) and **Vite proxy** for `/api` in development.
+- **Lint rule** that prevents components below `pages` from importing from `lib/api` (the task's acceptance criterion).
 
-**Fora de escopo**: detalhe, criar, editar e excluir produtos (T6), toasts, diálogos, modo escuro, animações elaboradas, servir a SPA pelo Express (T7), Cypress e2e (T7).
+**Out of scope**: product detail, create, edit and delete (T6), toasts, dialogs, dark mode, elaborate animations, serving the SPA through Express (T7), Cypress e2e (T7).
 
 ## Capabilities
 
 ### New Capabilities
 
-- `web-design-foundation`: tokens, estilos base, responsividade, foco, alvos de toque e contraste.
-- `web-http-client`: REST client com timeout, cancelamento, retry com backoff e erros tipados, e a API de produtos (listagem).
-- `product-dashboard`: tela inicial com lista, busca com debounce, paginação e estados.
-- `web-app-structure`: roteamento mínimo, proxy de desenvolvimento e fronteiras entre os níveis de componentes.
+- `web-design-foundation`: tokens, base styles, responsiveness, focus, touch targets and contrast.
+- `web-http-client`: REST client with timeout, cancellation, retry with backoff and typed errors, and the products API (listing).
+- `product-dashboard`: home screen with list, debounced search, pagination and states.
+- `web-app-structure`: minimal routing, development proxy and boundaries between component levels.
 
 ### Modified Capabilities
 
-Nenhuma.
+None.
 
 ## Impact
 
-- **Código**: `apps/web/src` (estilos, `lib/api`, `lib/router`, componentes, `App.svelte`, `main.ts`), `apps/web/vite.config.ts` e o `eslint.config.js` da raiz (uma regra). Sem novas dependências: Svelte 5, Testing Library, jsdom e Vitest já estão instalados.
-- **Comportamento observável**: `npm run dev` passa a mostrar o catálogo real em `http://localhost:5173` (com a API em `3000`).
-- **Riscos**: a estética é subjetiva e é o foco da revisão do usuário; a verificação de layout usa screenshots reais em um navegador (Electron do Cypress), não todos os navegadores.
+- **Code**: `apps/web/src` (styles, `lib/api`, `lib/router`, components, `App.svelte`, `main.ts`), `apps/web/vite.config.ts` and the root `eslint.config.js` (one rule). No new dependencies: Svelte 5, Testing Library, jsdom and Vitest are already installed.
+- **Observable behavior**: `npm run dev` starts showing the real catalog at `http://localhost:5173` (with the API on `3000`).
+- **Risks**: aesthetics are subjective and are the focus of the user's review; the layout verification uses real screenshots in a browser (Cypress's Electron), not all browsers.

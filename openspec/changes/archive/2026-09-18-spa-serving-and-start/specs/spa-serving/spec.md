@@ -2,54 +2,54 @@
 
 ## Purpose
 
-Fazer o mesmo servidor entregar a SPA compilada e a API, para que a aplicação inteira rode em uma única porta, sem passos manuais, e as rotas do cliente funcionem ao recarregar ou abrir por link.
+Make the same server deliver the built SPA and the API, so that the whole application runs on a single port, with no manual steps, and the client routes work when reloading or opening by link.
 
 ## ADDED Requirements
 
-### Requirement: Arquivos da SPA compilada
-Quando a SPA está compilada (`apps/web/dist/index.html` existe), o servidor SHALL servir os arquivos de `apps/web/dist` na raiz do site. Um arquivo que não existe (caminho com extensão) SHALL receber `404` com o código `NOT_FOUND` no envelope padronizado, e não o `index.html`. Nenhum arquivo fora de `apps/web/dist` SHALL ser acessível por caminhos com `..`.
+### Requirement: Built SPA files
+When the SPA is built (`apps/web/dist/index.html` exists), the server SHALL serve the files in `apps/web/dist` at the site root. A file that does not exist (a path with an extension) SHALL receive `404` with the code `NOT_FOUND` in the standardized envelope, and not the `index.html`. No file outside `apps/web/dist` SHALL be accessible through paths with `..`.
 
-#### Scenario: Arquivo existente
-- **WHEN** um cliente faz `GET /assets/<arquivo>` de um arquivo que está em `apps/web/dist/assets`
-- **THEN** a resposta é `200` com o conteúdo do arquivo
+#### Scenario: Existing file
+- **WHEN** a client calls `GET /assets/<file>` for a file that is in `apps/web/dist/assets`
+- **THEN** the response is `200` with the file's content
 
-#### Scenario: Arquivo inexistente
-- **WHEN** um cliente faz `GET /assets/nao-existe.js`
-- **THEN** a resposta é `404` com `error.code` igual a `NOT_FOUND`
+#### Scenario: Nonexistent file
+- **WHEN** a client calls `GET /assets/missing.js`
+- **THEN** the response is `404` with `error.code` equal to `NOT_FOUND`
 
-#### Scenario: Fuga do diretório
-- **WHEN** um cliente pede um arquivo fora de `apps/web/dist` com `..` (inclusive codificado, como `%2e%2e`)
-- **THEN** o conteúdo desse arquivo não é entregue
+#### Scenario: Directory escape
+- **WHEN** a client asks for a file outside `apps/web/dist` with `..` (including encoded, such as `%2e%2e`)
+- **THEN** that file's content is not delivered
 
-### Requirement: Fallback para as rotas da SPA
-Quando a SPA está compilada, um `GET` ou `HEAD` para um caminho sem extensão que não comece por `/api` nem por `/health` SHALL receber o `index.html` com `200` e `Content-Type` HTML, para que as rotas do cliente (`/`, `/products/new`, `/products/7`, `/products/7/edit`, ou um caminho desconhecido que a SPA mostra como "não encontrado") funcionem ao abrir por link ou recarregar. Outros métodos nesses caminhos SHALL receber `404` `NOT_FOUND`.
+### Requirement: Fallback for SPA routes
+When the SPA is built, a `GET` or `HEAD` to a path with no extension that does not start with `/api` or `/health` SHALL receive the `index.html` with `200` and an HTML `Content-Type`, so that client routes (`/`, `/products/new`, `/products/7`, `/products/7/edit`, or an unknown path that the SPA shows as "not found") work when opened by link or reloaded. Other methods on those paths SHALL receive `404` `NOT_FOUND`.
 
-#### Scenario: Página inicial
-- **WHEN** um cliente faz `GET /`
-- **THEN** a resposta é `200` com o `index.html` da SPA
+#### Scenario: Home page
+- **WHEN** a client calls `GET /`
+- **THEN** the response is `200` with the SPA's `index.html`
 
-#### Scenario: Rota do cliente
-- **WHEN** um cliente faz `GET /products/7/edit`
-- **THEN** a resposta é `200` com o mesmo `index.html`
+#### Scenario: Client route
+- **WHEN** a client calls `GET /products/7/edit`
+- **THEN** the response is `200` with the same `index.html`
 
-#### Scenario: Escrita fora da API
-- **WHEN** um cliente faz `POST /products/7`
-- **THEN** a resposta é `404` com `error.code` igual a `NOT_FOUND`
+#### Scenario: Write outside the API
+- **WHEN** a client calls `POST /products/7`
+- **THEN** the response is `404` with `error.code` equal to `NOT_FOUND`
 
-### Requirement: API e health não são afetados
-Os caminhos sob `/api` e o `/health` SHALL continuar respondendo exatamente como sem a SPA: as rotas existentes normalmente e qualquer caminho desconhecido sob `/api` com `404` `NOT_FOUND` em JSON, nunca com o `index.html`. Os estáticos e o fallback SHALL NOT contar no limite de requisições da API.
+### Requirement: API and health are not affected
+Paths under `/api` and `/health` SHALL keep responding exactly as without the SPA: existing routes normally and any unknown path under `/api` with `404` `NOT_FOUND` in JSON, never with the `index.html`. Static files and the fallback SHALL NOT count toward the API's request limit.
 
-#### Scenario: Rota desconhecida sob a API
-- **WHEN** um cliente faz `GET /api/does-not-exist` com a SPA compilada
-- **THEN** a resposta é `404` com `error.code` igual a `NOT_FOUND`, em JSON
+#### Scenario: Unknown route under the API
+- **WHEN** a client calls `GET /api/does-not-exist` with the SPA built
+- **THEN** the response is `404` with `error.code` equal to `NOT_FOUND`, in JSON
 
-#### Scenario: Rotas da API e health
-- **WHEN** um cliente faz `GET /api/products` e `GET /health` com a SPA compilada
-- **THEN** as respostas são as mesmas de antes (lista de produtos em JSON e `200` de saúde)
+#### Scenario: API and health routes
+- **WHEN** a client calls `GET /api/products` and `GET /health` with the SPA built
+- **THEN** the responses are the same as before (product list in JSON and health `200`)
 
-### Requirement: Sem SPA compilada, só a API
-Se `apps/web/dist/index.html` não existe na inicialização, o servidor SHALL subir normalmente apenas com a API, SHALL registrar um aviso no log dizendo que a SPA não foi encontrada e SHALL responder `404` `NOT_FOUND` aos caminhos fora da API.
+### Requirement: Without a built SPA, only the API
+If `apps/web/dist/index.html` does not exist at startup, the server SHALL come up normally with only the API, SHALL record a warning in the log saying the SPA was not found and SHALL respond `404` `NOT_FOUND` to paths outside the API.
 
-#### Scenario: Servidor sem build da SPA
-- **WHEN** o servidor sobe sem `apps/web/dist/index.html`
-- **THEN** ele fica no ar, registra o aviso e `GET /` responde `404` `NOT_FOUND`
+#### Scenario: Server without the SPA build
+- **WHEN** the server comes up without `apps/web/dist/index.html`
+- **THEN** it stays up, records the warning and `GET /` responds `404` `NOT_FOUND`

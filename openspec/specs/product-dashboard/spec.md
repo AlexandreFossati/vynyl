@@ -2,105 +2,105 @@
 
 ## Purpose
 
-Dar ao usuário uma visão geral do catálogo na tela inicial, com busca e paginação, em qualquer tamanho de tela.
+Give the user an overview of the catalog on the home screen, with search and pagination, at any screen size.
 
 ## Requirements
 
-### Requirement: Listagem inicial
-Ao abrir `/`, o dashboard SHALL pedir à API a primeira página (`limit=30`, `offset=0`, sem `q`) e listar os produtos recebidos. Cada produto SHALL mostrar título, marca, categoria, preço e estoque; o SKU SHALL aparecer a partir de 1024 px de largura.
+### Requirement: Initial listing
+On opening `/`, the dashboard SHALL ask the API for the first page (`limit=30`, `offset=0`, no `q`) and list the products received. Each product SHALL show title, brand, category, price and stock; the SKU SHALL appear from 1024 px of width.
 
-#### Scenario: Primeira página
-- **WHEN** o usuário abre a tela inicial e a API devolve produtos
-- **THEN** a lista mostra esses produtos com título, marca, categoria, preço e estoque
+#### Scenario: First page
+- **WHEN** the user opens the home screen and the API returns products
+- **THEN** the list shows those products with title, brand, category, price and stock
 
-### Requirement: Busca com debounce
-O campo de busca SHALL aguardar 300 ms sem digitação antes de disparar a busca. A busca SHALL usar o texto sem espaços nas pontas como `q`, SHALL omitir `q` quando o texto está vazio, SHALL limitar o texto a 100 caracteres e SHALL voltar à página 1.
+### Requirement: Debounced search
+The search field SHALL wait 300 ms without typing before triggering the search. The search SHALL use the text without surrounding spaces as `q`, SHALL omit `q` when the text is empty, SHALL limit the text to 100 characters and SHALL go back to page 1.
 
-#### Scenario: Digitação rápida gera uma busca
-- **WHEN** o usuário digita várias letras em sequência, cada uma em menos de 300 ms
-- **THEN** uma única requisição é feita, depois da última tecla, com o texto completo em `q`
+#### Scenario: Fast typing generates one search
+- **WHEN** the user types several letters in sequence, each in less than 300 ms
+- **THEN** a single request is made, after the last key, with the full text in `q`
 
-#### Scenario: Volta à primeira página
-- **WHEN** o usuário está na página 2 e altera a busca
-- **THEN** a nova requisição usa `offset=0`
+#### Scenario: Back to the first page
+- **WHEN** the user is on page 2 and changes the search
+- **THEN** the new request uses `offset=0`
 
-#### Scenario: Busca vazia
-- **WHEN** o usuário apaga o texto da busca
-- **THEN** a requisição não contém `q`
+#### Scenario: Empty search
+- **WHEN** the user erases the search text
+- **THEN** the request does not contain `q`
 
-### Requirement: Paginação de 30 por página
-O dashboard SHALL exibir 30 produtos por página, os controles "Previous" e "Next" e o intervalo exibido (por exemplo, "Showing 1–30 of 44"). "Previous" SHALL estar desabilitado na primeira página e "Next" na última. Mudar de página SHALL pedir a API com o `offset` correspondente.
+### Requirement: Pagination of 30 per page
+The dashboard SHALL display 30 products per page, the "Previous" and "Next" controls and the displayed range (for example, "Showing 1–30 of 44"). "Previous" SHALL be disabled on the first page and "Next" on the last. Changing page SHALL ask the API with the corresponding `offset`.
 
-#### Scenario: Próxima página
-- **WHEN** o usuário está na página 1 de um catálogo de 44 produtos e aciona "Next"
-- **THEN** a requisição usa `offset=30` e o texto mostra "Showing 31–44 of 44"
+#### Scenario: Next page
+- **WHEN** the user is on page 1 of a 44-product catalog and activates "Next"
+- **THEN** the request uses `offset=30` and the text shows "Showing 31–44 of 44"
 
-#### Scenario: Limites
-- **WHEN** o usuário está na primeira ou na última página
-- **THEN** "Previous" ou "Next", respectivamente, está desabilitado
+#### Scenario: Limits
+- **WHEN** the user is on the first or the last page
+- **THEN** "Previous" or "Next", respectively, is disabled
 
-### Requirement: Estados de carregando, vazio e erro
-O dashboard SHALL mostrar um indicador de carregamento enquanto aguarda a primeira resposta, uma mensagem de vazio quando a busca não encontra produtos (com a ação "Clear search" quando há texto de busca) e uma mensagem de erro com a ação "Try again" quando a requisição falha. "Try again" SHALL repetir a mesma requisição. O erro SHALL ser anunciado a tecnologias assistivas (`role="alert"`) e SHALL NOT exibir detalhes técnicos.
+### Requirement: Loading, empty and error states
+The dashboard SHALL show a loading indicator while waiting for the first response, an empty message when the search finds no products (with the "Clear search" action when there is search text) and an error message with the "Try again" action when the request fails. "Try again" SHALL repeat the same request. The error SHALL be announced to assistive technologies (`role="alert"`) and SHALL NOT display technical details.
 
-#### Scenario: Carregando
-- **WHEN** a primeira resposta ainda não chegou
-- **THEN** a tela mostra o indicador de carregamento
+#### Scenario: Loading
+- **WHEN** the first response has not arrived yet
+- **THEN** the screen shows the loading indicator
 
-#### Scenario: Sem resultados
-- **WHEN** a busca não encontra nenhum produto
-- **THEN** a tela mostra a mensagem de vazio e a ação "Clear search", que limpa a busca e recarrega a lista
+#### Scenario: No results
+- **WHEN** the search finds no product
+- **THEN** the screen shows the empty message and the "Clear search" action, which clears the search and reloads the list
 
-#### Scenario: Falha e nova tentativa
-- **WHEN** a requisição falha e o usuário aciona "Try again"
-- **THEN** a mesma requisição é feita de novo e, ao ter sucesso, a lista aparece
+#### Scenario: Failure and retry
+- **WHEN** the request fails and the user activates "Try again"
+- **THEN** the same request is made again and, on success, the list appears
 
-### Requirement: Somente o resultado mais recente é exibido
-Ao iniciar uma nova requisição, o dashboard SHALL cancelar a anterior, e SHALL ignorar qualquer resposta que não seja a da requisição mais recente. Durante recargas depois da primeira, a lista anterior SHALL permanecer visível e marcada como ocupada (`aria-busy`).
+### Requirement: Only the most recent result is displayed
+When starting a new request, the dashboard SHALL cancel the previous one, and SHALL ignore any response that is not that of the most recent request. During reloads after the first, the previous list SHALL remain visible and marked as busy (`aria-busy`).
 
-#### Scenario: Respostas fora de ordem
-- **WHEN** duas buscas são disparadas em sequência e a resposta da primeira chega depois da segunda
-- **THEN** a lista mostra apenas o resultado da segunda
+#### Scenario: Out-of-order responses
+- **WHEN** two searches are triggered in sequence and the first one's response arrives after the second's
+- **THEN** the list shows only the second's result
 
-### Requirement: Tabela no desktop e cartões no mobile
-A lista SHALL ser exibida como cartões abaixo de 640 px e como tabela a partir de 640 px; a tabela SHALL ter legenda e cabeçalhos de coluna para tecnologias assistivas, e SHALL exibir as colunas de marca e SKU somente a partir de 1024 px. Apenas uma das duas apresentações SHALL ficar visível e acessível por vez.
+### Requirement: Table on desktop and cards on mobile
+The list SHALL be displayed as cards below 640 px and as a table from 640 px; the table SHALL have a caption and column headers for assistive technologies, and SHALL display the brand and SKU columns only from 1024 px. Only one of the two presentations SHALL be visible and accessible at a time.
 
 #### Scenario: Mobile
-- **WHEN** a largura é de 360 px
-- **THEN** os produtos aparecem como cartões, sem tabela visível
+- **WHEN** the width is 360 px
+- **THEN** the products appear as cards, with no visible table
 
 #### Scenario: Desktop
-- **WHEN** a largura é de 1280 px
-- **THEN** os produtos aparecem em uma tabela com as colunas de marca e SKU
+- **WHEN** the width is 1280 px
+- **THEN** the products appear in a table with the brand and SKU columns
 
-### Requirement: Apresentação de preço e estoque
-O preço SHALL ser exibido como moeda (dólar, duas casas decimais). O estoque SHALL ser exibido com um selo: `Out of stock` quando é 0, `Low stock` quando está entre 1 e 10 e `In stock` acima de 10, sempre com o número de unidades e sem depender apenas da cor.
+### Requirement: Price and stock presentation
+The price SHALL be displayed as currency (dollar, two decimal places). The stock SHALL be displayed with a badge: `Out of stock` when it is 0, `Low stock` when it is between 1 and 10 and `In stock` above 10, always with the number of units and without relying on color alone.
 
-#### Scenario: Faixas de estoque
-- **WHEN** o estoque é 0, 10 e 11
-- **THEN** os selos são `Out of stock`, `Low stock` e `In stock`, respectivamente
+#### Scenario: Stock bands
+- **WHEN** the stock is 0, 10 and 11
+- **THEN** the badges are `Out of stock`, `Low stock` and `In stock`, respectively
 
-#### Scenario: Preço
-- **WHEN** o preço é `1299`
-- **THEN** o texto exibido é `$1,299.00`
+#### Scenario: Price
+- **WHEN** the price is `1299`
+- **THEN** the displayed text is `$1,299.00`
 
-### Requirement: Acessibilidade básica
-O campo de busca SHALL ter um rótulo associado, a contagem de resultados SHALL ser anunciada por uma região `aria-live="polite"` e todos os controles SHALL ser operáveis pelo teclado.
+### Requirement: Basic accessibility
+The search field SHALL have an associated label, the result count SHALL be announced by an `aria-live="polite"` region and all controls SHALL be operable by keyboard.
 
-#### Scenario: Rótulo da busca
-- **WHEN** um leitor de tela lê o campo de busca
-- **THEN** ele é identificado como "Search products"
+#### Scenario: Search label
+- **WHEN** a screen reader reads the search field
+- **THEN** it is identified as "Search products"
 
-### Requirement: Acesso ao detalhe e à criação
-Cada produto da lista SHALL ter seu título como link para `/products/:id`, tanto nos cartões quanto na tabela. O dashboard SHALL oferecer o link "Add product" para `/products/new`, visível em todas as larguras e também quando o catálogo está vazio ou a busca não encontra nada.
+### Requirement: Access to detail and creation
+Each product in the list SHALL have its title as a link to `/products/:id`, both in the cards and in the table. The dashboard SHALL offer the "Add product" link to `/products/new`, visible at all widths and also when the catalog is empty or the search finds nothing.
 
-#### Scenario: Título leva ao detalhe
-- **WHEN** o usuário aciona o título de um produto na lista
-- **THEN** a SPA abre o detalhe desse produto
+#### Scenario: Title leads to detail
+- **WHEN** the user activates a product's title in the list
+- **THEN** the SPA opens that product's detail
 
-#### Scenario: Adicionar produto
-- **WHEN** o usuário aciona "Add product"
-- **THEN** a SPA abre `/products/new`
+#### Scenario: Add product
+- **WHEN** the user activates "Add product"
+- **THEN** the SPA opens `/products/new`
 
-#### Scenario: Catálogo vazio
-- **WHEN** o catálogo está vazio ou a busca não encontrou nada
-- **THEN** o link "Add product" continua visível
+#### Scenario: Empty catalog
+- **WHEN** the catalog is empty or the search found nothing
+- **THEN** the "Add product" link remains visible

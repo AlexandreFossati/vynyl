@@ -1,3 +1,3 @@
 # web-product-pages
 
-Detalhe, criação, edição e exclusão de produtos na SPA (T6)
+Product detail, create, edit and delete in the SPA (T6)

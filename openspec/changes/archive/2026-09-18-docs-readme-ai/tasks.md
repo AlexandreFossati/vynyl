@@ -1,13 +1,13 @@
 # Tasks
 
-> Referências: `specs/project-documentation`; decisões em `design.md` (D1–D5); guia, seção 14; `DELIVERABLES.md`. Idioma: `README.md` e `AI.md` em **inglês**; estes artefatos em português. **Sem código novo**, sem dependências, sem traduzir os documentos de planejamento. Todo fato técnico do README vem do código, de `.env.example`, das specs ou de um comando executado. Sem e2e/Cypress (decisão do usuário).
+> References: `specs/project-documentation`; decisions in `design.md` (D1–D5); guide, section 14; `DELIVERABLES.md`. Language: `README.md` and `AI.md` in **English**; these artifacts in Portuguese. **No new code**, no dependencies, no translating the planning documents. Every technical fact in the README comes from the code, from `.env.example`, from the specs or from an executed command. No e2e/Cypress (user decision).
 
-## 1. Documentos
+## 1. Documents
 
-- [x] 1.1 Escrever o `README.md` (D2, D3). Verificar conferindo cada afirmação técnica contra a fonte (variáveis contra `.env.example` e `env.ts`, rotas e códigos contra as specs e o código, scripts contra o `package.json`) e rodando os comandos que ele manda executar.
-- [x] 1.2 Reescrever o `AI.md` como narrativa final (D4). Verificar relendo contra o histórico de commits e as specs: nada afirmado que não aconteceu, e a seção de limites presente.
+- [x] 1.1 Write `README.md` (D2, D3). Verify by checking each technical claim against the source (variables against `.env.example` and `env.ts`, routes and codes against the specs and the code, scripts against `package.json`) and by running the commands it says to run.
+- [x] 1.2 Rewrite `AI.md` as the final narrative (D4). Verify by rereading against the commit history and the specs: nothing claimed that did not happen, and the limits section present.
 
-## 2. Verificação e fechamento
+## 2. Verification and closing
 
-- [x] 2.1 Clone limpo (D5): clonar para um caminho curto, copiar README/AI.md/artefatos não commitados, seguir o README literalmente (`npm install`, `npm start` com banco temporário, `curl` da página, das rotas e da API), depois `npm run lint`, `npm run typecheck` e `npm test`; conferir `git status` do clone (lockfile) e apagar o clone. Declarar o que não foi verificável.
-- [ ] 2.2 Conferir o `DELIVERABLES.md` item a item contra o repositório, marcar o que está atendido e deixar aberto, com o motivo, o que depende do usuário (link do GitHub, registro da sessão, opcionais da API, GitHub Actions). Marcar o T7 no "Status geral" do `OPENSPEC_TASKS.md` (o usuário conferiu no navegador) e refletir a T8. `npm run format` idempotente, `openspec validate docs-readme-ai --strict`, relatório final com o que **não** foi verificado.
+- [x] 2.1 Clean clone (D5): clone to a short path, copy README/AI.md/uncommitted artifacts, follow the README literally (`npm install`, `npm start` with a temporary database, `curl` of the page, the routes and the API), then `npm run lint`, `npm run typecheck` and `npm test`; check the clone's `git status` (lockfile) and delete the clone. State what was not verifiable.
+- [ ] 2.2 Check `DELIVERABLES.md` item by item against the repository, check what is met and leave open, with the reason, what depends on the user (GitHub link, session record, API optionals, GitHub Actions). Check T7 in the "Overall status" of `OPENSPEC_TASKS.md` (the user checked it in the browser) and reflect T8. Idempotent `npm run format`, `openspec validate docs-readme-ai --strict`, final report with what was **not** verified.

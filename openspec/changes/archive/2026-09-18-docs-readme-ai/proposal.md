@@ -2,27 +2,27 @@
 
 ## Why
 
-O código está pronto (T1–T7), mas o enunciado avalia tanto quanto o código a **comunicação**: um `README.md` que leve um avaliador de um clone a uma página funcionando, com premissas, decisões de produto, questões em aberto, a feature extra e o que ficou de fora, e um `AI.md` com a narrativa honesta do trabalho com IA. Hoje o `README.md` tem só o título e o `AI.md` é um registro corrido. A T8 escreve os dois documentos finais e confere o resultado seguindo o próprio README em um clone limpo.
+The code is ready (T1–T7), but the statement evaluates **communication** as much as the code: a `README.md` that takes an evaluator from a clone to a working page, with assumptions, product decisions, open questions, the extra feature and what was left out, and an `AI.md` with the honest narrative of the work with AI. Today the `README.md` has only the title and `AI.md` is a running log. T8 writes the two final documents and checks the result by following the README itself on a clean clone.
 
 ## What Changes
 
-- **`README.md`** (inglês) conforme a seção 14 do guia: visão geral, requisitos (Node), como rodar e testar (`npm install`, `npm start`, URL), scripts, estrutura, resumo da API e do formato de erro, **decisões de produto**, **premissas**, **questões em aberto**, **feature extra** (problema, quem usa, por quê, e a limitação do singleflight com SQLite local), como a qualidade foi tratada, **o que ficou de fora e próximos passos** (e2e/Cypress, opcionais da API, GitHub Actions, helmet/CORS, autenticação, etc.) e problemas conhecidos de instalação.
-- **`AI.md`** (inglês) reescrito como narrativa final, a partir do registro atual: fluxo (planejamento → OpenSpec → tarefas com checkpoints), ferramentas, o que funcionou bem e mal, notas por tarefa, e o que não foi verificado.
-- **Verificação em clone limpo**: `git clone` para um caminho curto, seguir o README passo a passo (`npm install`, `npm start`), conferir a aplicação e rodar `lint`, `typecheck` e `test`; conferir o `DELIVERABLES.md` item a item.
+- **`README.md`** (English) per section 14 of the guide: overview, requirements (Node), how to run and test (`npm install`, `npm start`, URL), scripts, structure, summary of the API and the error format, **product decisions**, **assumptions**, **open questions**, **extra feature** (problem, who uses it, why, and the singleflight limitation with local SQLite), how quality was handled, **what was left out and next steps** (e2e/Cypress, API optionals, GitHub Actions, helmet/CORS, authentication, etc.) and known installation problems.
+- **`AI.md`** (English) rewritten as a final narrative, from the current log: workflow (planning → OpenSpec → tasks with checkpoints), tools, what worked well and badly, notes per task, and what was not verified.
+- **Verification on a clean clone**: `git clone` to a short path, follow the README step by step (`npm install`, `npm start`), check the application and run `lint`, `typecheck` and `test`; check `DELIVERABLES.md` item by item.
 
-**Fora de escopo**: código novo (salvo correção de algo que a verificação revele), traduzir os documentos de planejamento (o usuário faz isso em um commit próprio no fim), o registro da sessão de código (vídeo ou trace) e o link do GitHub, que são entregas do usuário.
+**Out of scope**: new code (except a fix for something the verification reveals), translating the planning documents (the user does that in a commit of their own at the end), the record of the coding session (video or trace) and the GitHub link, which are deliverables of the user.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `project-documentation`: o que o `README.md` e o `AI.md` finais precisam conter e a regra de que as instruções do README funcionam em um clone limpo.
+- `project-documentation`: what the final `README.md` and `AI.md` must contain and the rule that the README's instructions work on a clean clone.
 
 ### Modified Capabilities
 
-Nenhuma.
+None.
 
 ## Impact
 
-- **Arquivos**: `README.md`, `AI.md`, `DELIVERABLES.md` (conferência dos itens) e `OPENSPEC_TASKS.md`. Nenhum código de aplicação.
-- **Riscos**: o README afirmar algo que o código não faz. Mitigação: cada afirmação técnica do README é conferida no código, nas specs ou rodando o comando; e o que não foi verificado é dito como tal.
+- **Files**: `README.md`, `AI.md`, `DELIVERABLES.md` (checking the items) and `OPENSPEC_TASKS.md`. No application code.
+- **Risks**: the README claiming something the code does not do. Mitigation: each technical claim in the README is checked in the code, in the specs or by running the command; and what was not verified is said as such.

@@ -2,34 +2,34 @@
 
 ## Purpose
 
-Garantir que quem recebe o repositório consiga rodá-lo, entender as decisões e as limitações e enxergar como o trabalho foi feito com IA, apenas lendo o `README.md` e o `AI.md`.
+Ensure that whoever receives the repository can run it, understand the decisions and limitations and see how the work was done with AI, just by reading `README.md` and `AI.md`.
 
 ## ADDED Requirements
 
-### Requirement: README que leva a uma página funcional
-O `README.md` SHALL estar em inglês e SHALL ensinar, sem passos ocultos, a chegar de um clone limpo a uma página funcional: versão do Node exigida, `npm install`, `npm start` e o endereço `http://localhost:3000`, além de como rodar os testes, o modo de desenvolvimento e como reiniciar o banco. As instruções SHALL funcionar em Windows, Linux e macOS.
+### Requirement: README that leads to a working page
+`README.md` SHALL be in English and SHALL teach, with no hidden steps, how to get from a clean clone to a working page: the required Node version, `npm install`, `npm start` and the address `http://localhost:3000`, as well as how to run the tests, the development mode and how to reset the database. The instructions SHALL work on Windows, Linux and macOS.
 
-#### Scenario: Seguir o README em um clone limpo
-- **WHEN** alguém clona o repositório e executa somente os comandos do README, na ordem
-- **THEN** a API e a SPA sobem em `http://localhost:3000` e os testes, o lint e o typecheck do README passam
+#### Scenario: Following the README on a clean clone
+- **WHEN** someone clones the repository and runs only the README's commands, in order
+- **THEN** the API and the SPA come up at `http://localhost:3000` and the README's tests, lint and typecheck pass
 
-### Requirement: Conteúdo exigido pelo enunciado
-O `README.md` SHALL conter seções distintas para: visão geral; como rodar e testar; estrutura do repositório; a API (rotas e formato de erro); **decisões de produto**; **premissas**; **questões em aberto**; a **feature extra** (o problema que resolve, quem a usaria, por que foi escolhida e a limitação do singleflight com SQLite local); e **o que ficou de fora e os próximos passos**.
+### Requirement: Content required by the statement
+`README.md` SHALL contain distinct sections for: overview; how to run and test; repository structure; the API (routes and error format); **product decisions**; **assumptions**; **open questions**; the **extra feature** (the problem it solves, who would use it, why it was chosen and the limitation of singleflight with local SQLite); and **what was left out and the next steps**.
 
-#### Scenario: Itens do DELIVERABLES cobertos
-- **WHEN** o `DELIVERABLES.md` é conferido item a item contra o `README.md` e o `AI.md`
-- **THEN** cada item do README e do AI.md aparece atendido, ou explicitamente justificado como não feito
+#### Scenario: DELIVERABLES items covered
+- **WHEN** `DELIVERABLES.md` is checked item by item against `README.md` and `AI.md`
+- **THEN** each item of the README and of AI.md appears as met, or explicitly justified as not done
 
-### Requirement: Honestidade sobre o que não foi feito ou verificado
-O `README.md` SHALL listar como não feitos os testes e2e (Cypress), os endpoints opcionais (ordenação e categorias), o GitHub Actions, o `helmet`/CORS restrito e a autenticação, e SHALL dizer que o singleflight não coalesce consultas com o SQLite local. Nenhuma afirmação do README SHALL descrever um comportamento que o código não tem.
+### Requirement: Honesty about what was not done or verified
+`README.md` SHALL list as not done the e2e tests (Cypress), the optional endpoints (sorting and categories), GitHub Actions, `helmet`/restricted CORS and authentication, and SHALL say that singleflight does not coalesce queries with local SQLite. No claim in the README SHALL describe a behavior that the code does not have.
 
-#### Scenario: Cortes de escopo
-- **WHEN** o leitor procura o que não foi implementado
-- **THEN** encontra cada item acima, com o motivo e o que seria feito a seguir
+#### Scenario: Scope cuts
+- **WHEN** the reader looks for what was not implemented
+- **THEN** they find each item above, with the reason and what would be done next
 
-### Requirement: AI.md com narrativa e avaliação
-O `AI.md` SHALL estar em inglês e SHALL conter a narrativa do fluxo de trabalho com codificação assistida por IA (planejamento, OpenSpec, tarefas com checkpoints de revisão), as ferramentas usadas, o que funcionou bem, o que funcionou mal ou exigiu correção e o que não foi verificado, sem repetir os detalhes técnicos que já estão no código, nas specs e no histórico de commits.
+### Requirement: AI.md with narrative and assessment
+`AI.md` SHALL be in English and SHALL contain the narrative of the AI-assisted coding workflow (planning, OpenSpec, tasks with review checkpoints), the tools used, what worked well, what worked badly or required correction and what was not verified, without repeating the technical details that are already in the code, the specs and the commit history.
 
-#### Scenario: Leitura do AI.md
-- **WHEN** um avaliador lê o `AI.md`
-- **THEN** entende como as decisões foram tomadas, onde a IA errou ou precisou de correção e como isso foi detectado
+#### Scenario: Reading AI.md
+- **WHEN** an evaluator reads `AI.md`
+- **THEN** they understand how decisions were made, where the AI got it wrong or needed correction and how that was detected

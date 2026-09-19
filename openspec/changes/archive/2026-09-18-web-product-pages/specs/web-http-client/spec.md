@@ -2,33 +2,33 @@
 
 ## MODIFIED Requirements
 
-### Requirement: API de produtos
-O módulo de produtos SHALL oferecer: a listagem com `limit`, `offset` e `q` opcionais; obter um produto por `id`; criar um produto (`POST /api/products`); atualizar um produto (`PATCH /api/products/:id`); e remover um produto (`DELETE /api/products/:id`). As respostas com corpo (listagem, produto obtido, criado e atualizado) SHALL ser validadas com o schema compartilhado correspondente; uma resposta que não o satisfaz SHALL falhar com `ApiError` de `code` `INVALID_RESPONSE`. A remoção SHALL resolver sem valor. Todas as operações SHALL aceitar um sinal de cancelamento e SHALL deixar passar, sem alteração, as falhas do cliente HTTP (incluindo o envelope de erro `409` e `400` com `details`).
+### Requirement: Products API
+The products module SHALL offer: the listing with optional `limit`, `offset` and `q`; getting a product by `id`; creating a product (`POST /api/products`); updating a product (`PATCH /api/products/:id`); and removing a product (`DELETE /api/products/:id`). Responses with a body (listing, product obtained, created and updated) SHALL be validated with the corresponding shared schema; a response that does not satisfy it SHALL fail with `ApiError` with `code` `INVALID_RESPONSE`. Removal SHALL resolve with no value. All operations SHALL accept a cancellation signal and SHALL let the HTTP client's failures pass through unchanged (including the `409` error envelope and `400` with `details`).
 
-#### Scenario: Listagem válida
-- **WHEN** a API devolve uma página de produtos conforme o contrato
-- **THEN** a função resolve com `data`, `total`, `limit` e `offset`
+#### Scenario: Valid listing
+- **WHEN** the API returns a page of products per the contract
+- **THEN** the function resolves with `data`, `total`, `limit` and `offset`
 
-#### Scenario: Resposta fora do contrato
-- **WHEN** a API devolve um corpo que não satisfaz o schema
-- **THEN** a função rejeita com `ApiError` `INVALID_RESPONSE`
+#### Scenario: Response outside the contract
+- **WHEN** the API returns a body that does not satisfy the schema
+- **THEN** the function rejects with `ApiError` `INVALID_RESPONSE`
 
-#### Scenario: Obter um produto
-- **WHEN** a função de obter é chamada com o `id` 7 e a API devolve o produto
-- **THEN** a requisição é `GET /api/products/7` e a função resolve com o produto
+#### Scenario: Get a product
+- **WHEN** the get function is called with `id` 7 and the API returns the product
+- **THEN** the request is `GET /api/products/7` and the function resolves with the product
 
-#### Scenario: Criar um produto
-- **WHEN** a função de criar é chamada com os dados de um produto e a API responde `201` com o produto criado
-- **THEN** a requisição é `POST /api/products` com os dados como corpo JSON e a função resolve com o produto criado
+#### Scenario: Create a product
+- **WHEN** the create function is called with a product's data and the API responds `201` with the created product
+- **THEN** the request is `POST /api/products` with the data as the JSON body and the function resolves with the created product
 
-#### Scenario: Atualizar um produto
-- **WHEN** a função de atualizar é chamada com o `id` 7 e os dados
-- **THEN** a requisição é `PATCH /api/products/7` com os dados como corpo JSON e a função resolve com o produto atualizado
+#### Scenario: Update a product
+- **WHEN** the update function is called with `id` 7 and the data
+- **THEN** the request is `PATCH /api/products/7` with the data as the JSON body and the function resolves with the updated product
 
-#### Scenario: Remover um produto
-- **WHEN** a função de remover é chamada com o `id` 7 e a API responde `204`
-- **THEN** a requisição é `DELETE /api/products/7` e a função resolve sem valor
+#### Scenario: Remove a product
+- **WHEN** the remove function is called with `id` 7 and the API responds `204`
+- **THEN** the request is `DELETE /api/products/7` and the function resolves with no value
 
-#### Scenario: Falha da API
-- **WHEN** a API responde `409` `SKU_CONFLICT` a uma criação
-- **THEN** a função rejeita com o mesmo `ApiError` (`status` 409, `code` `SKU_CONFLICT`), sem repetir a requisição
+#### Scenario: API failure
+- **WHEN** the API responds `409` `SKU_CONFLICT` to a creation
+- **THEN** the function rejects with the same `ApiError` (`status` 409, `code` `SKU_CONFLICT`), without retrying the request

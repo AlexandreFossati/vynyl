@@ -2,17 +2,17 @@
 
 ## ADDED Requirements
 
-### Requirement: Acesso ao detalhe e à criação
-Cada produto da lista SHALL ter seu título como link para `/products/:id`, tanto nos cartões quanto na tabela. O dashboard SHALL oferecer o link "Add product" para `/products/new`, visível em todas as larguras e também quando o catálogo está vazio ou a busca não encontra nada.
+### Requirement: Access to detail and creation
+Each product in the list SHALL have its title as a link to `/products/:id`, both in the cards and in the table. The dashboard SHALL offer the "Add product" link to `/products/new`, visible at all widths and also when the catalog is empty or the search finds nothing.
 
-#### Scenario: Título leva ao detalhe
-- **WHEN** o usuário aciona o título de um produto na lista
-- **THEN** a SPA abre o detalhe desse produto
+#### Scenario: Title leads to detail
+- **WHEN** the user activates a product's title in the list
+- **THEN** the SPA opens that product's detail
 
-#### Scenario: Adicionar produto
-- **WHEN** o usuário aciona "Add product"
-- **THEN** a SPA abre `/products/new`
+#### Scenario: Add product
+- **WHEN** the user activates "Add product"
+- **THEN** the SPA opens `/products/new`
 
-#### Scenario: Catálogo vazio
-- **WHEN** o catálogo está vazio ou a busca não encontrou nada
-- **THEN** o link "Add product" continua visível
+#### Scenario: Empty catalog
+- **WHEN** the catalog is empty or the search found nothing
+- **THEN** the "Add product" link remains visible
